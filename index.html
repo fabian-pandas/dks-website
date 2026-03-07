@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DKS-Analytics | KI-Systeme aus einer Hand</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --color-bg: #000;
+    --color-text: #f5f5f7;
+    --color-muted: #86868b;
+    --color-accent: #2997ff;
+    --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  .headline-large {
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .headline-medium {
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .body-text {
+    font-size: clamp(1rem, 1.5vw, 1.25rem);
+    color: var(--color-muted);
+    max-width: 42ch;
+    line-height: 1.6;
+  }
+
+  /* ── Header Pill ─────────────────────────────────────── */
+  .site-header {
+    position: fixed;
+    top: 1.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .site-header.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-1rem);
+  }
+
+  .site-header-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: rgba(30, 30, 30, 0.65);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 980px;
+    padding: 0.35rem 0.4rem;
+    list-style: none;
+  }
+
+  .site-header-pill a {
+    display: block;
+    color: rgba(255, 255, 255, 0.55);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.5rem 1.25rem;
+    border-radius: 980px;
+    transition: color 0.25s ease, background 0.25s ease;
+    position: relative;
+  }
+
+  .site-header-pill a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .site-header-pill a:active {
+    background: rgba(255, 255, 255, 0.06);
+    transform: scale(0.97);
+  }
+
+  @media (max-width: 500px) {
+    .site-header { top: 0.75rem; }
+    .site-header-pill { gap: 0.1rem; padding: 0.3rem; }
+    .site-header-pill a { font-size: 0.75rem; padding: 0.4rem 0.9rem; }
+  }
+
+  /* ── Hero ────────────────────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .hero .headline-large {
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, #86868b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero .body-text { margin: 0 auto 3rem; }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    opacity: 0.4;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.5; }
+  }
+
+  /* ── Pinned Animation Section ────────────────────────── */
+  .sequence-section {
+    position: relative;
+    height: 500vh;
+  }
+
+  .sequence-sticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .sequence-canvas { display: block; }
+
+  .sequence-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, var(--color-bg) 100%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.1s ease;
+  }
+
+  .sequence-overlays {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .overlay-text {
+    position: absolute;
+    text-align: center;
+    padding: 2rem;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    max-width: 700px;
+  }
+
+  .overlay-text.visible { opacity: 1; }
+  .overlay-text.top { top: 8%; }
+  .overlay-text.bottom { bottom: 8%; }
+
+  /* ── MLOps Flow ───────────────────────────────────────── */
+  .mlops {
+    padding: 6rem 2rem 8rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .mlops-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+  }
+
+  .mlops-heading {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    max-width: 20ch;
+  }
+
+  .mlops-sub {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: var(--color-muted);
+    max-width: 50ch;
+    margin-bottom: 4rem;
+    line-height: 1.6;
+  }
+
+  .mlops-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .mlops-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 500px) {
+    .mlops-grid { grid-template-columns: 1fr; }
+  }
+
+  .mlops-card {
+    background: #111;
+    border: 1px solid #1a1a1a;
+    border-radius: 20px;
+    padding: 2rem 1.75rem;
+    cursor: pointer;
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mlops-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(41, 151, 255, 0.08), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .mlops-card:hover {
+    background: #161616;
+    border-color: #2a2a2a;
+    transform: translateY(-4px);
+  }
+
+  .mlops-card:hover::before { opacity: 1; }
+
+  .mlops-card-number {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 1.25rem;
+    opacity: 0.7;
+  }
+
+  .mlops-card-icon {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+    display: block;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(41, 151, 255, 0.08);
+    border-radius: 12px;
+  }
+
+  .mlops-card-icon svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--color-accent);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mlops-card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  .mlops-card-desc {
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+  }
+
+  .mlops-card-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    opacity: 0;
+  }
+
+  .mlops-card.expanded .mlops-card-detail {
+    max-height: 200px;
+    opacity: 1;
+  }
+
+  .mlops-card-detail-inner {
+    padding-top: 1rem;
+    border-top: 1px solid #222;
+    font-size: 0.85rem;
+    color: #a1a1a6;
+    line-height: 1.6;
+  }
+
+  .mlops-card-toggle {
+    font-size: 0.8rem;
+    color: var(--color-accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: gap 0.2s ease;
+  }
+
+  .mlops-card:hover .mlops-card-toggle { gap: 0.5rem; }
+
+  .mlops-card-toggle-arrow {
+    transition: transform 0.3s ease;
+    display: inline-block;
+  }
+
+  .mlops-card.expanded .mlops-card-toggle-arrow {
+    transform: rotate(90deg);
+  }
+
+  /* ── Connector line between cards ────────────────────── */
+  .mlops-connector {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0;
+  }
+
+  /* ── Outro ───────────────────────────────────────────── */
+  .outro {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+  }
+
+  .outro .headline-medium { margin-bottom: 1.5rem; }
+
+  /* ── About Us ──────────────────────────────────────── */
+  .about {
+    min-height: 100vh;
+    padding: 8rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .about-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+  }
+
+  .about-heading {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .about-sub {
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: var(--color-muted);
+    max-width: 50ch;
+    text-align: center;
+    margin-bottom: 5rem;
+    line-height: 1.6;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  @media (max-width: 800px) {
+    .about-grid { grid-template-columns: 1fr; gap: 4rem; max-width: 400px; }
+  }
+
+  .about-person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .about-bubble {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 1.75rem;
+    position: relative;
+    background: #111;
+    border: 2px solid #1a1a1a;
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+    animation: float var(--float-duration, 6s) ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+  }
+
+  .about-bubble:hover {
+    transform: translateY(-8px) scale(1.05);
+    border-color: var(--color-accent);
+    box-shadow: 0 0 40px rgba(41, 151, 255, 0.15), 0 20px 60px rgba(0, 0, 0, 0.4);
+  }
+
+  .about-bubble img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  .about-person-name {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+
+  .about-person-role {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+  }
+
+  .about-person-bio {
+    font-size: 0.88rem;
+    color: var(--color-muted);
+    line-height: 1.55;
+    max-width: 28ch;
+  }
+
+  .cta-button {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.9rem 2.5rem;
+    background: var(--color-accent);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 980px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .cta-button:hover { background: #0077ed; }
+
+  /* ── Particle Background ──────────────────────────────── */
+  #particleCanvas {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Ensure content sections sit above particles */
+  .hero, .mlops, .about, .outro {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Loading Overlay ─────────────────────────────────── */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--color-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s ease;
+  }
+
+  .loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .loading-bar-track {
+    width: 200px;
+    height: 3px;
+    background: #222;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 1.5rem;
+  }
+
+  .loading-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--color-accent);
+    border-radius: 2px;
+    transition: width 0.2s ease;
+  }
+
+  .loading-label {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<!-- Particle Background -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="headline-medium">Loading</div>
+  <div class="loading-bar-track">
+    <div class="loading-bar-fill" id="loadingBar"></div>
+  </div>
+  <div class="loading-label" id="loadingLabel">Preparing experience...</div>
+</div>
+
+<!-- Header -->
+<header class="site-header" id="siteHeader">
+  <nav>
+    <ul class="site-header-pill">
+      <li><a href="#leistungen">Leistungen</a></li>
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#impressum">Impressum</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- 1. Pinned Animation Section (first thing visible) -->
+<section class="sequence-section" id="seq1">
+  <div class="sequence-sticky">
+    <canvas class="sequence-canvas" id="canvas1"></canvas>
+    <div class="sequence-fade" id="seqFade"></div>
+    <div class="scroll-hint">Scroll to explore</div>
+  </div>
+</section>
+
+<!-- 2. Hero Section (revealed after animation) -->
+<section class="hero">
+  <h1 class="headline-large">Wir entwickeln die Zukunft</h1>
+  <p class="body-text">
+    End-to-End KI-Systeme aus Deutschland
+  </p>
+</section>
+
+<!-- 3. MLOps Flow Section -->
+<section class="mlops">
+  <div class="mlops-label">Unser Prozess</div>
+  <h2 class="mlops-heading">Der komplette KI-Lebenszyklus. Aus einer Hand.</h2>
+  <p class="mlops-sub">
+    Von der ersten Datenanalyse bis zum produktiven Betrieb begleiten wir jedes Projekt
+    durch alle Phasen der KI-Entwicklung.
+  </p>
+  <div class="mlops-grid">
+
+    <div class="mlops-card" >
+      <div class="mlops-card-number">01</div>
+      <div class="mlops-card-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="19" cy="17" r="2"/></svg>
+      </div>
+      <div class="mlops-card-title">Datenaufbereitung</div>
+      <div class="mlops-card-desc">Rohdaten werden strukturiert, bereinigt und in eine trainingsfertige Pipeline verwandelt.</div>
+      <div class="mlops-card-toggle">Mehr erfahren <span class="mlops-card-toggle-arrow">&rsaquo;</span></div>
+      <div class="mlops-card-detail">
+        <div class="mlops-card-detail-inner">
+          Datenvalidierung, Feature Engineering, ETL-Pipelines und automatisierte Qualitaetschecks &ndash; alles reproduzierbar und versioniert.
+        </div>
+      </div>
+    </div>
+
+    <div class="mlops-card" >
+      <div class="mlops-card-number">02</div>
+      <div class="mlops-card-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/><circle cx="12" cy="12" r="5"/><path d="M12 9v6m-3-3h6"/></svg>
+      </div>
+      <div class="mlops-card-title">Modelltraining</div>
+      <div class="mlops-card-desc">Modelle werden trainiert, evaluiert und iterativ optimiert &ndash; mit vollstaendigem Experiment-Tracking.</div>
+      <div class="mlops-card-toggle">Mehr erfahren <span class="mlops-card-toggle-arrow">&rsaquo;</span></div>
+      <div class="mlops-card-detail">
+        <div class="mlops-card-detail-inner">
+          Hyperparameter-Optimierung, verteiltes Training, Modellvergleich und automatisierte Validierung gegen definierte Metriken.
+        </div>
+      </div>
+    </div>
+
+    <div class="mlops-card" >
+      <div class="mlops-card-number">03</div>
+      <div class="mlops-card-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 17l6-6 4 4 6-6"/><path d="M14 7h6v6"/></svg>
+      </div>
+      <div class="mlops-card-title">Deployment</div>
+      <div class="mlops-card-desc">Vom Prototyp zur Produktion &ndash; skalierbar, sicher und nahtlos in bestehende Systeme integriert.</div>
+      <div class="mlops-card-toggle">Mehr erfahren <span class="mlops-card-toggle-arrow">&rsaquo;</span></div>
+      <div class="mlops-card-detail">
+        <div class="mlops-card-detail-inner">
+          CI/CD fuer ML-Modelle, Container-Orchestrierung, A/B-Testing, Canary Deployments und automatisiertes Rollback.
+        </div>
+      </div>
+    </div>
+
+    <div class="mlops-card" >
+      <div class="mlops-card-number">04</div>
+      <div class="mlops-card-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      </div>
+      <div class="mlops-card-title">Monitoring & Betrieb</div>
+      <div class="mlops-card-desc">Kontinuierliche Ueberwachung, Drift-Erkennung und automatisiertes Retraining im laufenden Betrieb.</div>
+      <div class="mlops-card-toggle">Mehr erfahren <span class="mlops-card-toggle-arrow">&rsaquo;</span></div>
+      <div class="mlops-card-detail">
+        <div class="mlops-card-detail-inner">
+          Performance-Dashboards, Data-Drift-Alerts, automatische Retraining-Trigger und SLA-Monitoring &ndash; rund um die Uhr.
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 4. About Us Section -->
+<section class="about" id="about">
+  <div class="about-label">About Us</div>
+  <h2 class="about-heading">Die Koepfe hinter DKS-Analytics</h2>
+  <p class="about-sub">
+    Drei Gruender, eine Mission: KI-Systeme, die im echten Betrieb bestehen.
+  </p>
+  <div class="about-grid">
+
+    <div class="about-person">
+      <div class="about-bubble" style="--float-duration: 5.5s; --float-delay: 0s;">
+        <img src="img/person1.jpg" alt="Managing Director 1">
+      </div>
+      <div class="about-person-name">Max Mustermann</div>
+      <div class="about-person-role">Managing Director</div>
+      <p class="about-person-bio">Experte fuer skalierbare ML-Infrastruktur und Cloud-native KI-Architekturen.</p>
+    </div>
+
+    <div class="about-person">
+      <div class="about-bubble" style="--float-duration: 6.5s; --float-delay: 0.8s;">
+        <img src="img/person2.jpg" alt="Managing Director 2">
+      </div>
+      <div class="about-person-name">Lisa Beispiel</div>
+      <div class="about-person-role">Managing Director</div>
+      <p class="about-person-bio">Spezialisiert auf Data Strategy, Feature Engineering und automatisierte Pipelines.</p>
+    </div>
+
+    <div class="about-person">
+      <div class="about-bubble" style="--float-duration: 7s; --float-delay: 1.5s;">
+        <img src="img/person3.jpg" alt="Managing Director 3">
+      </div>
+      <div class="about-person-name">Jan Vorlage</div>
+      <div class="about-person-role">Managing Director</div>
+      <p class="about-person-bio">Fokus auf MLOps, Modell-Monitoring und den reibungslosen Betrieb produktiver KI-Systeme.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- 5. Outro Section -->
+<section class="outro">
+  <h2 class="headline-medium">Bereit fuer den naechsten Schritt?</h2>
+  <p class="body-text" style="margin: 0 auto;">
+    Lassen Sie uns gemeinsam Ihr KI-System entwickeln.
+  </p>
+  <a href="#" class="cta-button">Kontakt aufnehmen</a>
+</section>
+
+<script>
+(() => {
+  'use strict';
+
+  const TOTAL_FRAMES = 150;
+  const FRAME_PATH = 'frames/vid1/frame_';
+
+  const sectionEl = document.getElementById('seq1');
+  const canvas = document.getElementById('canvas1');
+  const ctx = canvas.getContext('2d');
+
+  const frames = new Array(TOTAL_FRAMES).fill(null);
+  let loadedCount = 0;
+  let currentFrame = -1;
+  let ticking = false;
+
+  /* ── Canvas sizing ───────────────────────────────────── */
+  function sizeCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (currentFrame >= 0 && frames[currentFrame]) {
+      drawFrame(currentFrame);
+    }
+  }
+
+  /* ── Draw frame ──────────────────────────────────────── */
+  function drawFrame(index) {
+    const img = frames[index];
+    if (!img) return;
+
+    const cw = window.innerWidth;
+    const ch = window.innerHeight;
+    const imgRatio = img.naturalWidth / img.naturalHeight;
+    const canvasRatio = cw / ch;
+
+    let dw, dh, dx, dy;
+    if (imgRatio > canvasRatio) {
+      dh = ch; dw = ch * imgRatio;
+    } else {
+      dw = cw; dh = cw / imgRatio;
+    }
+    dx = (cw - dw) / 2;
+    dy = (ch - dh) / 2;
+
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, dx, dy, dw, dh);
+    currentFrame = index;
+  }
+
+  /* ── Preloading ──────────────────────────────────────── */
+  function padNumber(n) {
+    return String(n).padStart(4, '0');
+  }
+
+  function loadFrame(index) {
+    return new Promise((resolve, reject) => {
+      if (frames[index]) { resolve(); return; }
+      const img = new Image();
+      img.onload = () => { frames[index] = img; loadedCount++; resolve(); };
+      img.onerror = reject;
+      img.src = FRAME_PATH + padNumber(index + 1) + '.webp';
+    });
+  }
+
+  async function preloadAll(onProgress) {
+    const batchSize = 6;
+    await loadFrame(0);
+    if (onProgress) onProgress();
+    for (let i = 1; i < TOTAL_FRAMES; i += batchSize) {
+      const batch = [];
+      for (let j = i; j < Math.min(i + batchSize, TOTAL_FRAMES); j++) {
+        batch.push(loadFrame(j));
+      }
+      await Promise.all(batch);
+      if (onProgress) onProgress();
+    }
+  }
+
+  /* ── Scroll logic ────────────────────────────────────── */
+  function getProgress() {
+    const rect = sectionEl.getBoundingClientRect();
+    const scrollable = sectionEl.offsetHeight - window.innerHeight;
+    if (scrollable <= 0) return 0;
+    return Math.max(0, Math.min(1, -rect.top / scrollable));
+  }
+
+  function updateOverlays(progress) {
+    sectionEl.querySelectorAll('.overlay-text').forEach(el => {
+      const start = parseFloat(el.dataset.start);
+      const end = parseFloat(el.dataset.end);
+      el.classList.toggle('visible', progress >= start && progress <= end);
+    });
+  }
+
+  const seqFade = document.getElementById('seqFade');
+
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const progress = getProgress();
+      const frameIndex = Math.min(TOTAL_FRAMES - 1, Math.floor(progress * TOTAL_FRAMES));
+      if (frameIndex !== currentFrame && frames[frameIndex]) {
+        drawFrame(frameIndex);
+      }
+      updateOverlays(progress);
+
+      // Fade out in the last 20% of scroll
+      const fadeStart = 0.8;
+      if (progress > fadeStart) {
+        seqFade.style.opacity = (progress - fadeStart) / (1 - fadeStart);
+      } else {
+        seqFade.style.opacity = 0;
+      }
+
+      ticking = false;
+    });
+  }
+
+  /* ── Loading screen ──────────────────────────────────── */
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const loadingBar = document.getElementById('loadingBar');
+  const loadingLabel = document.getElementById('loadingLabel');
+
+  function updateLoading() {
+    const pct = Math.round((loadedCount / TOTAL_FRAMES) * 100);
+    loadingBar.style.width = pct + '%';
+    loadingLabel.textContent = 'Loading frames... ' + pct + '%';
+  }
+
+  function hideLoading() {
+    loadingOverlay.classList.add('hidden');
+    setTimeout(() => { loadingOverlay.style.display = 'none'; }, 700);
+  }
+
+  /* ── Init ────────────────────────────────────────────── */
+  async function init() {
+    sizeCanvas();
+    await preloadAll(updateLoading);
+    drawFrame(0);
+    hideLoading();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', sizeCanvas);
+    onScroll();
+  }
+
+  init();
+
+  /* ── Header fade on scroll ─────────────────────────────── */
+  const siteHeader = document.getElementById('siteHeader');
+  function updateHeader() {
+    const scrollY = window.scrollY || window.pageYOffset;
+    siteHeader.classList.toggle('hidden', scrollY > 50);
+  }
+  window.addEventListener('scroll', updateHeader, { passive: true });
+  updateHeader();
+
+  /* ── Card expand/collapse (only one at a time) ────────── */
+  document.querySelectorAll('.mlops-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const wasExpanded = card.classList.contains('expanded');
+      document.querySelectorAll('.mlops-card.expanded').forEach(c => c.classList.remove('expanded'));
+      if (!wasExpanded) card.classList.add('expanded');
+    });
+  });
+
+  /* ── Card mouse glow effect ──────────────────────────── */
+  document.querySelectorAll('.mlops-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      card.style.setProperty('--mouse-x', x + '%');
+      card.style.setProperty('--mouse-y', y + '%');
+    });
+  });
+
+  /* ── Particle Network Background ────────────────────── */
+  (() => {
+    const pc = document.getElementById('particleCanvas');
+    const pCtx = pc.getContext('2d');
+    const PARTICLE_COUNT = 80;
+    const CONNECT_DIST = 120;
+    const MOUSE_DIST = 180;
+    const particles = [];
+    let mouseX = -9999, mouseY = -9999;
+    let pW, pH, pDpr;
+
+    function sizeParticleCanvas() {
+      pDpr = window.devicePixelRatio || 1;
+      pW = window.innerWidth;
+      pH = window.innerHeight;
+      pc.width = pW * pDpr;
+      pc.height = pH * pDpr;
+      pc.style.width = pW + 'px';
+      pc.style.height = pH + 'px';
+      pCtx.setTransform(pDpr, 0, 0, pDpr, 0, 0);
+    }
+
+    function createParticles() {
+      particles.length = 0;
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push({
+          x: Math.random() * pW,
+          y: Math.random() * pH,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 1.5 + 0.5,
+        });
+      }
+    }
+
+    function drawParticles() {
+      pCtx.clearRect(0, 0, pW, pH);
+
+      // Use page scroll offset to make particles relative to viewport
+      const scrollY = window.scrollY || window.pageYOffset;
+
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+
+        // Update position
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Wrap around
+        if (p.x < 0) p.x = pW;
+        if (p.x > pW) p.x = 0;
+        if (p.y < 0) p.y = pH;
+        if (p.y > pH) p.y = 0;
+
+        // Draw particle
+        pCtx.beginPath();
+        pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        pCtx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+        pCtx.fill();
+
+        // Edges to mouse
+        const dmx = p.x - mouseX;
+        const dmy = p.y - mouseY;
+        const distMouse = Math.sqrt(dmx * dmx + dmy * dmy);
+        if (distMouse < MOUSE_DIST) {
+          const alpha = (1 - distMouse / MOUSE_DIST) * 0.35;
+          pCtx.beginPath();
+          pCtx.moveTo(p.x, p.y);
+          pCtx.lineTo(mouseX, mouseY);
+          pCtx.strokeStyle = 'rgba(41, 151, 255, ' + alpha + ')';
+          pCtx.lineWidth = 0.8;
+          pCtx.stroke();
+        }
+
+        // Edges between nearby particles
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < CONNECT_DIST) {
+            const alpha = (1 - dist / CONNECT_DIST) * 0.08;
+            pCtx.beginPath();
+            pCtx.moveTo(p.x, p.y);
+            pCtx.lineTo(p2.x, p2.y);
+            pCtx.strokeStyle = 'rgba(255, 255, 255, ' + alpha + ')';
+            pCtx.lineWidth = 0.5;
+            pCtx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(drawParticles);
+    }
+
+    // Track mouse (need pointer-events on body, not canvas)
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      mouseX = -9999;
+      mouseY = -9999;
+    });
+
+    window.addEventListener('resize', () => {
+      sizeParticleCanvas();
+    });
+
+    sizeParticleCanvas();
+    createParticles();
+    requestAnimationFrame(drawParticles);
+  })();
+})();
+</script>
+</body>
+</html>
