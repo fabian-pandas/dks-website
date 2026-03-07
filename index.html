@@ -504,6 +504,118 @@
 
   .cta-button:hover { background: #0077ed; }
 
+  /* ── B2C Products ─────────────────────────────────────── */
+  .b2c {
+    min-height: 60vh;
+    padding: 6rem 2rem 8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .b2c-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+  }
+
+  .b2c-heading {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 3.5rem;
+  }
+
+  .b2c-grid {
+    display: flex;
+    gap: 3rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .b2c-icon-link {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    cursor: pointer;
+  }
+
+  .b2c-icon-bubble {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(41, 151, 255, 0.04);
+    border: 1px solid rgba(41, 151, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: b2cFloat 6s ease-in-out infinite, b2cGlow 4s ease-in-out infinite;
+    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
+  }
+
+  .b2c-icon-bubble svg {
+    width: 56px;
+    height: 56px;
+    transition: transform 0.4s ease;
+  }
+
+  .b2c-icon-bubble::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 1px solid rgba(41, 151, 255, 0.06);
+    animation: b2cRing 8s linear infinite;
+  }
+
+  .b2c-icon-link:hover .b2c-icon-bubble {
+    transform: translateY(-10px) scale(1.1);
+    border-color: var(--color-accent);
+    background: rgba(41, 151, 255, 0.08);
+    box-shadow: 0 0 50px rgba(41, 151, 255, 0.2), 0 0 100px rgba(41, 151, 255, 0.08);
+  }
+
+  .b2c-icon-link:hover .b2c-icon-bubble svg {
+    transform: rotate(8deg) scale(1.05);
+  }
+
+  .b2c-icon-label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-muted);
+    transition: color 0.3s ease;
+  }
+
+  .b2c-icon-link:hover .b2c-icon-label {
+    color: var(--color-text);
+  }
+
+  @keyframes b2cFloat {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-8px) rotate(1deg); }
+    50% { transform: translateY(-14px) rotate(0deg); }
+    75% { transform: translateY(-6px) rotate(-1deg); }
+  }
+
+  @keyframes b2cGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(41, 151, 255, 0); }
+    50% { box-shadow: 0 0 30px rgba(41, 151, 255, 0.1); }
+  }
+
+  @keyframes b2cRing {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
   /* ── Particle Background ──────────────────────────────── */
   #particleCanvas {
     position: fixed;
@@ -712,6 +824,27 @@
       <p class="about-person-bio">Fokus auf MLOps, Modell-Monitoring und den reibungslosen Betrieb produktiver KI-Systeme.</p>
     </div>
 
+  </div>
+</section>
+
+<!-- B2C Products Section -->
+<section class="b2c" id="b2c">
+  <div class="b2c-label">B2C Produkte</div>
+  <h2 class="b2c-heading">Unsere Produkte fuer Endkunden</h2>
+  <div class="b2c-grid">
+    <a href="https://www.glutenfreetoday.de" target="_blank" rel="noopener" class="b2c-icon-link">
+      <div class="b2c-icon-bubble">
+        <svg viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="28" stroke="rgba(41,151,255,0.3)" stroke-width="1.5"/>
+          <path d="M32 18c-8 0-14 6-14 14s6 14 14 14 14-6 14-14-6-14-14-14z" stroke="#2997ff" stroke-width="1.5"/>
+          <path d="M26 30c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="#2997ff" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M32 36v-4" stroke="#2997ff" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M32 18v-4M32 50v-4" stroke="rgba(41,151,255,0.4)" stroke-width="1" stroke-linecap="round"/>
+          <circle cx="32" cy="40" r="1.5" fill="#2997ff"/>
+        </svg>
+      </div>
+      <span class="b2c-icon-label">GlutenFree Today</span>
+    </a>
   </div>
 </section>
 
