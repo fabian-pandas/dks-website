@@ -1,2 +1,4 @@
 .DS_Store
 vids/
+.playwright-mcp/
+screenshot-*.png

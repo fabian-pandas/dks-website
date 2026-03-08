@@ -128,6 +128,98 @@
 
   .hero .body-text { margin: 0 auto 3rem; }
 
+  /* ── Mid-scroll Box ───────────────────────────────────── */
+  .mid-scroll-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2.5rem 3rem;
+    background: rgba(20, 20, 20, 0.2);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 24px;
+    max-width: 500px;
+    text-align: center;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .mid-scroll-box.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) translateY(20px);
+  }
+
+  .mid-scroll-text {
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    font-weight: 400;
+  }
+
+  /* ── Auto-scroll Button ───────────────────────────────── */
+  .auto-scroll-btn {
+    position: absolute;
+    bottom: 5rem;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.7rem 1.8rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 980px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: var(--font);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease, opacity 0.4s ease;
+  }
+
+  .auto-scroll-btn:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  .auto-scroll-btn:active {
+    transform: scale(0.97);
+  }
+
+  .auto-scroll-btn.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .auto-scroll-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    animation: bounceDown 2s ease-in-out infinite;
+  }
+
+  .auto-scroll-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  @keyframes bounceDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+
   .scroll-hint {
     position: absolute;
     bottom: 2rem;
@@ -713,6 +805,21 @@
   <div class="sequence-sticky">
     <canvas class="sequence-canvas" id="canvas1"></canvas>
     <div class="sequence-fade" id="seqFade"></div>
+    <button class="auto-scroll-btn" id="autoScrollBtn">
+      <span class="auto-scroll-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </span>
+      Explore
+    </button>
+    <div class="mid-scroll-box hidden" id="midScrollBox">
+      <p class="mid-scroll-text">Gemeinsam planen wir Ihre Ideen und setzen diese in konkrete Systeme um.</p>
+      <button class="auto-scroll-btn" id="continueScrollBtn" style="position:relative;bottom:auto;">
+        <span class="auto-scroll-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </span>
+        Idee implementieren
+      </button>
+    </div>
     <div class="scroll-hint">Scroll to explore</div>
   </div>
 </section>
@@ -823,7 +930,7 @@
 
     <div class="about-person">
       <div class="about-bubble" style="--float-duration: 5.5s; --float-delay: 0s;">
-        <img src="img/person1.jpg" alt="Managing Director 1">
+        <img src="img/KUN_0059final-scaled-r9q6pivpckjtxyxqrsz5jjbxdkjsziyzvjdja31zy8-2.jpg" alt="Managing Director 1">
       </div>
       <div class="about-person-name">Max Mustermann</div>
       <div class="about-person-role">Managing Director</div>
@@ -832,7 +939,7 @@
 
     <div class="about-person">
       <div class="about-bubble" style="--float-duration: 6.5s; --float-delay: 0.8s;">
-        <img src="img/person2.jpg" alt="Managing Director 2">
+        <img src="img/Fabian_2.jpg" alt="Managing Director 2">
       </div>
       <div class="about-person-name">Lisa Beispiel</div>
       <div class="about-person-role">Managing Director</div>
@@ -841,7 +948,7 @@
 
     <div class="about-person">
       <div class="about-bubble" style="--float-duration: 7s; --float-delay: 1.5s;">
-        <img src="img/person3.jpg" alt="Managing Director 3">
+        <img src="img/IMG_1707-scaled-e1754251236765-2048x1630-2.jpeg" alt="Managing Director 3">
       </div>
       <div class="about-person-name">Jan Vorlage</div>
       <div class="about-person-role">Managing Director</div>
@@ -864,7 +971,7 @@
 (() => {
   'use strict';
 
-  const TOTAL_FRAMES = 150;
+  const TOTAL_FRAMES = 600;
   const FRAME_PATH = 'frames/vid1/frame_';
 
   const sectionEl = document.getElementById('seq1');
@@ -1013,6 +1120,80 @@
   }
 
   init();
+
+  /* ── Auto-scroll (23s like original video) ────────────── */
+  const autoScrollBtn = document.getElementById('autoScrollBtn');
+  let autoScrolling = false;
+  let autoScrollRaf = null;
+
+  const PAUSE_FRAME = 194;
+  const PAUSE_PROGRESS = PAUSE_FRAME / TOTAL_FRAMES;
+  const TOTAL_DURATION = 23000; // 23 seconds — matches original video
+  const midScrollBox = document.getElementById('midScrollBox');
+  const continueScrollBtn = document.getElementById('continueScrollBtn');
+
+  function smoothScroll(from, to, duration) {
+    return new Promise(resolve => {
+      const distance = to - from;
+      let startTime = null;
+      function step(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        window.scrollTo(0, from + distance * progress);
+        if (progress < 1) {
+          autoScrollRaf = requestAnimationFrame(step);
+        } else {
+          resolve();
+        }
+      }
+      autoScrollRaf = requestAnimationFrame(step);
+    });
+  }
+
+  // Phase 1: scroll to pause point
+  autoScrollBtn.addEventListener('click', async () => {
+    if (autoScrolling) return;
+    autoScrolling = true;
+    autoScrollBtn.classList.add('hidden');
+
+    const fullTarget = sectionEl.offsetTop + sectionEl.offsetHeight - window.innerHeight;
+    const start = window.scrollY;
+    const fullDistance = fullTarget - start;
+    const pausePos = start + fullDistance * PAUSE_PROGRESS;
+    const phase1Duration = TOTAL_DURATION * PAUSE_PROGRESS;
+
+    await smoothScroll(start, pausePos, phase1Duration);
+    autoScrolling = false;
+    midScrollBox.classList.remove('hidden');
+  });
+
+  // Phase 2: continue scrolling until "Wir entwickeln die Zukunft" is centered
+  continueScrollBtn.addEventListener('click', async () => {
+    if (autoScrolling) return;
+    autoScrolling = true;
+    midScrollBox.classList.add('hidden');
+
+    const heroHeadline = document.querySelector('.hero h1');
+    const rect = heroHeadline.getBoundingClientRect();
+    const heroTarget = window.scrollY + rect.top + (rect.height / 2) - (window.innerHeight / 2);
+    const start = window.scrollY;
+    const fullEnd = sectionEl.offsetTop + sectionEl.offsetHeight - window.innerHeight;
+    const phase2Fraction = (heroTarget - start) / (fullEnd - start);
+    const phase2Duration = TOTAL_DURATION * (1 - PAUSE_PROGRESS) * phase2Fraction;
+
+    await smoothScroll(start, heroTarget, phase2Duration);
+    autoScrolling = false;
+  });
+
+  // Hide button once user scrolls manually
+  function checkAutoScrollBtn() {
+    const scrollY = window.scrollY || window.pageYOffset;
+    if (scrollY > 50 && !autoScrolling) {
+      autoScrollBtn.classList.add('hidden');
+    }
+  }
+  window.addEventListener('scroll', checkAutoScrollBtn, { passive: true });
 
   /* ── Header fade on scroll ─────────────────────────────── */
   const siteHeader = document.getElementById('siteHeader');
