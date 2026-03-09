@@ -156,6 +156,30 @@
     transform: translate(-50%, -50%) translateY(20px);
   }
 
+  .mid-scroll-box .auto-scroll-btn {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
+    padding: 0.7rem 1.8rem;
+    font-size: 0.9rem;
+    gap: 0.6rem;
+  }
+  .mid-scroll-box .auto-scroll-btn:hover {
+    transform: translateY(-2px);
+  }
+  .mid-scroll-box .auto-scroll-btn:active {
+    transform: scale(0.97);
+  }
+  .mid-scroll-box .auto-scroll-icon {
+    width: 20px;
+    height: 20px;
+  }
+  .mid-scroll-box .auto-scroll-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
   .mid-scroll-text {
     font-size: clamp(1rem, 1.5vw, 1.15rem);
     color: rgba(255, 255, 255, 0.8);
@@ -166,12 +190,14 @@
   /* ── Auto-scroll Button ───────────────────────────────── */
   .auto-scroll-btn {
     position: absolute;
-    bottom: 5rem;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%);
     z-index: 3;
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    padding: 0.7rem 1.8rem;
+    gap: 1.2rem;
+    padding: 1.8rem 4.5rem;
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(16px) saturate(180%);
     -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -179,7 +205,7 @@
     border-radius: 980px;
     color: rgba(255, 255, 255, 0.8);
     font-family: var(--font);
-    font-size: 0.9rem;
+    font-size: 2rem;
     font-weight: 500;
     cursor: pointer;
     transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease, opacity 0.4s ease;
@@ -189,11 +215,11 @@
     background: rgba(255, 255, 255, 0.14);
     border-color: rgba(255, 255, 255, 0.25);
     color: #fff;
-    transform: translateY(-2px);
+    transform: translate(-50%, 50%) translateY(-2px);
   }
 
   .auto-scroll-btn:active {
-    transform: scale(0.97);
+    transform: translate(-50%, 50%) scale(0.97);
   }
 
   .auto-scroll-btn.hidden {
@@ -205,14 +231,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 20px;
-    height: 20px;
+    width: 36px;
+    height: 36px;
     animation: bounceDown 2s ease-in-out infinite;
   }
 
   .auto-scroll-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 32px;
+    height: 32px;
   }
 
   @keyframes bounceDown {
@@ -809,10 +835,10 @@
       <span class="auto-scroll-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
       </span>
-      Explore
+      Ideen verwirklichen
     </button>
     <div class="mid-scroll-box hidden" id="midScrollBox">
-      <p class="mid-scroll-text">Gemeinsam planen wir Ihre Ideen und setzen diese in konkrete Systeme um.</p>
+      <p class="mid-scroll-text">Wir bei DKS Analytics helfen Ihnen genau dabei, Ihre Ideen umzusetzen.</p>
       <button class="auto-scroll-btn" id="continueScrollBtn" style="position:relative;bottom:auto;">
         <span class="auto-scroll-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
