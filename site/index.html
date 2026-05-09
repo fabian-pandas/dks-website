@@ -68,7 +68,7 @@
   body[data-tex="off"]    { --tex-stripe: 0;    --tex-period: 6px; }
   body[data-tex="heavy"]  { --tex-stripe: 0.14; --tex-period: 4px; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--bg); color: var(--ink); font-family: 'Inter Tight', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Inter Tight', system-ui, sans-serif; -webkit-font-smoothing: antialiased; margin: 0; }
   body { overflow-x: hidden; }
   body::before {
     content: ""; position: fixed; inset: -20px; pointer-events: none; z-index: 100;
@@ -895,6 +895,7 @@
     padding: 4px 0;
     color: #f4f3ef;
     font: inherit;
+    font-size: 16px;
     letter-spacing: inherit;
     text-transform: none;
     text-shadow: 0.6px 0 0 rgba(255,58,78,.32), -0.6px 0 0 rgba(43,212,255,.32);
@@ -1358,7 +1359,7 @@
 <body style="background-color: rgba(255, 255, 255, 0.373); font-size: 16px">
 
 <!-- NAV -->
-<nav class="nav" style="opacity: 1; font-family: &quot;Inter Tight&quot;; background-size: cover; margin: 1px 0px 0px; padding: 28px 56px 24px; border-radius: 5px">
+<nav class="nav">
   <div class="logo" style="color: var(--ink); font-size: 6px">
     <svg class="logo-mark" viewBox="-50 -50 100 100" aria-hidden="true" style="width: 65px; height: 65px">
       <!-- Fully connected K9 graph: 8 octagon nodes + 1 center, every pair connected -->

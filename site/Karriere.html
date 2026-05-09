@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Karriere & Zusammenarbeit — DKS Analytics GmbH</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
     --card: #ffffff;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { background: var(--bg); color: var(--ink); font-family: 'Inter Tight', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Inter Tight', system-ui, sans-serif; -webkit-font-smoothing: antialiased; margin: 0; }
   body { transition: background-color .6s ease; }
   body { overflow-x: hidden; }
   body::before {
@@ -34,7 +34,7 @@
   .nav {
     position: sticky; top: 0; z-index: 50;
     display: grid; grid-template-columns: 1fr auto auto; align-items: start;
-    padding: 28px 56px 24px;
+    padding: calc(28px + env(safe-area-inset-top)) 56px 24px;
     background: linear-gradient(to bottom, rgba(244,243,239,0.55) 0%, rgba(244,243,239,0.35) 60%, transparent 100%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
             backdrop-filter: blur(18px) saturate(140%);
@@ -633,7 +633,7 @@
     .hero { padding: 60px 24px 36px; }
     .legal { margin: 0 24px 64px; padding: 40px 28px 48px; }
     .legal .data-block { grid-template-columns: 1fr; gap: 6px; }
-    .nav { padding: 20px 24px; }
+    .nav { padding: calc(16px + env(safe-area-inset-top)) 20px 16px; }
     .nav-links { display: none; }
     footer { grid-template-columns: 1fr 1fr; padding: 32px 20px; }
   }
