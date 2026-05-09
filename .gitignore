@@ -2,3 +2,4 @@
 vids/
 .playwright-mcp/
 screenshot-*.png
+legacy/

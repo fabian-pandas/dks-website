@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Impressum — DKS Analytics GmbH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f3ef;
+    --bg-deep: #ecebe6;
+    --ink: #14141a;
+    --ink-soft: #4a4a55;
+    --ink-mute: #8a8a92;
+    --line: #d9d8d2;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Inter Tight', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { overflow-x: hidden; }
+  body::before {
+    content: ""; position: fixed; inset: -20px; pointer-events: none; z-index: 100;
+    opacity: 0.07; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 140px 140px;
+  }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; letter-spacing: -0.01em; }
+
+  /* ============ NAV (matched to index.html) ============ */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    display: grid; grid-template-columns: 1fr auto auto; align-items: start;
+    padding: 28px 56px 24px;
+    background: linear-gradient(to bottom, rgba(244,243,239,0.55) 0%, rgba(244,243,239,0.35) 60%, transparent 100%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+            backdrop-filter: blur(18px) saturate(140%);
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 8px 24px -16px rgba(20,20,26,0.18);
+  }
+  /* ============ LOGO ============ */
+  .logo {
+    display: inline-flex; align-items: center; gap: 14px;
+    color: var(--ink); text-decoration: none;
+  }
+  .logo-mark {
+    width: 65px; height: 65px;
+    display: block;
+    color: var(--ink);
+    transition: transform .9s cubic-bezier(.22,.61,.36,1);
+    overflow: visible;
+  }
+  .logo:hover .logo-mark { transform: rotate(22.5deg); }
+  .logo-mark .node {
+    fill: var(--bg);
+    stroke: currentColor;
+    stroke-width: 3;
+    paint-order: stroke fill;
+  }
+  .logo-mark .edge {
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .logo-mark .pulse {
+    fill: oklch(0.65 0.16 145);
+    animation: nodePulse 2.6s ease-in-out infinite;
+  }
+  @keyframes nodePulse {
+    0%,100% { opacity: 0.4; r: 1.6; }
+    50%     { opacity: 1;    r: 2.6; }
+  }
+  .nav .logo-mark .traveler {
+    fill: oklch(0.65 0.16 145);
+    filter: drop-shadow(0 0 4px oklch(0.65 0.16 145 / 0.7));
+    animation: travelerOrbit 8s linear infinite;
+    transform-origin: 0 0;
+  }
+  @keyframes travelerOrbit {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav .logo-mark .traveler { animation: none; }
+  }
+  .logo-text { display: inline-flex; flex-direction: column; line-height: 1; gap: 4px; }
+  .logo-text .word {
+    font-size: 18px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink);
+    display: inline-flex; align-items: baseline; gap: 6px;
+  }
+  .logo-text .sub {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px; letter-spacing: 3.4px; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .nav-links { display: grid; grid-template-columns: auto auto; gap: 6px 56px; font-size: 14px; white-space: nowrap; }
+  .nav-links a { color: var(--ink-mute); text-decoration: none; transition: color .2s; white-space: nowrap; }
+  .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+  .menu-btn {
+    border: 1px solid var(--line); background: transparent; color: var(--ink);
+    padding: 9px 18px 10px 20px; border-radius: 999px; font-size: 14px; font-family: inherit;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 10px; margin-left: 32px;
+    transition: background .2s, border-color .2s;
+  }
+  .menu-btn:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .menu-btn .caret { font-size: 10px; }
+  .menu-btn { display: inline-flex; align-items: center; gap: 10px; }
+  .menu-btn .menu-icon {
+    display: inline-flex; flex-direction: column; align-items: flex-end; justify-content: center;
+    gap: 4px; width: 16px; height: 12px;
+  }
+  .menu-btn .menu-icon span {
+    display: block; height: 1.5px; background: currentColor; border-radius: 2px;
+    transform-origin: center;
+    transition: transform .4s cubic-bezier(.65,.05,.36,1), width .35s ease;
+  }
+  .menu-btn .menu-icon span:nth-child(1) { width: 100%; }
+  .menu-btn .menu-icon span:nth-child(2) { width: 65%; }
+  body.menu-open .menu-btn { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  body.menu-open .menu-btn .menu-icon span { width: 100%; }
+  body.menu-open .menu-btn .menu-icon span:nth-child(1) { transform: translateY(2.75px) rotate(45deg); }
+  body.menu-open .menu-btn .menu-icon span:nth-child(2) { transform: translateY(-2.75px) rotate(-45deg); }
+
+  /* ============ MENU OVERLAY ============ */
+  .menu-overlay {
+    position: fixed; inset: 0; z-index: 80;
+    background: rgba(20, 20, 26, 0.55);
+    backdrop-filter: blur(48px) saturate(160%);
+    -webkit-backdrop-filter: blur(48px) saturate(160%);
+    opacity: 0; pointer-events: none;
+    transition: opacity .55s cubic-bezier(.22,.61,.36,1);
+  }
+  body.menu-open .menu-overlay { opacity: 1; pointer-events: auto; }
+  body.menu-open { overflow: hidden; }
+  body.menu-open .nav { z-index: 95; }
+
+  .menu-overlay-panel {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 64px;
+    padding: 140px 56px 56px;
+    color: var(--bg);
+    overflow-y: auto;
+  }
+  @media (max-width: 880px) {
+    .menu-overlay-panel { grid-template-columns: 1fr; gap: 32px; padding: 110px 24px 40px; }
+  }
+
+  .menu-list { display: flex; flex-direction: column; }
+  .menu-list a {
+    display: grid; grid-template-columns: 56px 1fr auto; align-items: baseline;
+    gap: 24px;
+    padding: 18px 4px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: clamp(40px, 7vw, 88px);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    opacity: 0; transform: translateY(24px);
+    transition:
+      opacity .55s cubic-bezier(.22,.61,.36,1) var(--d, 0s),
+      transform .55s cubic-bezier(.22,.61,.36,1) var(--d, 0s),
+      color .25s;
+  }
+  body.menu-open .menu-list a { opacity: 1; transform: translateY(0); }
+  .menu-list a:first-child { border-top: 1px solid rgba(255, 255, 255, 0.09); }
+  .menu-list a:hover { color: white; }
+  .menu-list a .label { display: inline-block; transition: transform .35s cubic-bezier(.22,.61,.36,1); }
+  .menu-list a:hover .label { transform: translateX(10px); }
+  .menu-list a .num {
+    font: 11px/1 'JetBrains Mono', monospace;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.08em;
+    align-self: center;
+    transform: translateY(-0.35em);
+  }
+  .menu-list a .arrow {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 32px; line-height: 1;
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 0; transform: translateX(-16px);
+    transition: opacity .3s, transform .3s;
+  }
+  .menu-list a:hover .arrow { opacity: 0.9; transform: translateX(0); }
+  .menu-list a:nth-child(1) { --d: 0.18s; }
+  .menu-list a:nth-child(2) { --d: 0.24s; }
+  .menu-list a:nth-child(3) { --d: 0.30s; }
+  .menu-list a:nth-child(4) { --d: 0.36s; }
+  .menu-list a:nth-child(5) { --d: 0.42s; }
+  .menu-list a:nth-child(6) { --d: 0.48s; }
+  @media (max-width: 600px) {
+    .menu-list a { grid-template-columns: 36px 1fr auto; gap: 16px; padding: 14px 2px; }
+    .menu-list a .arrow { font-size: 22px; }
+  }
+
+  .menu-meta {
+    display: flex; flex-direction: column; gap: 28px;
+    align-self: end;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .6s ease .4s, transform .6s cubic-bezier(.22,.61,.36,1) .4s;
+  }
+  body.menu-open .menu-meta { opacity: 1; transform: translateY(0); }
+  .menu-meta .meta-block { display: flex; flex-direction: column; gap: 6px; }
+  .menu-meta h6 {
+    font: 11px/1 'JetBrains Mono', monospace;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4); margin: 0 0 6px;
+    font-weight: 400;
+  }
+  .menu-meta p { margin: 0; color: rgba(255, 255, 255, 0.85); font-size: 16px; line-height: 1.5; }
+  .menu-meta a {
+    color: rgba(255, 255, 255, 0.85); text-decoration: none;
+    font-size: 16px; line-height: 1.6;
+    width: fit-content;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    transition: color .2s, border-color .2s;
+  }
+  .menu-meta a:hover { color: white; border-color: rgba(255, 255, 255, 0.6); }
+  .menu-meta .meta-mail { font-size: 20px; font-family: 'Inter Tight', sans-serif; letter-spacing: -0.01em; }
+  .menu-meta .meta-status p { display: inline-flex; align-items: center; gap: 8px; }
+  .menu-meta .meta-status .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #5ed490; box-shadow: 0 0 12px rgba(94, 212, 144, 0.6);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .menu-list a, .menu-meta { transition: opacity .2s !important; transform: none !important; }
+  }
+
+  /* HERO */
+  .hero {
+    padding: 96px 56px 72px;
+    position: relative;
+  }
+  .hero-eyebrow { font-size: 18px; color: var(--ink-mute); margin-bottom: 22px; }
+  .hero-title {
+    font-size: clamp(56px, 8.5vw, 132px);
+    line-height: 0.95; letter-spacing: -0.045em; font-weight: 500;
+    color: var(--ink);
+  }
+  .hero .star {
+    position: absolute; pointer-events: none;
+  }
+
+  /* CONTENT */
+  .legal {
+    max-width: 880px;
+    margin: 0 56px 96px;
+    padding: 56px 64px 72px;
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.7);
+    border-radius: 28px;
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+            backdrop-filter: blur(20px) saturate(130%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      0 30px 80px -30px rgba(20,20,26,0.18),
+      0 6px 24px -10px rgba(20,20,26,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .legal::before {
+    /* subtle vertical glass stripes — same texture vocabulary as the phase cards */
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 5px,
+      rgba(20,20,26,0.04) 5px,
+      rgba(20,20,26,0.04) 6px
+    );
+    mix-blend-mode: multiply; opacity: 0.6;
+  }
+  .legal > * { position: relative; }
+
+  .legal h2 {
+    font-size: 28px; font-weight: 500; letter-spacing: -0.025em;
+    color: var(--ink); margin-top: 48px; margin-bottom: 18px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--line);
+  }
+  .legal h2:first-of-type { margin-top: 0; }
+  .legal p {
+    font-size: 16px; line-height: 1.6; color: var(--ink-soft);
+    margin-bottom: 14px; max-width: 68ch;
+    text-wrap: pretty;
+  }
+  .legal p strong { color: var(--ink); font-weight: 500; }
+  .legal a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--ink-mute); text-underline-offset: 3px; transition: text-decoration-color .2s; }
+  .legal a:hover { text-decoration-color: var(--ink); }
+
+  .legal .data-block {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 12px 28px;
+    padding: 24px 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    margin: 24px 0;
+  }
+  .legal .data-block dt {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-mute); padding-top: 4px;
+  }
+  .legal .data-block dd { font-size: 16px; color: var(--ink); line-height: 1.55; }
+  .legal .data-block dd .line { display: block; }
+
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 16px 28px;
+    margin-top: 8px; padding-top: 18px;
+    font-size: 12px; color: var(--ink-mute);
+    font-family: 'JetBrains Mono', ui-monospace, monospace; letter-spacing: 0.04em;
+  }
+  .meta-row span { display: inline-flex; align-items: center; gap: 8px; }
+  .meta-row .dot { width: 6px; height: 6px; border-radius: 50%; background: oklch(0.72 0.18 145); box-shadow: 0 0 8px oklch(0.72 0.18 145 / 0.6); }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    margin-top: 36px;
+    font-size: 14px; color: var(--ink); text-decoration: none;
+    border: 1px solid var(--line); padding: 12px 22px; border-radius: 999px;
+    transition: background .2s;
+  }
+  .back-link:hover { background: rgba(20,20,26,0.04); }
+
+  /* FOOTER */
+  footer {
+    padding: 36px 56px 48px;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+    border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--ink-mute);
+  }
+  footer h5 { color: var(--ink); font-size: 13px; font-weight: 500; margin-bottom: 14px; letter-spacing: 0.02em; }
+  footer ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  footer a { color: var(--ink-mute); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+  .footer-brand {
+    display: inline-flex; align-items: center; gap: 12px;
+    color: var(--ink); text-decoration: none;
+  }
+  .footer-brand .logo-mark { width: 34px; height: 34px; }
+  .footer-brand .logo-text { display: inline-flex; flex-direction: column; line-height: 1; gap: 4px; }
+  .footer-brand .logo-text .word {
+    font-size: 15px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink);
+  }
+  .footer-brand .logo-text .sub {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 8px; letter-spacing: 2.8px; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .footer-meta { margin-top: 12px; max-width: 320px; line-height: 1.5; }
+  .footer-bottom {
+    grid-column: 1 / -1; display: flex; justify-content: space-between;
+    padding-top: 24px; border-top: 1px solid var(--line); margin-top: 12px;
+    font-size: 12px;
+  }
+
+  @media (max-width: 980px) {
+    .hero { padding: 60px 24px 36px; }
+    .legal { margin: 0 24px 64px; padding: 40px 28px 48px; }
+    .legal .data-block { grid-template-columns: 1fr; gap: 6px; }
+    .nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    footer { grid-template-columns: 1fr 1fr; padding: 32px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="logo">
+    <svg class="logo-mark" viewBox="-50 -50 100 100" aria-hidden="true">
+      <g class="edges">
+        <line class="edge" x1="0" y1="-36" x2="25.46" y2="-25.46"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="36" y2="0"/>
+        <line class="edge" x1="36" y1="0" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="25.46" y1="25.46" x2="0" y2="36"/>
+        <line class="edge" x1="0" y1="36" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="-25.46" y1="25.46" x2="-36" y2="0"/>
+        <line class="edge" x1="-36" y1="0" x2="-25.46" y2="-25.46"/>
+        <line class="edge" x1="-25.46" y1="-25.46" x2="0" y2="-36"/>
+        <line class="edge" x1="0" y1="0" x2="0" y2="-36"/>
+        <line class="edge" x1="0" y1="0" x2="25.46" y2="-25.46"/>
+        <line class="edge" x1="0" y1="0" x2="36" y2="0"/>
+        <line class="edge" x1="0" y1="0" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="0" x2="0" y2="36"/>
+        <line class="edge" x1="0" y1="0" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="0" x2="-36" y2="0"/>
+        <line class="edge" x1="0" y1="0" x2="-25.46" y2="-25.46"/>
+        <line class="edge" x1="0" y1="-36" x2="36" y2="0"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="36" y1="0" x2="0" y2="36"/>
+        <line class="edge" x1="25.46" y1="25.46" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="36" x2="-36" y2="0"/>
+        <line class="edge" x1="-25.46" y1="25.46" x2="-25.46" y2="-25.46"/>
+        <line class="edge" x1="-36" y1="0" x2="0" y2="-36"/>
+        <line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="-25.46"/>
+        <line class="edge" x1="0" y1="-36" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="-36" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="0" y2="36"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="-36" y2="0"/>
+        <line class="edge" x1="36" y1="0" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="36" y1="0" x2="-25.46" y2="-25.46"/>
+        <line class="edge" x1="25.46" y1="25.46" x2="-36" y2="0"/>
+        <line class="edge" x1="25.46" y1="25.46" x2="0" y2="-36"/>
+        <line class="edge" x1="0" y1="-36" x2="0" y2="36"/>
+        <line class="edge" x1="-36" y1="0" x2="36" y2="0"/>
+        <line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="36" x2="-25.46" y2="-25.46"/>
+      </g>
+      <circle class="node" cx="0" cy="-36" r="6"/>
+      <circle class="node" cx="25.46" cy="-25.46" r="6" style="stroke: rgb(20, 20, 26); fill: rgb(244, 243, 239)"/>
+      <circle class="node" cx="36" cy="0" r="6"/>
+      <circle class="node" cx="25.46" cy="25.46" r="6"/>
+      <circle class="node" cx="0" cy="36" r="6"/>
+      <circle class="node" cx="-25.46" cy="25.46" r="6"/>
+      <circle class="node" cx="-36" cy="0" r="6"/>
+      <circle class="node" cx="-25.46" cy="-25.46" r="6"/>
+      <circle class="pulse" cx="0" cy="0" r="3" style="fill: rgba(0, 0, 0, 0)"/>
+      <circle class="traveler" cx="36" cy="0" r="2.4"/>
+    </svg>
+    <span class="logo-text">
+      <span class="word" style="font-size: 18px">DKS Analytics GmbH</span>
+      <span class="sub" style="letter-spacing: 3.4px">AN AI FIRST COMPANY</span>
+    </span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html#leistung">Leistung</a>
+    <a href="index.html#about">Über uns</a>
+    <a href="index.html#produkte">Produkte</a>
+    <a href="Karriere.html">Karriere</a>
+    <a href="index.html#kontakt">Kontakt</a>
+  </div>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menuOverlay"><span class="menu-label">Menü</span><span class="menu-icon"><span></span><span></span></span></button>
+</nav>
+
+<div class="menu-overlay" id="menuOverlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Hauptnavigation">
+  <div class="menu-overlay-panel">
+    <nav class="menu-list" aria-label="Primär">
+      <a href="index.html#leistung"><span class="num">01</span><span class="label">Leistung</span><span class="arrow">→</span></a>
+      <a href="index.html#about"><span class="num">02</span><span class="label">Über uns</span><span class="arrow">→</span></a>
+      <a href="index.html#produkte"><span class="num">03</span><span class="label">Produkte</span><span class="arrow">→</span></a>
+      <a href="Karriere.html"><span class="num">04</span><span class="label">Karriere</span><span class="arrow">→</span></a>
+      <a href="index.html#kontakt"><span class="num">05</span><span class="label">Kontakt</span><span class="arrow">→</span></a>
+    </nav>
+    <aside class="menu-meta">
+      <div class="meta-block">
+        <h6>Standort</h6>
+        <p>Stuttgart<br/>Deutschland</p>
+      </div>
+      <div class="meta-block">
+        <h6>Kontakt</h6>
+        <a class="meta-mail" href="mailto:info@dks-analytics.de">info@dks-analytics.de</a>
+      </div>
+      <div class="meta-block">
+        <h6>Rechtliches</h6>
+        <a href="Impressum.html">Impressum</a>
+        <a href="Datenschutz.html">Datenschutz</a>
+      </div>
+      <div class="meta-block meta-status">
+        <h6>Status</h6>
+        <p><span class="dot"></span> Verfügbar für neue Projekte</p>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <svg class="star" style="left: 52%; top: 28%;" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9a9991" stroke-width="0.7"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z"/></svg>
+  <svg class="star" style="right: 12%; top: 62%; opacity: 0.6;" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#9a9991" stroke-width="0.6"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z"/></svg>
+  <p class="hero-eyebrow mono" style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;">— Rechtliches</p>
+  <h1 class="hero-title">Impressum.</h1>
+</header>
+
+<!-- LEGAL CONTENT -->
+<main class="legal">
+  <p class="mono" style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 12px;">Angaben gemäß § 5 DDG</p>
+
+  <dl class="data-block">
+    <dt>Firma</dt>
+    <dd>
+      <span class="line"><strong>DKS Analytics GmbH</strong></span>
+      <span class="line">Löffelstraße 44</span>
+      <span class="line">70597 Stuttgart</span>
+      <span class="line">Deutschland</span>
+    </dd>
+
+    <dt>Geschäftsführer</dt>
+    <dd>
+      <span class="line">Karl Domanowsky</span>
+      <span class="line">Fabian Stöhr</span>
+      <span class="line">Marvin Kasper</span>
+    </dd>
+
+    <dt>Kontakt</dt>
+    <dd>
+      <span class="line">E‑Mail: <a href="mailto:info@dks-analytics.de">info@dks-analytics.de</a></span>
+      <span class="line">Telefon: [Telefonnummer ergänzen]</span>
+    </dd>
+
+    <dt>Registereintrag</dt>
+    <dd>
+      <span class="line">Handelsregister des Amtsgerichts Stuttgart</span>
+      <span class="line">HRB 791022</span>
+    </dd>
+
+    <dt>USt‑ID § 27a UStG</dt>
+    <dd>
+      <span class="line">DE363443259</span>
+    </dd>
+  </dl>
+
+  <h2>Haftung für Inhalte</h2>
+  <p>Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir jedoch keine Gewähr.</p>
+  <p>Als Diensteanbieter sind wir für eigene Inhalte auf dieser Website nach den allgemeinen gesetzlichen Vorschriften verantwortlich. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen gesetzlichen Vorschriften bleiben hiervon unberührt.</p>
+  <p>Bei Bekanntwerden entsprechender Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.</p>
+
+  <h2>Haftung für Links</h2>
+  <p>Diese Website kann Links zu externen Websites Dritter enthalten. Auf deren Inhalte haben wir keinen Einfluss. Deshalb übernehmen wir für diese fremden Inhalte keine Gewähr.</p>
+  <p>Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der jeweiligen Seiten verantwortlich. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.</p>
+
+  <h2>Urheberrecht</h2>
+  <p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf dieser Website unterliegen dem deutschen Urheberrecht.</p>
+  <p>Die Vervielfältigung, Bearbeitung, Verbreitung oder sonstige Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers.</p>
+  <p>Downloads und Kopien dieser Website sind nur für den privaten, nicht kommerziellen Gebrauch gestattet, sofern nicht ausdrücklich etwas anderes angegeben ist.</p>
+  <p>Soweit Inhalte auf dieser Website nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet und entsprechende Inhalte als solche gekennzeichnet. Sollten Sie dennoch auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.</p>
+
+  <h2>Widerspruch gegen Werbe‑E‑Mails</h2>
+  <p>Der Nutzung der im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit widersprochen.</p>
+  <p>Wir behalten uns rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, insbesondere durch Spam‑E‑Mails, vor.</p>
+
+  <div class="meta-row">
+    <span><span class="dot"></span> Stand · Mai 2026</span>
+    <span>HRB 791022 · Stuttgart</span>
+    <span>USt‑ID DE363443259</span>
+  </div>
+
+  <a href="index.html" class="back-link">← Zurück zur Startseite</a>
+</main>
+
+<!-- FOOTER (matched to index.html) -->
+<footer>
+  <div>
+    <div class="footer-brand">
+      <svg class="logo-mark" viewBox="-50 -50 100 100" style="width:30px;height:30px;" aria-hidden="true">
+        <g class="edges">
+          <line class="edge" x1="0" y1="-36" x2="25.46" y2="-25.46"/><line class="edge" x1="25.46" y1="-25.46" x2="36" y2="0"/>
+          <line class="edge" x1="36" y1="0" x2="25.46" y2="25.46"/><line class="edge" x1="25.46" y1="25.46" x2="0" y2="36"/>
+          <line class="edge" x1="0" y1="36" x2="-25.46" y2="25.46"/><line class="edge" x1="-25.46" y1="25.46" x2="-36" y2="0"/>
+          <line class="edge" x1="-36" y1="0" x2="-25.46" y2="-25.46"/><line class="edge" x1="-25.46" y1="-25.46" x2="0" y2="-36"/>
+          <line class="edge" x1="0" y1="0" x2="0" y2="-36"/><line class="edge" x1="0" y1="0" x2="25.46" y2="-25.46"/>
+          <line class="edge" x1="0" y1="0" x2="36" y2="0"/><line class="edge" x1="0" y1="0" x2="25.46" y2="25.46"/>
+          <line class="edge" x1="0" y1="0" x2="0" y2="36"/><line class="edge" x1="0" y1="0" x2="-25.46" y2="25.46"/>
+          <line class="edge" x1="0" y1="0" x2="-36" y2="0"/><line class="edge" x1="0" y1="0" x2="-25.46" y2="-25.46"/>
+        </g>
+        <circle class="node" cx="0" cy="-36" r="6"/><circle class="node" cx="25.46" cy="-25.46" r="6"/>
+        <circle class="node" cx="36" cy="0" r="6"/><circle class="node" cx="25.46" cy="25.46" r="6"/>
+        <circle class="node" cx="0" cy="36" r="6"/><circle class="node" cx="-25.46" cy="25.46" r="6"/>
+        <circle class="node" cx="-36" cy="0" r="6"/><circle class="node" cx="-25.46" cy="-25.46" r="6"/>
+      </svg>
+      <span class="logo-text">
+        <span class="word">DKS Analytics GmbH</span>
+        <span class="sub">AN AI FIRST COMPANY</span>
+      </span>
+    </div>
+    <p class="footer-meta">KI‑Lebenszyklus aus einer Hand.<br/>Stuttgart, Deutschland.</p>
+  </div>
+  <div>
+    <h5>Leistungen</h5>
+    <ul>
+      <li><a href="index.html#leistung">Datenaufbereitung</a></li>
+      <li><a href="index.html#leistung">Modelltraining</a></li>
+      <li><a href="index.html#leistung">Deployment</a></li>
+      <li><a href="index.html#leistung">Monitoring</a></li>
+    </ul>
+  </div>
+  <div>
+    <h5>Unternehmen</h5>
+    <ul>
+      <li><a href="index.html#about">Über uns</a></li>
+      <li><a href="index.html#produkte">Produkte</a></li>
+      <li><a href="#">Karriere</a></li>
+      <li><a href="#">Kontakt</a></li>
+    </ul>
+  </div>
+  <div>
+    <h5>Rechtliches</h5>
+    <ul>
+      <li><a href="Impressum.html">Impressum</a></li>
+      <li><a href="#">Datenschutz</a></li>
+      <li><a href="#">AGB</a></li>
+    </ul>
+  </div>
+  <div class="footer-bottom mono">
+    <span>© 2026 DKS Analytics GmbH</span>
+    <span>Made in Germany · v1.0</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    const menuBtn = document.querySelector('.menu-btn');
+    const menuOv = document.getElementById('menuOverlay');
+    if (!menuBtn || !menuOv) return;
+    const setMenu = (open) => {
+      document.body.classList.toggle('menu-open', open);
+      menuBtn.setAttribute('aria-expanded', String(open));
+      menuOv.setAttribute('aria-hidden', String(!open));
+    };
+    menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+    menuOv.addEventListener('click', e => {
+      if (e.target.closest('.menu-list a')) { setMenu(false); return; }
+      if (!e.target.closest('.menu-overlay-panel')) setMenu(false);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.body.classList.contains('menu-open')) setMenu(false);
+    });
+  })();
+</script>
+
+</body>
+</html>

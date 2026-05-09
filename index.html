@@ -1,1605 +1,2084 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="de">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DKS-Analytics | KI-Systeme aus einer Hand</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DKS Analytics — Aus Technologie wird messbare Wirkung</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="image-slot.js"></script>
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
-    --color-bg: #000;
-    --color-text: #f5f5f7;
-    --color-muted: #86868b;
-    --color-accent: #2997ff;
-    --font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --bg: #f4f3ef;
+    --bg-deep: #ecebe6;
+    --ink: #14141a;
+    --ink-soft: #4a4a55;
+    --ink-mute: #8a8a92;
+    --line: #d9d8d2;
+    --card: #ffffff;
+    --accent: oklch(0.62 0.18 28);
+
+    /* MOOD — hue stops for the 4-phase arc + end CTA */
+    --m1-h: 90;  --m1-c: 0.16;
+    --m2-h: 30;  --m2-c: 0.20;
+    --m3-h: 300; --m3-c: 0.20;
+    --m4-h: 250; --m4-c: 0.14;
+    --me-a: 35;  --me-b: 320;
+    --tex-stripe: 0.06;
+    --tex-period: 6px;
+
+    /* TYPE ENERGY */
+    --type-display-weight: 500;
+    --type-display-tracking: -0.045em;
+    --type-display-scale: 1;
+  }
+  body[data-mood="aurora"] {
+    --m1-h: 170; --m1-c: 0.14;
+    --m2-h: 200; --m2-c: 0.16;
+    --m3-h: 280; --m3-c: 0.18;
+    --m4-h: 250; --m4-c: 0.14;
+    --me-a: 200; --me-b: 280;
+  }
+  body[data-mood="mono"] {
+    --m1-h: 80;  --m1-c: 0.02;
+    --m2-h: 80;  --m2-c: 0.02;
+    --m3-h: 260; --m3-c: 0.02;
+    --m4-h: 260; --m4-c: 0.02;
+    --me-a: 80;  --me-b: 260;
+  }
+  body[data-mood="acid"] {
+    --m1-h: 130; --m1-c: 0.22;
+    --m2-h: 90;  --m2-c: 0.24;
+    --m3-h: 320; --m3-c: 0.24;
+    --m4-h: 270; --m4-c: 0.22;
+    --me-a: 130; --me-b: 320;
+  }
+  body[data-type="quiet"] {
+    --type-display-weight: 350;
+    --type-display-tracking: -0.025em;
+    --type-display-scale: 0.92;
+  }
+  body[data-type="loud"] {
+    --type-display-weight: 700;
+    --type-display-tracking: -0.055em;
+    --type-display-scale: 1.08;
+  }
+  body[data-tex="off"]    { --tex-stripe: 0;    --tex-period: 6px; }
+  body[data-tex="heavy"]  { --tex-stripe: 0.14; --tex-period: 4px; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Inter Tight', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { overflow-x: hidden; }
+  body::before {
+    content: ""; position: fixed; inset: -20px; pointer-events: none; z-index: 100;
+    opacity: 0.07; mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 140px 140px;
+    animation: grainDrift 14s steps(6) infinite;
+    will-change: transform;
+  }
+  @keyframes grainDrift {
+    0%   { transform: translate(0,0); }
+    20%  { transform: translate(-6px, 4px); }
+    40%  { transform: translate(4px, -6px); }
+    60%  { transform: translate(-4px, -3px); }
+    80%  { transform: translate(5px, 5px); }
+    100% { transform: translate(0,0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body::before { animation: none; }
   }
 
-  html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+  /* ============ MOOD ARC (scroll-driven) ============ */
+  /* The base mood vars get overwritten by JS as you scroll. */
+  body { transition: background-color .6s ease; }
 
-  body {
-    background: var(--color-bg);
-    color: var(--color-text);
-    font-family: var(--font);
-    line-height: 1.5;
-    overflow-x: hidden;
-  }
-
-  .headline-large {
-    font-size: clamp(2.5rem, 7vw, 5.5rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.05;
-  }
-
-  .headline-medium {
-    font-size: clamp(1.8rem, 4vw, 3.5rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-  }
-
-  .body-text {
-    font-size: clamp(1rem, 1.5vw, 1.25rem);
-    color: var(--color-muted);
-    max-width: 42ch;
-    line-height: 1.6;
-  }
-
-  /* ── Header Pill ─────────────────────────────────────── */
-  .site-header {
-    position: fixed;
-    top: 1.25rem;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 100;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-  }
-
-  .site-header.hidden {
+  /* ============ SCROLL REVEAL ============ */
+  .reveal {
     opacity: 0;
-    pointer-events: none;
-    transform: translateX(-50%) translateY(-1rem);
+    transform: translateY(28px);
+    filter: blur(6px);
+    transition: opacity .9s cubic-bezier(.22,.61,.36,1),
+                transform .9s cubic-bezier(.22,.61,.36,1),
+                filter .9s cubic-bezier(.22,.61,.36,1);
+    will-change: opacity, transform, filter;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  /* stagger for grouped reveals */
+  .reveal-group > .reveal { transition-delay: 0s; }
+  .reveal-group.in > .reveal:nth-child(1) { transition-delay: 0.00s; }
+  .reveal-group.in > .reveal:nth-child(2) { transition-delay: 0.08s; }
+  .reveal-group.in > .reveal:nth-child(3) { transition-delay: 0.16s; }
+  .reveal-group.in > .reveal:nth-child(4) { transition-delay: 0.24s; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; filter: none; transition: none; }
   }
 
-  .site-header-pill {
+  /* ============ MAGNETIC CTAs ============ */
+  .cta, .product-cta, .phase-link, .menu-btn, .endcta .ghost {
     position: relative;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    background: rgba(255, 255, 255, 0.004);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 980px;
-    padding: 0.35rem 0.4rem;
-    list-style: none;
-    overflow: hidden;
-    isolation: isolate;
-    box-shadow:
-      0 16px 40px rgba(0, 0, 0, 0.18),
-      inset 0 1px 0 rgba(255, 255, 255, 0.26),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+    transition: transform .25s cubic-bezier(.22,.61,.36,1),
+                background .2s, color .2s, border-color .2s;
   }
-
-  .site-header-pill::before,
-  .site-header-pill::after {
-    content: '';
-    position: absolute;
-    inset: 0;
+  .cta::before {
+    content: "";
+    position: absolute; inset: -2px;
     border-radius: inherit;
+    background: radial-gradient(
+      circle at var(--mx, 50%) var(--my, 50%),
+      oklch(0.78 0.18 var(--m1-h) / 0.55) 0%,
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity .35s ease;
     pointer-events: none;
+    z-index: -1;
+    filter: blur(14px);
   }
+  .cta:hover::before { opacity: 1; }
 
-  .site-header-pill::before {
-    background:
-      radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.14), transparent 26%),
-      radial-gradient(circle at 84% 74%, rgba(255, 255, 255, 0.05), transparent 32%),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.01) 38%, rgba(255, 255, 255, 0.045) 68%, rgba(255, 255, 255, 0.085)),
-      rgba(255, 255, 255, 0.006);
-    backdrop-filter: blur(8px) saturate(145%) contrast(110%) brightness(102%);
-    -webkit-backdrop-filter: blur(8px) saturate(145%) contrast(110%) brightness(102%);
-    z-index: 0;
-  }
-
-  .site-header-pill::after {
-    inset: 1px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.045) 18%, rgba(255, 255, 255, 0.004) 48%, rgba(255, 255, 255, 0.045) 82%, rgba(255, 255, 255, 0.12)),
-      linear-gradient(120deg, rgba(255, 255, 255, 0.07), transparent 40%);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.24),
-      inset 0 -6px 14px rgba(255, 255, 255, 0.02);
-    opacity: 0.52;
-    z-index: 0;
-  }
-
-  .site-header-pill li {
-    position: relative;
-    z-index: 1;
-  }
-
-  .site-header-pill a {
-    display: block;
-    color: #08121d;
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 0.5rem 1.25rem;
-    border-radius: 980px;
-    transition: color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-    position: relative;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.28);
-  }
-
-  .site-header-pill a:hover {
-    color: #02080f;
-    background: rgba(255, 255, 255, 0.045);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.12),
-      0 8px 18px rgba(0, 0, 0, 0.1);
-  }
-
-  .site-header-pill a:active {
-    background: rgba(255, 255, 255, 0.025);
-    transform: scale(0.97);
-  }
-
-  @media (max-width: 500px) {
-    .site-header { top: 0.75rem; }
-    .site-header-pill { gap: 0.1rem; padding: 0.3rem; }
-    .site-header-pill a { font-size: 0.75rem; padding: 0.4rem 0.9rem; }
-  }
-
-  /* ── Hero ────────────────────────────────────────────── */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
-    position: relative;
-  }
-
-  .hero .headline-large {
-    margin-bottom: 1.5rem;
-    background: linear-gradient(135deg, #fff 0%, #86868b 100%);
+  /* ============ HERO MORPHING ACCENT WORD ============ */
+  .hero-accent {
+    display: inline-block;
+    background: linear-gradient(
+      90deg,
+      oklch(0.55 var(--m1-c) var(--m1-h)),
+      oklch(0.55 var(--m2-c) var(--m2-h)),
+      oklch(0.55 var(--m3-c) var(--m3-h)),
+      oklch(0.55 var(--m4-c) var(--m4-h))
+    );
+    background-size: 300% 100%;
+    background-position: var(--accent-pos, 0%) 50%;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+            background-clip: text;
+    color: transparent;
+    transition: background-position 1.2s ease;
+    will-change: background-position;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-accent { color: var(--ink); background: none; -webkit-text-fill-color: currentColor; }
   }
 
-  .hero .body-text { margin: 0 auto 3rem; }
+  /* ============ LOGO IDLE MOTION ============ */
+  .nav .logo-mark {
+    /* idle rotation removed per design — logo holds still */
+  }
+  /* traveling pulse around the perimeter */
+  .nav .logo-mark .traveler {
+    fill: oklch(0.65 0.16 145);
+    filter: drop-shadow(0 0 4px oklch(0.65 0.16 145 / 0.7));
+    animation: travelerOrbit 8s linear infinite;
+    transform-origin: 0 0;
+  }
+  @keyframes travelerOrbit {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav .logo-mark .traveler { animation: none; }
+  }
+  .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: 'ss01'; letter-spacing: -0.01em; }
 
-  /* ── Mid-scroll Box ───────────────────────────────────── */
-  .mid-scroll-box {
+  /* ============ NAV ============ */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    display: grid; grid-template-columns: 1fr auto auto; align-items: start;
+    padding: 28px 56px 24px;
+    background: linear-gradient(to bottom, rgba(244,243,239,0.55) 0%, rgba(244,243,239,0.35) 60%, transparent 100%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+            backdrop-filter: blur(18px) saturate(140%);
+    border-bottom: 1px solid rgba(255,255,255,0.4);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 8px 24px -16px rgba(20,20,26,0.18);
+  }
+  /* ============ LOGO ============ */
+  .logo {
+    display: inline-flex; align-items: center; gap: 14px;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .logo-mark {
+    width: 40px; height: 40px;
+    display: block;
+    color: var(--ink);
+    transition: transform .9s cubic-bezier(.22,.61,.36,1);
+    overflow: visible;
+  }
+  .logo:hover .logo-mark { transform: rotate(22.5deg); }
+  .logo-mark .node {
+    fill: var(--bg);
+    stroke: currentColor;
+    stroke-width: 3;
+    paint-order: stroke fill;
+  }
+  .logo-mark .edge {
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    fill: none;
+  }
+  .logo-mark .pulse {
+    fill: oklch(0.65 0.16 145);
+    animation: nodePulse 2.6s ease-in-out infinite;
+  }
+  @keyframes nodePulse {
+    0%,100% { opacity: 0.4; r: 1.6; }
+    50%     { opacity: 1;    r: 2.6; }
+  }
+  .logo-text {
+    display: inline-flex; flex-direction: column; line-height: 1; gap: 4px;
+  }
+  .logo-text .word {
+    font-size: 18px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink);
+    display: inline-flex; align-items: baseline; gap: 6px;
+  }
+  .logo-text .word .rule {
+    display: inline-block; width: 1px; height: 13px; background: var(--ink-mute); align-self: center; margin: 0 2px;
+  }
+  .logo-text .word b { font-weight: 700; letter-spacing: 0; }
+  .logo-text .sub {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .nav-links { display: grid; grid-template-columns: auto auto; gap: 6px 56px; font-size: 14px; white-space: nowrap; }
+  .nav-links a { color: var(--ink-mute); text-decoration: none; transition: color .2s; white-space: nowrap; }
+  .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+  .menu-btn {
+    border: 1px solid var(--line); background: transparent; color: var(--ink);
+    padding: 9px 18px 10px 20px; border-radius: 999px; font-size: 14px; font-family: inherit;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 10px; margin-left: 32px;
+    transition: background .2s, border-color .2s;
+  }
+  .menu-btn:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .menu-btn .caret { font-size: 10px; }
+  .menu-btn { display: inline-flex; align-items: center; gap: 10px; }
+  .menu-btn .menu-icon {
+    display: inline-flex; flex-direction: column; align-items: flex-end; justify-content: center;
+    gap: 4px; width: 16px; height: 12px;
+  }
+  .menu-btn .menu-icon span {
+    display: block; height: 1.5px; background: currentColor; border-radius: 2px;
+    transform-origin: center;
+    transition: transform .4s cubic-bezier(.65,.05,.36,1), width .35s ease;
+  }
+  .menu-btn .menu-icon span:nth-child(1) { width: 100%; }
+  .menu-btn .menu-icon span:nth-child(2) { width: 65%; }
+  body.menu-open .menu-btn { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  body.menu-open .menu-btn .menu-icon span { width: 100%; }
+  body.menu-open .menu-btn .menu-icon span:nth-child(1) { transform: translateY(2.75px) rotate(45deg); }
+  body.menu-open .menu-btn .menu-icon span:nth-child(2) { transform: translateY(-2.75px) rotate(-45deg); }
+
+  /* ============ MENU OVERLAY ============ */
+  .menu-overlay {
+    position: fixed; inset: 0; z-index: 80;
+    background: rgba(20, 20, 26, 0.55);
+    backdrop-filter: blur(48px) saturate(160%);
+    -webkit-backdrop-filter: blur(48px) saturate(160%);
+    opacity: 0; pointer-events: none;
+    transition: opacity .55s cubic-bezier(.22,.61,.36,1);
+  }
+  body.menu-open .menu-overlay { opacity: 1; pointer-events: auto; }
+  body.menu-open { overflow: hidden; }
+  body.menu-open .nav { z-index: 95; }
+
+  .menu-overlay-panel {
+    position: absolute; inset: 0;
+    display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 64px;
+    padding: 140px 56px 56px;
+    color: var(--bg);
+    overflow-y: auto;
+  }
+  @media (max-width: 880px) {
+    .menu-overlay-panel { grid-template-columns: 1fr; gap: 32px; padding: 110px 24px 40px; }
+  }
+
+  .menu-list { display: flex; flex-direction: column; }
+  .menu-list a {
+    display: grid; grid-template-columns: 56px 1fr auto; align-items: baseline;
+    gap: 24px;
+    padding: 18px 4px;
+    font-family: 'Inter Tight', sans-serif;
+    font-size: clamp(40px, 7vw, 88px);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+    opacity: 0; transform: translateY(24px);
+    transition:
+      opacity .55s cubic-bezier(.22,.61,.36,1) var(--d, 0s),
+      transform .55s cubic-bezier(.22,.61,.36,1) var(--d, 0s),
+      color .25s;
+  }
+  body.menu-open .menu-list a { opacity: 1; transform: translateY(0); }
+  .menu-list a:first-child { border-top: 1px solid rgba(255, 255, 255, 0.09); }
+  .menu-list a:hover { color: white; }
+  .menu-list a .label { display: inline-block; transition: transform .35s cubic-bezier(.22,.61,.36,1); }
+  .menu-list a:hover .label { transform: translateX(10px); }
+  .menu-list a .num {
+    font: 11px/1 'JetBrains Mono', monospace;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.08em;
+    align-self: center;
+    transform: translateY(-0.35em);
+  }
+  .menu-list a .arrow {
+    font-family: 'Inter Tight', sans-serif;
+    font-size: 32px; line-height: 1;
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 0; transform: translateX(-16px);
+    transition: opacity .3s, transform .3s;
+  }
+  .menu-list a:hover .arrow { opacity: 0.9; transform: translateX(0); }
+  .menu-list a:nth-child(1) { --d: 0.18s; }
+  .menu-list a:nth-child(2) { --d: 0.24s; }
+  .menu-list a:nth-child(3) { --d: 0.30s; }
+  .menu-list a:nth-child(4) { --d: 0.36s; }
+  .menu-list a:nth-child(5) { --d: 0.42s; }
+  .menu-list a:nth-child(6) { --d: 0.48s; }
+  @media (max-width: 600px) {
+    .menu-list a { grid-template-columns: 36px 1fr auto; gap: 16px; padding: 14px 2px; }
+    .menu-list a .arrow { font-size: 22px; }
+  }
+
+  .menu-meta {
+    display: flex; flex-direction: column; gap: 28px;
+    align-self: end;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .6s ease .4s, transform .6s cubic-bezier(.22,.61,.36,1) .4s;
+  }
+  body.menu-open .menu-meta { opacity: 1; transform: translateY(0); }
+  .menu-meta .meta-block { display: flex; flex-direction: column; gap: 6px; }
+  .menu-meta h6 {
+    font: 11px/1 'JetBrains Mono', monospace;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4); margin: 0 0 6px;
+    font-weight: 400;
+  }
+  .menu-meta p { margin: 0; color: rgba(255, 255, 255, 0.85); font-size: 16px; line-height: 1.5; }
+  .menu-meta a {
+    color: rgba(255, 255, 255, 0.85); text-decoration: none;
+    font-size: 16px; line-height: 1.6;
+    width: fit-content;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    transition: color .2s, border-color .2s;
+  }
+  .menu-meta a:hover { color: white; border-color: rgba(255, 255, 255, 0.6); }
+  .menu-meta .meta-mail { font-size: 20px; font-family: 'Inter Tight', sans-serif; letter-spacing: -0.01em; }
+  .menu-meta .meta-status p { display: inline-flex; align-items: center; gap: 8px; }
+  .menu-meta .meta-status .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #5ed490; box-shadow: 0 0 12px rgba(94, 212, 144, 0.6);
+    animation: livePulse 2.4s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .menu-list a, .menu-meta { transition: opacity .2s !important; transform: none !important; }
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    padding: 40px 56px 120px;
+    min-height: calc(100vh - 90px);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero::after {
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: 0; height: 180px;
+    background: linear-gradient(to bottom, transparent, var(--bg-deep));
+    pointer-events: none; z-index: 0;
+  }
+  .hero > * { position: relative; z-index: 1; }
+  @keyframes heroRise {
+    from { opacity: 0; transform: translateY(18px); filter: blur(6px); }
+    to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+  @keyframes heroFade {
+    from { opacity: 0; }
+    to   { opacity: 0.55; }
+  }
+  .hero .hero-eyebrow,
+  .hero .hero-title,
+  .hero .hero-bottom {
+    opacity: 0;
+    animation: heroRise 1.1s cubic-bezier(.22,.61,.36,1) forwards;
+    will-change: opacity, transform, filter;
+  }
+  .hero .hero-eyebrow { animation-delay: 0.05s; }
+  .hero .hero-title   { animation-delay: 0.20s; }
+  .hero .hero-bottom  { animation-delay: 0.55s; }
+  .hero .star {
+    opacity: 0;
+    animation: heroFade 1.4s ease-out 0.7s forwards;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero .hero-eyebrow,
+    .hero .hero-title,
+    .hero .hero-bottom,
+    .hero .star { animation: none; opacity: 1; }
+    .hero .star { opacity: 0.35; }
+  }
+  .hero-eyebrow {
+    font-size: 18px; color: var(--ink-mute); font-weight: 400; margin-bottom: 22px;
+  }
+  .hero-title {
+    font-size: calc(clamp(56px, 8.5vw, 132px) * var(--type-display-scale));
+    line-height: 0.95;
+    letter-spacing: var(--type-display-tracking);
+    font-weight: var(--type-display-weight);
+    max-width: 1200px;
+    transition: font-weight .4s, letter-spacing .4s, font-size .4s;
+  }
+  .hero-bottom {
+    display: flex; align-items: center; gap: 36px; flex-wrap: wrap;
+    margin-top: 36px;
+  }
+  .cta {
+    background: var(--ink); color: var(--bg);
+    padding: 20px 36px; border-radius: 999px;
+    font-size: 14px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    border: none; cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 12px;
+    transition: transform .2s, background .2s;
+    white-space: nowrap;
+  }
+  .phase-link, .product-cta, .endcta .ghost { white-space: nowrap; }
+  .cta:hover { transform: translateY(-1px); background: #2a2a35; }
+  .hero-tag { font-size: 18px; color: var(--ink-soft); line-height: 1.35; }
+  .hero-tag b { color: var(--ink); font-weight: 600; }
+
+  /* ============ CTA → CHAT MORPH ============ */
+  /* Two explicit pixel sizes (no auto), so width/height truly animate.
+     The natural closed width is measured once by JS and written as --closed-w. */
+  .cta-chat {
+    position: relative;
+    overflow: hidden;
+    transform-origin: left center;
+    box-sizing: border-box;
+    width: var(--closed-w, auto);
+    height: var(--closed-h, auto);
+    /* Fixed pixel radius matches half the pill height — visually identical to 999px on a pill,
+       and remains identical at every intermediate height as the box grows downward. */
+    border-radius: 28.5px;
+    /* default state transitions back to closed:
+       1. height collapses (radius unchanged)        (0.00–0.40s)
+       2. width retracts                             (0.30–0.70s) */
+    transition:
+      height .40s cubic-bezier(.65,0,.25,1)        0s,
+      width  .40s cubic-bezier(.65,0,.25,1)        .30s,
+      background .25s ease .30s;
+    will-change: width, height;
+    align-self: flex-start;
+  }
+  .cta-chat .cta-label, .cta-chat .cta-arrow {
+    transition: opacity .25s ease .55s; /* fade in late on close */
+    position: relative; z-index: 2;
+  }
+
+  /* ============ CTA GLITCH (idle, hints at AI / theme-prompt gimmick) ============ */
+  /* Chromatic ghost layers behind the label */
+  .cta-chat:not(.is-open) .cta-label {
+    position: relative;
+    isolation: isolate;
+    /* keep the ghosts inside the pill */
+    color: var(--bg);
+  }
+  .cta-chat:not(.is-open) .cta-label::before,
+  .cta-chat:not(.is-open) .cta-label::after {
+    content: attr(data-text);
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: clamp(1.8rem, 3vw, 3rem);
-    width: min(92vw, 1000px);
-    padding: clamp(3rem, 5vw, 5rem) clamp(3.25rem, 6vw, 6rem);
-    background: rgba(255, 255, 255, 0.004);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 42px;
-    max-width: none;
+    inset: 0;
+    pointer-events: none;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    font: inherit;
+    z-index: -1;
+    mix-blend-mode: screen;
+    opacity: .55;
+  }
+  .cta-chat:not(.is-open) .cta-label::before {
+    color: #ff3a4e;            /* red channel */
+    transform: translate(-1px, 0);
+    animation: ctaChromaR 5.4s ease-in-out infinite;
+  }
+  .cta-chat:not(.is-open) .cta-label::after {
+    color: #2bd4ff;            /* cyan channel */
+    transform: translate(1px, 0);
+    animation: ctaChromaC 5.4s ease-in-out infinite;
+  }
+  @keyframes ctaChromaR {
+    0%,92%,100% { transform: translate(-1px, 0); }
+    93%         { transform: translate(-4px, 1px); }
+    94%         { transform: translate(3px, -1px); }
+    95%         { transform: translate(-2px, 0); }
+    96%         { transform: translate(0, 0); }
+    97%         { transform: translate(-1px, 0); }
+  }
+  @keyframes ctaChromaC {
+    0%,92%,100% { transform: translate(1px, 0); }
+    93%         { transform: translate(4px, -1px); }
+    94%         { transform: translate(-3px, 1px); }
+    95%         { transform: translate(2px, 0); }
+    96%         { transform: translate(0, 0); }
+    97%         { transform: translate(1px, 0); }
+  }
+
+  /* Blinking terminal caret after the arrow — hints "type a prompt" */
+  .cta-chat .cta-caret {
+    position: relative; z-index: 2;
+    display: inline-block;
+    width: 0.85em;
+    height: 1.05em;
+    margin-left: 6px;
+    color: var(--bg);
+    font: 700 14px/1 ui-monospace, "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
     text-align: center;
-    transition: opacity 0.5s ease, transform 0.5s ease;
-    overflow: hidden;
-    isolation: isolate;
-    color: #08121d;
-    box-shadow:
-      0 24px 56px rgba(0, 0, 0, 0.18),
-      inset 0 1px 0 rgba(255, 255, 255, 0.26),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+    transform: translateY(1px);
+    /* No CSS animation — JS scrambles textContent like a Claude-Code spinner */
   }
+  .cta-chat.is-open .cta-caret { display: none; }
 
-  .mid-scroll-box::before,
-  .mid-scroll-box::after {
-    content: '';
-    position: absolute;
-    inset: 0;
+  /* Slow diagonal scan line sweeping across the pill */
+  .cta-chat .cta-scan {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    overflow: hidden;
     border-radius: inherit;
-    pointer-events: none;
-  }
-
-  .mid-scroll-box::before {
-    background:
-      radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.14), transparent 26%),
-      radial-gradient(circle at 84% 74%, rgba(255, 255, 255, 0.05), transparent 32%),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.01) 38%, rgba(255, 255, 255, 0.045) 68%, rgba(255, 255, 255, 0.085)),
-      rgba(255, 255, 255, 0.006);
-    backdrop-filter: blur(8px) saturate(145%) contrast(110%) brightness(102%);
-    -webkit-backdrop-filter: blur(8px) saturate(145%) contrast(110%) brightness(102%);
-    z-index: 0;
-  }
-
-  .mid-scroll-box::after {
-    inset: 1px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.045) 18%, rgba(255, 255, 255, 0.004) 48%, rgba(255, 255, 255, 0.045) 82%, rgba(255, 255, 255, 0.12)),
-      linear-gradient(120deg, rgba(255, 255, 255, 0.07), transparent 40%);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.24),
-      inset 0 -6px 14px rgba(255, 255, 255, 0.02);
-    opacity: 0.52;
-    z-index: 0;
-  }
-
-  .mid-scroll-box > * {
-    position: relative;
     z-index: 1;
+    opacity: .35;
+    mix-blend-mode: screen;
   }
-
-  .mid-scroll-box.hidden {
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(-50%, -50%) translateY(20px);
-  }
-
-  .mid-scroll-box .auto-scroll-btn {
-    position: relative;
-    bottom: auto;
-    left: auto;
-    transform: none;
-    padding: 1.3rem 3.2rem;
-    font-size: clamp(1.1rem, 1.6vw, 1.4rem);
-    gap: 0.9rem;
-    background: rgba(255, 255, 255, 0.007);
-    border-color: rgba(255, 255, 255, 0.16);
-    color: #08121d;
-    box-shadow:
-      0 18px 36px rgba(0, 0, 0, 0.14),
-      inset 0 1px 0 rgba(255, 255, 255, 0.22),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.04);
-    text-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.18),
-      0 6px 16px rgba(255, 255, 255, 0.02);
-  }
-  .mid-scroll-box .auto-scroll-btn:hover {
-    background: rgba(255, 255, 255, 0.03);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: #02080f;
-    transform: translateY(-2px);
-  }
-  .mid-scroll-box .auto-scroll-btn:active {
-    transform: scale(0.97);
-  }
-  .mid-scroll-box .auto-scroll-icon {
-    width: 24px;
-    height: 24px;
-    color: #08121d;
-  }
-  .mid-scroll-box .auto-scroll-icon svg {
-    width: 22px;
-    height: 22px;
-  }
-
-  .mid-scroll-text {
-    max-width: 30ch;
-    font-size: clamp(1.65rem, 2.5vw, 2.35rem);
-    color: #08121d;
-    line-height: 1.45;
-    font-weight: 500;
-    text-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.22),
-      0 6px 16px rgba(255, 255, 255, 0.03);
-  }
-
-  /* ── Auto-scroll Button ───────────────────────────────── */
-  .auto-scroll-btn {
+  .cta-chat .cta-scan::after {
+    content: "";
     position: absolute;
-    bottom: 50%;
-    left: 50%;
-    transform: translate(-50%, 50%);
-    z-index: 3;
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
-    padding: 1.8rem 4.5rem;
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 980px;
-    color: rgba(255, 255, 255, 0.8);
-    font-family: var(--font);
-    font-size: 2rem;
-    font-weight: 500;
-    cursor: pointer;
-    overflow: hidden;
-    isolation: isolate;
-    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.3s ease, opacity 0.4s ease;
+    top: -120%; left: -40%;
+    width: 60%; height: 340%;
+    background: linear-gradient(115deg,
+      transparent 0%,
+      rgba(255,255,255,0) 35%,
+      rgba(255,255,255,0.18) 50%,
+      rgba(255,255,255,0) 65%,
+      transparent 100%);
+    animation: ctaScan 4.2s linear infinite;
   }
-
-  .auto-scroll-btn:hover {
-    background: rgba(255, 255, 255, 0.14);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: #fff;
-    transform: translate(-50%, 50%) translateY(-2px);
+  @keyframes ctaScan {
+    0%   { transform: translateX(-30%); }
+    100% { transform: translateX(260%); }
   }
+  .cta-chat.is-open .cta-scan { display: none; }
 
-  .auto-scroll-btn:active {
-    transform: translate(-50%, 50%) scale(0.97);
-  }
-
-  .auto-scroll-btn.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .auto-scroll-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    animation: bounceDown 2s ease-in-out infinite;
-  }
-
-  .auto-scroll-icon svg {
-    width: 32px;
-    height: 32px;
-  }
-
-  .auto-scroll-label {
-    position: relative;
-    z-index: 1;
-  }
-
-  #autoScrollBtn {
-    background: rgba(255, 255, 255, 0.003);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    border-color: rgba(255, 255, 255, 0.16);
-    color: #08121d;
-    box-shadow:
-      0 18px 40px rgba(0, 0, 0, 0.18),
-      inset 0 1px 0 rgba(255, 255, 255, 0.26),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.04);
-    text-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.16),
-      0 6px 16px rgba(255, 255, 255, 0.025);
-  }
-
-  #autoScrollBtn::before,
-  #autoScrollBtn::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    pointer-events: none;
-  }
-
-  #autoScrollBtn::before {
-    background:
-      radial-gradient(circle at 18% 20%, rgba(255, 255, 255, 0.14), transparent 26%),
-      radial-gradient(circle at 82% 78%, rgba(255, 255, 255, 0.05), transparent 32%),
-      linear-gradient(135deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.01) 38%, rgba(255, 255, 255, 0.045) 68%, rgba(255, 255, 255, 0.085)),
-      rgba(255, 255, 255, 0.006);
-    backdrop-filter: blur(8px) saturate(145%) contrast(110%) brightness(102%);
-    -webkit-backdrop-filter: blur(8px) saturate(145%) contrast(110%) brightness(102%);
-    z-index: 0;
-  }
-
-  #autoScrollBtn::after {
-    inset: 1px;
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.045) 18%, rgba(255, 255, 255, 0.004) 48%, rgba(255, 255, 255, 0.045) 82%, rgba(255, 255, 255, 0.12)),
-      linear-gradient(120deg, rgba(255, 255, 255, 0.07), transparent 40%);
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.24),
-      inset 0 -6px 14px rgba(255, 255, 255, 0.02);
-    opacity: 0.52;
-    z-index: 0;
-  }
-
-  #autoScrollBtn .auto-scroll-icon {
-    position: relative;
-    z-index: 1;
-    color: #08121d;
-    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.25));
-  }
-
-  #autoScrollBtn:hover {
-    background: rgba(255, 255, 255, 0.007);
-    border-color: rgba(255, 255, 255, 0.2);
-    box-shadow:
-      0 22px 56px rgba(0, 0, 0, 0.22),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.05);
-  }
-
-  #autoScrollBtn:hover::before {
-    backdrop-filter: blur(10px) saturate(158%) contrast(114%) brightness(104%);
-    -webkit-backdrop-filter: blur(10px) saturate(158%) contrast(114%) brightness(104%);
-  }
-
-  @keyframes bounceDown {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(4px); }
-  }
-
-  .scroll-hint {
-    position: absolute;
-    bottom: 2rem;
-    opacity: 0.4;
-    font-size: 0.85rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 0.5; }
-  }
-
-  /* ── Pinned Animation Section ────────────────────────── */
-  .sequence-section {
-    position: relative;
-    height: 500vh;
-  }
-
-  .sequence-sticky {
-    position: sticky;
-    top: 0;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .sequence-canvas { display: block; }
-
-  .sequence-fade {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent 40%, var(--color-bg) 100%);
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1;
-    transition: opacity 0.1s ease;
-  }
-
-  .sequence-overlays {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Glitch noise band — periodic horizontal slice */
+  .cta-chat .cta-noise {
+    position: absolute; left: 0; right: 0;
+    height: 6px;
     pointer-events: none;
     z-index: 2;
-  }
-
-  .overlay-text {
-    position: absolute;
-    text-align: center;
-    padding: 2rem;
+    background:
+      repeating-linear-gradient(90deg,
+        rgba(255,58,78,0.55) 0 2px,
+        rgba(43,212,255,0.55) 2px 4px,
+        rgba(255,255,255,0.0) 4px 8px);
+    mix-blend-mode: screen;
     opacity: 0;
-    transition: opacity 0.15s ease;
-    max-width: 700px;
+    top: 30%;
+    animation: ctaNoise 7.3s steps(1, end) infinite;
+  }
+  @keyframes ctaNoise {
+    0%, 96%, 100% { opacity: 0; transform: translateY(0); }
+    96.5% { opacity: .85; transform: translateY(0); }
+    97%   { opacity: .85; transform: translateY(8px); }
+    97.5% { opacity: .85; transform: translateY(-6px); }
+    98%   { opacity: .85; transform: translateY(2px); }
+    98.5% { opacity: 0;   transform: translateY(0); }
+  }
+  .cta-chat.is-open .cta-noise { display: none; }
+
+  /* Periodic full-button micro-jolt that aligns with the chroma split spike */
+  .cta-chat:not(.is-open) {
+    animation: ctaJolt 5.4s ease-in-out infinite;
+  }
+  @keyframes ctaJolt {
+    0%,92%,100% { transform: translateX(0); }
+    93%         { transform: translateX(-1px); }
+    94%         { transform: translateX(2px); }
+    95%         { transform: translateX(-1px); }
+    96%         { transform: translateX(0); }
+  }
+  .cta-chat:not(.is-open):hover {
+    animation: none;
+    transform: translateY(-1px);
   }
 
-  .overlay-text.visible { opacity: 1; }
-  .overlay-text.top { top: 8%; }
-  .overlay-text.bottom { bottom: 8%; }
-
-  /* ── MLOps Flow ───────────────────────────────────────── */
-  .mlops {
-    min-height: 100vh;
-    padding: 8rem 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  /* Hover = glitch intensifies. Same vocabulary as the scramble cycle. */
+  .cta-chat:not(.is-open):hover .cta-label {
+    animation: ctaHoverShear .42s steps(6, end) infinite;
+  }
+  .cta-chat:not(.is-open):hover .cta-label::before {
+    animation: none;
+    transform: translate(-3px, 0.5px);
+    opacity: .9;
+  }
+  .cta-chat:not(.is-open):hover .cta-label::after {
+    animation: none;
+    transform: translate(3px, -0.5px);
+    opacity: .9;
+  }
+  .cta-chat:not(.is-open):hover .cta-scan { opacity: .75; }
+  .cta-chat:not(.is-open):hover .cta-scan::after { animation-duration: 1.4s; }
+  .cta-chat:not(.is-open):hover .cta-noise {
+    animation: ctaHoverNoise .55s steps(4, end) infinite;
+  }
+  @keyframes ctaHoverShear {
+    0%   { transform: translate(0,0)    skewX(0); }
+    20%  { transform: translate(-1px,0) skewX(-3deg); }
+    40%  { transform: translate(2px,0)  skewX(2deg); }
+    60%  { transform: translate(-1px,0) skewX(-1deg); }
+    80%  { transform: translate(1px,0)  skewX(1deg); }
+    100% { transform: translate(0,0)    skewX(0); }
+  }
+  @keyframes ctaHoverNoise {
+    0%   { opacity: .7;  transform: translateY(0); }
+    25%  { opacity: .85; transform: translateY(8px); }
+    50%  { opacity: .6;  transform: translateY(-6px); }
+    75%  { opacity: .9;  transform: translateY(3px); }
+    100% { opacity: .7;  transform: translateY(0); }
   }
 
-  .mlops-label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--color-accent);
-    margin-bottom: 1rem;
-  }
-
-  .mlops-heading {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    margin-bottom: 1rem;
-    max-width: 20ch;
-  }
-
-  .mlops-sub {
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    color: var(--color-muted);
-    max-width: 50ch;
-    margin-bottom: 4rem;
-    line-height: 1.6;
-  }
-
-  .mlops-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-    align-items: start;
-  }
-
-  @media (max-width: 900px) {
-    .mlops-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  @media (max-width: 500px) {
-    .mlops-grid { grid-template-columns: 1fr; }
-  }
-
-  .mlops-card {
-    background: #111;
-    border: 1px solid #1a1a1a;
-    border-radius: 20px;
-    padding: 2rem 1.75rem;
-    cursor: pointer;
-    transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .mlops-card::before {
-    content: '';
+  /* Typing terminal prompt — JS fills it during glitch cycles */
+  .cta-chat .cta-prompt {
     position: absolute;
     inset: 0;
-    border-radius: 20px;
-    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(41, 151, 255, 0.08), transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-
-  .mlops-card:hover {
-    background: #161616;
-    border-color: #2a2a2a;
-    transform: translateY(-4px);
-  }
-
-  .mlops-card:hover::before { opacity: 1; }
-
-  .mlops-card-number {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--color-accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 1.25rem;
-    opacity: 0.7;
-  }
-
-  .mlops-card-icon {
-    font-size: 1.75rem;
-    margin-bottom: 1rem;
-    display: block;
-    width: 48px;
-    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(41, 151, 255, 0.08);
-    border-radius: 12px;
-  }
-
-  .mlops-card-icon svg {
-    width: 24px;
-    height: 24px;
-    stroke: var(--color-accent);
-    fill: none;
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .mlops-card-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.6rem;
-    letter-spacing: -0.01em;
-  }
-
-  .mlops-card-desc {
-    font-size: 0.9rem;
-    color: var(--color-muted);
-    line-height: 1.55;
-    margin-bottom: 1.25rem;
-  }
-
-  .mlops-card-detail {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease, opacity 0.3s ease;
+    z-index: 2;
+    pointer-events: none;
+    color: var(--bg);
+    font: 700 12px/1 ui-monospace, "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
     opacity: 0;
+    transition: opacity .12s ease;
+    text-shadow: 1px 0 0 rgba(255,58,78,.7), -1px 0 0 rgba(43,212,255,.7);
+  }
+  .cta-chat.cta-typing .cta-prompt { opacity: 1; }
+  .cta-chat.cta-typing .cta-label,
+  .cta-chat.cta-typing .cta-arrow,
+  .cta-chat.cta-typing .cta-caret { opacity: 0; transition: opacity .1s ease; }
+  .cta-chat.is-open .cta-prompt { display: none; }
+
+  /* Old-school ASCII font flip on the label during scramble */
+  .cta-chat.cta-glitch .cta-label {
+    font-family: ui-monospace, "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    letter-spacing: 0.04em;
+    animation: ctaFontFlip 280ms cubic-bezier(.22,.61,.36,1);
+  }
+  @keyframes ctaFontFlip {
+    0%   { transform: scaleY(1)    skewX(0);    filter: blur(0)    contrast(1); }
+    18%  { transform: scaleY(-0.55) skewX(-14deg); filter: blur(1px) contrast(1.4) hue-rotate(35deg); }
+    36%  { transform: scaleY(0.92) skewX(8deg);   filter: blur(.6px) contrast(1.2); }
+    58%  { transform: scaleY(1.04) skewX(-3deg);  filter: blur(.2px) contrast(1.05); }
+    100% { transform: scaleY(1)    skewX(0);    filter: blur(0)    contrast(1); }
+  }
+  /* Slight pill flicker as the glitch hits */
+  .cta-chat.cta-glitch {
+    animation: ctaPillFlicker 280ms steps(3, end);
+  }
+  @keyframes ctaPillFlicker {
+    0%   { box-shadow: none; }
+    33%  { box-shadow: 0 0 0 1px rgba(255,58,78,.45), 0 0 0 3px rgba(43,212,255,.25); }
+    66%  { box-shadow: 0 0 0 2px rgba(43,212,255,.4); }
+    100% { box-shadow: none; }
   }
 
-  .mlops-card.expanded .mlops-card-detail {
-    max-height: 200px;
+  @media (prefers-reduced-motion: reduce) {
+    .cta-chat:not(.is-open),
+    .cta-chat:not(.is-open) .cta-label::before,
+    .cta-chat:not(.is-open) .cta-label::after,
+    .cta-chat .cta-scan::after,
+    .cta-chat .cta-noise,
+    .cta-chat .cta-caret {
+      animation: none;
+    }
+  }
+  .cta-chat .chat-pane {
+    position: absolute;
+    inset: 0;
+    padding: 16px 18px 14px;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none;
+    transition: opacity .22s ease 0s; /* fades out instantly on close */
+    text-align: left;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    color: #f4f3ef;
+    font: 500 12.5px/1.5 ui-monospace, "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    overflow: hidden;
+    border-radius: inherit;
+  }
+  /* CRT scanlines + corner brackets when open */
+  .cta-chat.is-open .chat-pane::before {
+    content: "";
+    position: absolute; inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg,
+      rgba(255,255,255,0.025) 0 1px,
+      transparent 1px 3px);
+    z-index: 5;
+    border-radius: inherit;
+    animation: termScan 7s linear infinite;
+  }
+  @keyframes termScan {
+    0%   { background-position: 0 0; }
+    100% { background-position: 0 12px; }
+  }
+  .cta-chat.is-open {
+    width: min(440px, 92vw);
+    height: 460px;
+    /* Same radius as closed — corners are visually identical at every frame. */
+    border-radius: 28.5px;
+    cursor: default;
+    transform: none !important;
+    background: #14141a;
+    box-shadow: 0 30px 80px -20px rgba(20,20,26,0.45), 0 8px 28px -10px rgba(20,20,26,0.25);
+    /* opening sequence:
+       1. width expands rightward                   (0.00–0.45s)
+       2. height drops downward (corners unchanged) (0.40–0.85s)
+       3. chat pane fades in                         (0.90–1.15s) */
+    transition:
+      width  .45s cubic-bezier(.65,0,.25,1)        0s,
+      height .45s cubic-bezier(.65,0,.25,1)        .40s,
+      background .25s ease 0s;
+  }
+  .cta-chat.is-open:hover { transform: none; background: #14141a; }
+  .cta-chat.is-open .cta-label,
+  .cta-chat.is-open .cta-arrow { opacity: 0; pointer-events: none; transition: opacity .15s ease 0s; }
+  .cta-chat.is-open .chat-pane { opacity: 1; pointer-events: auto; transition: opacity .25s ease .90s; }
+  .cta-chat.is-open::before { display: none; }
+
+  /* ============ TERMINAL CHAT — same vocabulary as the CTA glitch ============ */
+  .chat-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(77,255,177,0.18);
+  }
+  .chat-head-title {
+    display: flex; align-items: center; gap: 8px;
+    font: 700 11px/1 ui-monospace, "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #f4f3ef;
+    text-shadow: 0.6px 0 0 rgba(255,58,78,.35), -0.6px 0 0 rgba(43,212,255,.35);
+  }
+  .chat-head-title .term-name { color: #f4f3ef; }
+  .chat-head-sub { color: rgba(244,243,239,0.45); letter-spacing: 0.18em; font-size: 10px; }
+  .chat-status-dot {
+    width: 7px; height: 7px; border-radius: 0;
+    background: #4dffb1;
+    box-shadow: 0 0 8px rgba(77,255,177,0.7);
+    animation: termDotPulse 1.4s ease-in-out infinite;
+  }
+  @keyframes termDotPulse {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.3; }
+  }
+  .chat-close {
+    background: transparent;
+    border: 1px solid rgba(244,243,239,0.2);
+    color: rgba(244,243,239,0.65);
+    font: 700 10px/1 ui-monospace, "JetBrains Mono", monospace;
+    letter-spacing: 0.18em;
+    padding: 5px 8px;
+    border-radius: 0;
+    cursor: pointer;
+    transition: color .15s, border-color .15s, background .15s;
+  }
+  .chat-close:hover {
+    color: #f4f3ef;
+    border-color: #f4f3ef;
+    background: rgba(244,243,239,0.05);
+  }
+
+  /* Sub-header: status / mission line */
+  .chat-statusbar {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 10px;
+    padding: 8px 0 6px;
+    border-bottom: 1px dashed rgba(77,255,177,0.18);
+    font-size: 10px; letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(244,243,239,0.55);
+  }
+  .chat-statusbar .term-mission { color: #4dffb1; }
+  .chat-statusbar .term-cycles {
+    border: 1px solid rgba(77,255,177,0.4);
+    color: #4dffb1;
+    padding: 2px 6px;
+  }
+
+  .chat-log {
+    flex: 1; overflow-y: auto;
+    padding: 10px 0 6px;
+    display: flex; flex-direction: column; gap: 4px;
+    scrollbar-width: thin; scrollbar-color: rgba(77,255,177,0.3) transparent;
+  }
+  .chat-log::-webkit-scrollbar { width: 4px; }
+  .chat-log::-webkit-scrollbar-thumb { background: rgba(77,255,177,0.3); border-radius: 0; }
+
+  .chat-msg { display: block; }
+  .chat-msg.from-user, .chat-msg.from-bot { justify-content: flex-start; }
+  .chat-bubble {
+    max-width: 100%;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #f4f3ef;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: none;
+    text-shadow: 0.6px 0 0 rgba(255,58,78,.32), -0.6px 0 0 rgba(43,212,255,.32);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .from-bot .chat-bubble::before {
+    content: "> ";
+    color: #4dffb1;
+    text-shadow: none;
+  }
+  .from-user .chat-bubble {
+    color: #4dffb1;
+    text-shadow: 0.6px 0 0 rgba(77,255,177,.4), -0.6px 0 0 rgba(43,212,255,.3);
+  }
+  .from-user .chat-bubble::before {
+    content: "$ ";
+    color: rgba(77,255,177,0.55);
+    text-shadow: none;
+  }
+  .chat-bubble.thinking::after {
+    content: "▍";
+    color: #4dffb1;
+    margin-left: 2px;
+    animation: termCursorBlink 1s steps(2, end) infinite;
+  }
+  @keyframes termCursorBlink {
+    0%,49%   { opacity: 1; }
+    50%,100% { opacity: 0; }
+  }
+
+  .chat-input {
+    display: flex; gap: 8px; align-items: center;
+    padding-top: 10px;
+    border-top: 1px solid rgba(77,255,177,0.18);
+    position: relative;
+  }
+  .chat-input::before {
+    content: "$";
+    color: #4dffb1;
+    font: inherit;
+    flex-shrink: 0;
+    text-shadow: 0 0 8px rgba(77,255,177,0.5);
+  }
+  .chat-input input {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    padding: 4px 0;
+    color: #f4f3ef;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: none;
+    text-shadow: 0.6px 0 0 rgba(255,58,78,.32), -0.6px 0 0 rgba(43,212,255,.32);
+    caret-color: #4dffb1;
+    min-width: 0;
+  }
+  .chat-input input::placeholder {
+    color: rgba(244,243,239,0.32);
+    text-shadow: none;
+    text-transform: lowercase;
+    font-style: normal;
+  }
+  .chat-send {
+    background: transparent;
+    border: 1px solid rgba(77,255,177,0.45);
+    color: #4dffb1;
+    width: auto; height: auto;
+    padding: 5px 10px;
+    border-radius: 0;
+    font: 700 10px/1 ui-monospace, "JetBrains Mono", monospace;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    display: inline-flex; align-items: center; gap: 5px;
+    cursor: pointer;
+    transition: color .15s, background .15s, border-color .15s, transform .15s;
+  }
+  .chat-send::after { content: "↵"; font-weight: 400; }
+  .chat-send:hover {
+    background: rgba(77,255,177,0.12);
+    color: #f4f3ef;
+    border-color: #f4f3ef;
+    transform: none;
+  }
+  .chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+  @media (prefers-reduced-motion: reduce) {
+    .cta-chat { transition: width .15s, height .15s; }
+    .cta-chat .chat-pane { transition: opacity .15s; }
+    .cta-chat.is-open .chat-pane { transition-delay: .15s; }
+  }
+
+  .hero-deco {
+    position: absolute; right: 56px; top: 50%; transform: translateY(-50%);
+    pointer-events: none; opacity: 0.55;
+  }
+  .star {
+    position: absolute; opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* ============ HERO METRICS TICKER ============ */
+  .hero-metrics {
+    display: flex; gap: 28px; flex-wrap: wrap;
+    margin: 18px 0 28px;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-mute);
+    opacity: 0;
+    animation: heroRise 1.1s cubic-bezier(.22,.61,.36,1) 0.10s forwards;
+  }
+  .hero-metrics span { display: inline-flex; align-items: center; gap: 8px; }
+  .hero-metrics span::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: oklch(0.65 0.16 145); box-shadow: 0 0 8px oklch(0.65 0.16 145 / 0.6);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  .hero-metrics b { color: var(--ink); font-weight: 500; font-family: 'JetBrains Mono', ui-monospace, monospace; letter-spacing: -0.01em; text-transform: none; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  /* ============ PHASE LAYOUT ============ */
+  .section-header {
+    padding: 80px 56px 32px;
+  }
+  .kicker {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-mute); margin-bottom: 24px;
+  }
+  .section-title {
+    font-size: calc(clamp(40px, 5.5vw, 80px) * var(--type-display-scale));
+    line-height: 1;
+    letter-spacing: var(--type-display-tracking);
+    font-weight: var(--type-display-weight);
+    max-width: 1100px;
+    transition: font-weight .4s, letter-spacing .4s, font-size .4s;
+  }
+  .section-sub {
+    margin-top: 22px; font-size: 18px; color: var(--ink-soft); max-width: 720px; line-height: 1.45;
+  }
+
+  /* ============ LIFECYCLE GRID ============ */
+  .lifecycle {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .phase {
+    position: relative; aspect-ratio: 3/4; min-height: 520px;
+    padding: 28px;
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--line);
+    overflow: hidden;
+    color: var(--ink);
+    background: var(--bg-deep);
+  }
+  .phase:last-child { border-right: none; }
+  .phase > * { z-index: 2; position: relative; }
+
+  .phase-num {
+    width: 56px; height: 56px; border-radius: 50%;
+    border: 1px solid currentColor; opacity: 0.85;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; letter-spacing: 0.05em;
+    backdrop-filter: blur(4px);
+    flex-shrink: 0;
+  }
+  .phase-body {
+    margin-top: auto;
+    display: flex; flex-direction: column; gap: 0;
+    z-index: 2; position: relative;
+  }
+  .phase h3 {
+    font-size: 30px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.05;
+    margin: 0 0 12px;
+    min-height: 2.1em;
+  }
+  .phase-desc {
+    font-size: 14px; line-height: 1.5; opacity: 0.9;
+    margin: 0 0 14px;
+    min-height: 4.5em;
+  }
+  .phase-detail-wrap {
+    display: grid; grid-template-rows: 0fr;
+    transition: grid-template-rows .5s cubic-bezier(.22,.61,.36,1), margin-bottom .5s, opacity .35s;
+    margin-bottom: 0; opacity: 0;
+  }
+  .phase.open .phase-detail-wrap {
+    grid-template-rows: 1fr;
+    margin-bottom: 14px;
     opacity: 1;
   }
-
-  .mlops-card-detail-inner {
-    padding-top: 1rem;
-    border-top: 1px solid #222;
-    font-size: 0.85rem;
-    color: #a1a1a6;
-    line-height: 1.6;
+  .phase-detail-inner { overflow: hidden; }
+  .phase-detail {
+    font-size: 12px; line-height: 1.55; opacity: 0.85;
+    border-top: 1px solid rgba(255,255,255,0.25);
+    padding-top: 12px; margin: 0;
   }
-
-  .mlops-card-toggle {
-    font-size: 0.8rem;
-    color: var(--color-accent);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    transition: gap 0.2s ease;
+  .phase-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    font: inherit; font-size: 13px; color: inherit;
+    border: 1px solid currentColor; padding: 10px 18px 11px; border-radius: 999px;
+    background: transparent; cursor: pointer;
+    transition: background .25s, border-color .25s, color .25s;
+    align-self: flex-start;
+    white-space: nowrap;
+    -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
   }
+  .phase-link .arr { display: inline-block; transition: transform .35s cubic-bezier(.22,.61,.36,1); }
+  .phase.open .phase-link .arr { transform: rotate(90deg); }
+  .phase-link:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.7); }
 
-  .mlops-card:hover .mlops-card-toggle { gap: 0.5rem; }
-
-  .mlops-card-toggle-arrow {
-    transition: transform 0.3s ease;
-    display: inline-block;
-  }
-
-  .mlops-card.expanded .mlops-card-toggle-arrow {
-    transform: rotate(90deg);
-  }
-
-  /* ── Connector line between cards ────────────────────── */
-  .mlops-connector {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 0;
-  }
-
-  /* ── Outro ───────────────────────────────────────────── */
-  .outro {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 4rem 2rem;
-    position: relative;
-  }
-
-  .outro .headline-medium { margin-bottom: 1.5rem; }
-
-  /* ── About Us ──────────────────────────────────────── */
-  .about {
-    min-height: 100vh;
-    padding: 8rem 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-
-  .about-label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--color-accent);
-    margin-bottom: 1rem;
-  }
-
-  .about-heading {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-
-  .about-sub {
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    color: var(--color-muted);
-    max-width: 50ch;
-    text-align: center;
-    margin-bottom: 5rem;
-    line-height: 1.6;
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3rem;
-    max-width: 1100px;
-    width: 100%;
-  }
-
-  @media (max-width: 800px) {
-    .about-grid { grid-template-columns: 1fr; gap: 4rem; max-width: 400px; }
-  }
-
-  .about-person {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .about-bubble {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-bottom: 1.75rem;
-    position: relative;
-    background: #111;
-    border: 2px solid #1a1a1a;
-    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-    animation: float var(--float-duration, 6s) ease-in-out infinite;
-    animation-delay: var(--float-delay, 0s);
-  }
-
-  .about-bubble:hover {
-    transform: translateY(-8px) scale(1.05);
-    border-color: var(--color-accent);
-    box-shadow: 0 0 40px rgba(41, 151, 255, 0.15), 0 20px 60px rgba(0, 0, 0, 0.4);
-  }
-
-  .about-bubble img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-
-  .about-person-name {
-    font-size: 1.15rem;
-    font-weight: 600;
-    margin-bottom: 0.3rem;
-  }
-
-  .about-person-role {
-    font-size: 0.85rem;
-    color: var(--color-accent);
-    margin-bottom: 0.75rem;
-    font-weight: 500;
-  }
-
-  .about-person-bio {
-    font-size: 0.88rem;
-    color: var(--color-muted);
-    line-height: 1.55;
-    max-width: 28ch;
-  }
-
-  .cta-button {
-    display: inline-block;
-    margin-top: 2rem;
-    padding: 0.9rem 2.5rem;
-    background: var(--color-accent);
+  /* gradient panels */
+  .phase { transition: background .6s ease; }
+  .phase.p1 {
     color: #fff;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border: none;
-    border-radius: 980px;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background 0.2s ease;
+    background:
+      radial-gradient(ellipse at 30% 20%, oklch(0.85 calc(var(--m1-c) * 0.85) var(--m1-h)), transparent 55%),
+      radial-gradient(ellipse at 80% 80%, oklch(0.70 var(--m1-c) calc(var(--m1-h) - 25)), transparent 60%),
+      linear-gradient(160deg, oklch(0.78 calc(var(--m1-c) * 0.85) var(--m1-h)), oklch(0.55 var(--m1-c) calc(var(--m1-h) - 35)));
   }
-
-  .cta-button:hover { background: #0077ed; }
-
-  /* ── B2C Products ─────────────────────────────────────── */
-  .b2c {
-    min-height: 100vh;
-    padding: 8rem 2rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    position: relative;
-    z-index: 1;
+  .phase.p2 {
+    color: #fff;
+    background:
+      radial-gradient(ellipse at 80% 20%, oklch(0.75 var(--m2-c) calc(var(--m2-h) - 5) / 0.9), transparent 55%),
+      radial-gradient(ellipse at 20% 90%, oklch(0.65 var(--m2-c) var(--m2-h)), transparent 60%),
+      linear-gradient(180deg, oklch(0.70 var(--m2-c) calc(var(--m2-h) + 15)), oklch(0.55 var(--m2-c) calc(var(--m2-h) - 15)));
   }
-
-  .b2c-label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: var(--color-accent);
-    margin-bottom: 1rem;
+  .phase.p3 {
+    color: #fff;
+    background:
+      radial-gradient(ellipse at 30% 30%, oklch(0.80 calc(var(--m3-c) * 0.9) calc(var(--m3-h) + 20)), transparent 55%),
+      radial-gradient(ellipse at 80% 70%, oklch(0.65 var(--m3-c) calc(var(--m3-h) - 30)), transparent 60%),
+      linear-gradient(135deg, oklch(0.72 calc(var(--m3-c) * 0.9) var(--m3-h)), oklch(0.55 var(--m3-c) calc(var(--m3-h) - 40)));
   }
-
-  .b2c-heading {
-    font-size: clamp(1.8rem, 4vw, 3rem);
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.15;
-    margin-bottom: 3.5rem;
+  .phase.p4 {
+    color: #fff;
+    background:
+      radial-gradient(circle at 70% 40%, oklch(0.75 var(--m4-c) calc(var(--m4-h) - 30)), transparent 60%),
+      linear-gradient(160deg, oklch(0.55 var(--m4-c) calc(var(--m4-h) - 10)), oklch(0.30 calc(var(--m4-c) * 0.7) calc(var(--m4-h) + 10)));
   }
-
-  .b2c-grid {
-    display: flex;
-    gap: 3rem;
-    justify-content: center;
-    flex-wrap: wrap;
+  .phase::after {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,var(--tex-stripe)) 0 1px, transparent 1px var(--tex-period));
+    mix-blend-mode: overlay;
+    transition: opacity .4s;
   }
+  .phase.p1 .phase-num { color: #fff; border-color: rgba(255,255,255,0.7); }
 
-  .b2c-icon-link {
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    cursor: pointer;
+  /* ============ PRODUCTS ============ */
+  .products {
+    padding: 0 56px 80px;
   }
-
-  .b2c-icon-bubble {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: rgba(41, 151, 255, 0.04);
-    border: 1px solid rgba(41, 151, 255, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    animation: b2cFloat 6s ease-in-out infinite, b2cGlow 4s ease-in-out infinite;
-    transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, background 0.4s ease;
-  }
-
-  .b2c-icon-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 18px;
-    object-fit: contain;
-    transition: transform 0.4s ease;
-    filter: drop-shadow(0 0 8px rgba(41, 151, 255, 0.15));
-  }
-
-  .b2c-icon-bubble::after {
-    content: '';
-    position: absolute;
-    inset: -6px;
-    border-radius: 50%;
-    border: 1px solid rgba(41, 151, 255, 0.06);
-    animation: b2cRing 8s linear infinite;
-  }
-
-  .b2c-icon-link:hover .b2c-icon-bubble {
-    transform: translateY(-10px) scale(1.1);
-    border-color: var(--color-accent);
-    background: rgba(41, 151, 255, 0.08);
-    box-shadow: 0 0 50px rgba(41, 151, 255, 0.2), 0 0 100px rgba(41, 151, 255, 0.08);
-  }
-
-  .b2c-icon-link:hover .b2c-icon-img {
-    transform: rotate(8deg) scale(1.1);
-    filter: drop-shadow(0 0 16px rgba(41, 151, 255, 0.35));
-  }
-
-  .b2c-icon-label {
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--color-muted);
-    transition: color 0.3s ease;
-  }
-
-  .b2c-icon-link:hover .b2c-icon-label {
-    color: var(--color-text);
-  }
-
-  @keyframes b2cFloat {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-8px) rotate(1deg); }
-    50% { transform: translateY(-14px) rotate(0deg); }
-    75% { transform: translateY(-6px) rotate(-1deg); }
-  }
-
-  @keyframes b2cGlow {
-    0%, 100% { box-shadow: 0 0 20px rgba(41, 151, 255, 0); }
-    50% { box-shadow: 0 0 30px rgba(41, 151, 255, 0.1); }
-  }
-
-  @keyframes b2cRing {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-
-  /* ── Particle Background ──────────────────────────────── */
-  #particleCanvas {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  /* Ensure content sections sit above particles */
-  .hero, .mlops, .about, .outro {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ── Loading Overlay ─────────────────────────────────── */
-  .loading-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: var(--color-bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.6s ease;
-  }
-
-  .loading-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .loading-bar-track {
-    width: 200px;
-    height: 3px;
-    background: #222;
-    border-radius: 2px;
+  .product-card {
+    margin-top: 20px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 36px;
+    display: grid; grid-template-columns: 1fr 1.4fr;
+    gap: 36px; align-items: center;
     overflow: hidden;
-    margin-top: 1.5rem;
+  }
+  .product-visual {
+    aspect-ratio: 16/10;
+    border-radius: 16px;
+    background:
+      radial-gradient(ellipse at 30% 30%, oklch(0.85 0.10 180), transparent 60%),
+      radial-gradient(ellipse at 80% 80%, oklch(0.78 0.12 200), transparent 55%),
+      linear-gradient(135deg, oklch(0.88 0.06 175), oklch(0.72 0.12 195));
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .product-visual .app-icon {
+    width: 38%; aspect-ratio: 1; border-radius: 22%;
+    box-shadow: 0 24px 60px -12px rgba(20,40,50,0.35), 0 4px 14px rgba(20,40,50,0.18);
+    display: block; position: relative; z-index: 2;
+  }
+  .product-visual::after {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(92deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 7px);
+  }
+  .product-visual .badge {
+    position: absolute; top: 20px; left: 20px;
+    background: rgba(255,255,255,0.85); color: var(--ink);
+    font-size: 11px; padding: 6px 12px; border-radius: 999px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    backdrop-filter: blur(8px);
+  }
+  .product-visual .glyph {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.92); font-size: 92px; font-weight: 600; letter-spacing: -0.04em;
+    text-shadow: 0 2px 30px rgba(0,0,0,0.15);
+  }
+  .product-info h3 {
+    font-size: 44px; letter-spacing: -0.03em; font-weight: 500; line-height: 1; margin-bottom: 14px;
+  }
+  .product-info p { font-size: 16px; color: var(--ink-soft); line-height: 1.5; max-width: 460px; }
+  .product-meta {
+    display: flex; gap: 24px; margin-top: 22px; flex-wrap: wrap;
+  }
+  .product-meta span { font-size: 12px; color: var(--ink-mute); display: inline-flex; gap: 8px; align-items: center; }
+  .product-meta span::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: oklch(0.65 0.16 145); }
+  .product-cta {
+    margin-top: 28px;
+    display: inline-flex; align-items: center; gap: 10px;
+    border: 1px solid var(--line); padding: 12px 22px; border-radius: 999px;
+    font-size: 14px; color: var(--ink); text-decoration: none;
+    transition: background .25s, color .25s, border-color .25s, box-shadow .25s;
+  }
+  .product-cta:hover {
+    background: oklch(0.55 0.10 175);
+    color: #fff;
+    border-color: oklch(0.55 0.10 175);
+    box-shadow: 0 6px 20px -10px oklch(0.55 0.12 175 / 0.6);
   }
 
-  .loading-bar-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--color-accent);
-    border-radius: 2px;
-    transition: width 0.2s ease;
+  /* ============ TEAM ============ */
+  .team-grid {
+    padding: 0 56px 80px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .team-card {
+    border: 1px solid var(--line); background: var(--card);
+    border-radius: 24px; padding: 24px;
+    display: flex; flex-direction: column; gap: 18px;
+    transition: transform .2s;
+  }
+  .team-card:hover { transform: translateY(-2px); }
+  .team-photo {
+    aspect-ratio: 4/5; border-radius: 16px;
+    background: var(--bg-deep);
+    overflow: hidden;
+  }
+  .team-photo image-slot {
+    width: 100%; height: 100%; display: block;
+  }
+  .team-name { font-size: 24px; letter-spacing: -0.02em; font-weight: 500; }
+  .team-role { font-size: 13px; color: var(--ink-mute); margin-top: 4px; }
+  .team-bio { font-size: 14px; color: var(--ink-soft); line-height: 1.5; margin-top: 12px; }
+  .team-tag {
+    margin-top: 14px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute);
+  }
+  .team-tag::before { content: ""; width: 22px; height: 1px; background: var(--ink-mute); }
+
+  /* ============ CTA ============ */
+  .endcta {
+    margin: 0 56px 56px;
+    border-radius: 32px;
+    padding: 100px 64px 64px;
+    background:
+      radial-gradient(ellipse at 80% 20%, oklch(0.75 0.18 var(--me-a)), transparent 55%),
+      radial-gradient(ellipse at 20% 90%, oklch(0.65 0.20 var(--me-b)), transparent 60%),
+      linear-gradient(135deg, oklch(0.32 0.08 calc(var(--me-b) - 40)), oklch(0.18 0.04 calc(var(--me-b) - 50)));
+    color: #fff;
+    position: relative; overflow: hidden;
+    transition: background .6s ease;
+  }
+  .endcta::after {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,calc(var(--tex-stripe) * 0.7)) 0 1px, transparent 1px calc(var(--tex-period) + 2px));
+    pointer-events: none;
+  }
+  .endcta h2 {
+    font-size: clamp(48px, 7vw, 110px); line-height: 0.95; letter-spacing: -0.04em; font-weight: 500;
+    max-width: 1100px; position: relative;
+  }
+  .endcta p { margin-top: 22px; font-size: 19px; opacity: 0.78; max-width: 560px; position: relative; }
+  .endcta-row {
+    display: flex; align-items: center; gap: 24px; margin-top: 44px; flex-wrap: wrap; position: relative;
+  }
+  .endcta .cta { background: #fff; color: var(--ink); }
+  .endcta .cta:hover { background: var(--bg); }
+  .endcta .ghost {
+    color: #fff; text-decoration: none; font-size: 14px;
+    border: 1px solid rgba(255,255,255,0.3); padding: 19px 28px; border-radius: 999px;
+    transition: background .2s;
+  }
+  .endcta .ghost:hover { background: rgba(255,255,255,0.1); }
+
+  /* ============ FOOTER ============ */
+  footer {
+    padding: 36px 56px 48px;
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px;
+    border-top: 1px solid var(--line);
+    font-size: 13px; color: var(--ink-mute);
+  }
+  footer h5 { color: var(--ink); font-size: 13px; font-weight: 500; margin-bottom: 14px; letter-spacing: 0.02em; }
+  footer ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  footer a { color: var(--ink-mute); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+  .footer-brand {
+    display: inline-flex; align-items: center; gap: 12px;
+    color: var(--ink); text-decoration: none;
+  }
+  .footer-brand .logo-mark { width: 34px; height: 34px; }
+  .footer-brand .logo-text { display: inline-flex; flex-direction: column; line-height: 1; gap: 4px; }
+  .footer-brand .logo-text .word {
+    font-size: 15px; font-weight: 600; letter-spacing: -0.02em; color: var(--ink);
+  }
+  .footer-brand .logo-text .sub {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 8px; letter-spacing: 2.8px; text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .footer-meta { margin-top: 12px; max-width: 320px; line-height: 1.5; }
+  .footer-bottom {
+    grid-column: 1 / -1; display: flex; justify-content: space-between;
+    padding-top: 24px; border-top: 1px solid var(--line); margin-top: 12px;
   }
 
-  .loading-label {
-    margin-top: 0.75rem;
-    font-size: 0.8rem;
-    color: var(--color-muted);
-    letter-spacing: 0.05em;
+  /* ============ Responsive ============ */
+  @media (max-width: 1100px) {
+    .lifecycle { grid-template-columns: repeat(2, 1fr); }
+    .phase { border-bottom: 1px solid var(--line); }
+    .phase:nth-child(2) { border-right: none; }
+    .product-card { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: 1fr; }
+    footer { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 720px) {
+    .nav { padding: 20px; grid-template-columns: 1fr auto; }
+    .nav-links { display: none; }
+    .hero { padding: 24px 20px 48px; }
+    .section-header, .products, .team-grid { padding-left: 20px; padding-right: 20px; }
+    .endcta { margin: 0 20px 40px; padding: 60px 28px 40px; }
+    .lifecycle { grid-template-columns: 1fr; }
+    .phase { border-right: none; aspect-ratio: auto; min-height: 380px; }
+    footer { grid-template-columns: 1fr; padding: 32px 20px; }
   }
 </style>
 </head>
-<body>
+<body style="background-color: rgba(255, 255, 255, 0.373); font-size: 16px">
 
-<!-- Particle Background -->
-<canvas id="particleCanvas"></canvas>
-
-<!-- Loading Overlay -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="headline-medium">Loading</div>
-  <div class="loading-bar-track">
-    <div class="loading-bar-fill" id="loadingBar"></div>
+<!-- NAV -->
+<nav class="nav" style="opacity: 1; font-family: &quot;Inter Tight&quot;; background-size: cover; margin: 1px 0px 0px; padding: 28px 56px 24px; border-radius: 5px">
+  <div class="logo" style="color: var(--ink); font-size: 6px">
+    <svg class="logo-mark" viewBox="-50 -50 100 100" aria-hidden="true" style="width: 65px; height: 65px">
+      <!-- Fully connected K9 graph: 8 octagon nodes + 1 center, every pair connected -->
+      <g class="edges">
+        <!-- octagon perimeter -->
+        <line class="edge" x1="0" y1="-36" x2="25.46" y2="-25.46"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="36" y2="0"/>
+        <line class="edge" x1="36" y1="0" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="25.46" y1="25.46" x2="0" y2="36"/>
+        <line class="edge" x1="0" y1="36" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="-25.46" y1="25.46" x2="-36" y2="0"/>
+        <line class="edge" x1="-36" y1="0" x2="-25.46" y2="-25.46"/>
+        <line class="edge" x1="-25.46" y1="-25.46" x2="0" y2="-36"/>
+        <!-- spokes from center -->
+        <line class="edge" x1="0" y1="0" x2="0" y2="-36"/>
+        <line class="edge" x1="0" y1="0" x2="25.46" y2="-25.46"/>
+        <line class="edge" x1="0" y1="0" x2="36" y2="0"/>
+        <line class="edge" x1="0" y1="0" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="0" x2="0" y2="36"/>
+        <line class="edge" x1="0" y1="0" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="0" x2="-36" y2="0"/>
+        <line class="edge" x1="0" y1="0" x2="-25.46" y2="-25.46"/>
+        <!-- skip-1 chords (each node to its 2nd neighbour) -->
+        <line class="edge" x1="0" y1="-36" x2="36" y2="0"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="36" y1="0" x2="0" y2="36"/>
+        <line class="edge" x1="25.46" y1="25.46" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="36" x2="-36" y2="0"/>
+        <line class="edge" x1="-25.46" y1="25.46" x2="-25.46" y2="-25.46"/>
+        <line class="edge" x1="-36" y1="0" x2="0" y2="-36"/>
+        <line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="-25.46"/>
+        <!-- skip-2 (long diagonals through middle area) -->
+        <line class="edge" x1="0" y1="-36" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="-36" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="0" y2="36"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="-36" y2="0"/>
+        <line class="edge" x1="36" y1="0" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="36" y1="0" x2="-25.46" y2="-25.46"/>
+        <line class="edge" x1="25.46" y1="25.46" x2="-36" y2="0"/>
+        <line class="edge" x1="25.46" y1="25.46" x2="0" y2="-36"/>
+        <!-- through-center diameters -->
+        <line class="edge" x1="0" y1="-36" x2="0" y2="36"/>
+        <line class="edge" x1="-36" y1="0" x2="36" y2="0"/>
+        <line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="25.46"/>
+        <line class="edge" x1="25.46" y1="-25.46" x2="-25.46" y2="25.46"/>
+        <line class="edge" x1="0" y1="36" x2="-25.46" y2="-25.46"/>
+      </g>
+      <!-- nodes drawn last so edges meet behind them -->
+      <circle class="node" cx="0" cy="-36" r="6"/>
+      <circle class="node" cx="25.46" cy="-25.46" r="6" style="stroke: rgb(20, 20, 26); fill: rgb(244, 243, 239)"/>
+      <circle class="node" cx="36" cy="0" r="6"/>
+      <circle class="node" cx="25.46" cy="25.46" r="6"/>
+      <circle class="node" cx="0" cy="36" r="6"/>
+      <circle class="node" cx="-25.46" cy="25.46" r="6"/>
+      <circle class="node" cx="-36" cy="0" r="6"/>
+      <circle class="node" cx="-25.46" cy="-25.46" r="6"/>
+      <circle class="pulse" cx="0" cy="0" r="3" style="fill: rgba(0, 0, 0, 0)"/>
+      <!-- traveler orbits the octagon perimeter (radius ~36) -->
+      <circle class="traveler" cx="36" cy="0" r="2.4"/>
+    </svg>
+    <span class="logo-text">
+      <span class="word" style="font-size: 18px">DKS Analytics GmbH</span>
+      <span class="sub" style="letter-spacing: 3.4px">AN AI FIRST COMPANY</span>
+    </span>
   </div>
-  <div class="loading-label" id="loadingLabel">Preparing experience...</div>
+  <div class="nav-links">
+    <a href="#leistung" class="active">Leistung</a>
+    <a href="#about">Über uns</a>
+    <a href="#produkte">Produkte</a>
+    <a href="Karriere.html">Karriere</a>
+    <a href="#kontakt">Kontakt</a>
+  </div>
+  <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menuOverlay"><span class="menu-label">Menü</span><span class="menu-icon"><span></span><span></span></span></button>
+</nav>
+
+<div class="menu-overlay" id="menuOverlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Hauptnavigation">
+  <div class="menu-overlay-panel">
+    <nav class="menu-list" aria-label="Primär">
+      <a href="index.html#leistung"><span class="num">01</span><span class="label">Leistung</span><span class="arrow">→</span></a>
+      <a href="index.html#about"><span class="num">02</span><span class="label">Über uns</span><span class="arrow">→</span></a>
+      <a href="index.html#produkte"><span class="num">03</span><span class="label">Produkte</span><span class="arrow">→</span></a>
+      <a href="Karriere.html"><span class="num">04</span><span class="label">Karriere</span><span class="arrow">→</span></a>
+      <a href="index.html#kontakt"><span class="num">05</span><span class="label">Kontakt</span><span class="arrow">→</span></a>
+    </nav>
+    <aside class="menu-meta">
+      <div class="meta-block">
+        <h6>Standort</h6>
+        <p>Stuttgart<br/>Deutschland</p>
+      </div>
+      <div class="meta-block">
+        <h6>Kontakt</h6>
+        <a class="meta-mail" href="mailto:info@dks-analytics.de">info@dks-analytics.de</a>
+      </div>
+      <div class="meta-block">
+        <h6>Rechtliches</h6>
+        <a href="Impressum.html">Impressum</a>
+        <a href="Datenschutz.html">Datenschutz</a>
+      </div>
+      <div class="meta-block meta-status">
+        <h6>Status</h6>
+        <p><span class="dot"></span> Verfügbar für neue Projekte</p>
+      </div>
+    </aside>
+  </div>
 </div>
 
-<!-- Header -->
-<header class="site-header" id="siteHeader">
-  <nav>
-    <ul class="site-header-pill">
-      <li><a href="#leistungen">Leistungen</a></li>
-      <li><a href="#about">About Us</a></li>
-      <li><a href="#impressum">Impressum</a></li>
-    </ul>
-  </nav>
+<!-- HERO -->
+<header class="hero" data-screen-label="01 Hero">
+  <svg class="star" style="left: 52%; top: 22%;" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9a9991" stroke-width="0.7"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z"/></svg>
+  <svg class="star" style="right: 12%; top: 64%;" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#9a9991" stroke-width="0.6"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z"/></svg>
+  <svg class="star" style="right: 24%; top: 30%; opacity: 0.18;" width="180" height="600" viewBox="0 0 180 600" fill="none" stroke="#9a9991" stroke-width="0.5"><path d="M170 0 Q 40 200 90 400 T 30 600"/></svg>
+
+  <p class="hero-eyebrow">Aus Technologie wird messbare Wirkung.</p>
+  <div class="hero-metrics mono">
+    <span>Models in Prod <b>24</b></span>
+    <span>Uptime <b>99.97%</b></span>
+    <span>P95 Latency <b>142ms</b></span>
+    <span>Pipelines <b>61</b></span>
+  </div>
+  <h1 class="hero-title">Für Ihr<br/><span class="hero-accent">Unternehmen.</span><br/>Im echten<br/>Betrieb.</h1>
+  <div class="hero-bottom">
+    <div class="cta cta-chat" id="ctaChat" role="button" tabindex="0" aria-expanded="false">
+      <span class="cta-label" data-text="KI Erleben">KI Erleben</span>
+      <span class="cta-arrow">→</span>
+      <span class="cta-caret" aria-hidden="true"></span>
+      <span class="cta-prompt" aria-hidden="true"></span>
+      <span class="cta-scan" aria-hidden="true"></span>
+      <span class="cta-noise" aria-hidden="true"></span>
+      <div class="chat-pane" aria-hidden="true">
+        <div class="chat-head">
+          <div class="chat-head-title">
+            <span class="chat-status-dot"></span>
+            <span class="term-name">DKS_KI</span>
+            <span class="chat-head-sub">v1.0 · MUTATOR</span>
+          </div>
+          <button type="button" class="chat-close" aria-label="Schließen">ESC</button>
+        </div>
+        <div class="chat-statusbar">
+          <span class="term-mission">▍ THEME-MUTATOR ONLINE</span>
+          <span class="term-cycles">1 PROMPT</span>
+        </div>
+        <div class="chat-log" id="chatLog"></div>
+        <form class="chat-input" id="chatForm" autocomplete="off">
+          <input type="text" id="chatField" placeholder="beschreibe einen neuen stil…" />
+          <button type="submit" class="chat-send" aria-label="Ausführen">RUN</button>
+        </form>
+      </div>
+    </div>
+    <p class="hero-tag">Individuelle KI-Systeme.
+Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
+  </div>
 </header>
 
-<!-- 1. Pinned Animation Section (first thing visible) -->
-<section class="sequence-section" id="seq1">
-  <div class="sequence-sticky">
-    <canvas class="sequence-canvas" id="canvas1"></canvas>
-    <div class="sequence-fade" id="seqFade"></div>
-    <button class="auto-scroll-btn" id="autoScrollBtn">
-      <span class="auto-scroll-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+<!-- LIFECYCLE -->
+<section id="leistung" data-screen-label="02 Leistungen">
+  <div class="section-header">
+    <p class="kicker">— Für Geschäftskunden</p>
+    <h2 class="section-title">Der komplette KI-Lebens&shy;zyklus.<br/>Aus einer Hand.</h2>
+    <p class="section-sub">Von der ersten Datenanalyse bis zum produktiven Betrieb begleiten wir jedes Projekt durch alle Phasen der KI-Entwicklung.</p>
+  </div>
+
+  <div class="lifecycle">
+    <article class="phase p1">
+      <div class="phase-num mono">01</div>
+      <div class="phase-body">
+        <h3>Datenauf&shy;bereitung</h3>
+        <p class="phase-desc">Rohdaten werden strukturiert, bereinigt und in eine trainingsfertige Pipeline verwandelt.</p>
+        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Datenvalidierung, Feature Engineering, ETL-Pipelines und automatisierte Qualitätschecks – alles reproduzierbar und versioniert.</p></div></div>
+        <button type="button" class="phase-link" aria-expanded="false">Mehr erfahren <span class="arr">›</span></button>
+      </div>
+    </article>
+
+    <article class="phase p2">
+      <div class="phase-num mono">02</div>
+      <div class="phase-body">
+        <h3>Modell&shy;training</h3>
+        <p class="phase-desc">Modelle werden trainiert, evaluiert und iterativ optimiert – mit vollständigem Experiment-Tracking.</p>
+        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Hyperparameter-Optimierung, verteiltes Training, Modellvergleich und automatisierte Validierung gegen definierte Metriken.</p></div></div>
+        <button type="button" class="phase-link" aria-expanded="false">Mehr erfahren <span class="arr">›</span></button>
+      </div>
+    </article>
+
+    <article class="phase p3">
+      <div class="phase-num mono">03</div>
+      <div class="phase-body">
+        <h3>Deployment</h3>
+        <p class="phase-desc">Vom Prototyp zur Produktion – skalierbar, sicher und nahtlos in bestehende Systeme integriert.</p>
+        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">CI/CD für ML-Modelle, Container-Orchestrierung, A/B-Testing, Canary Deployments und automatisiertes Rollback.</p></div></div>
+        <button type="button" class="phase-link" aria-expanded="false">Mehr erfahren <span class="arr">›</span></button>
+      </div>
+    </article>
+
+    <article class="phase p4">
+      <div class="phase-num mono">04</div>
+      <div class="phase-body">
+        <h3>Monitoring &amp; Betrieb</h3>
+        <p class="phase-desc">Kontinuierliche Überwachung, Drift-Erkennung und automatisiertes Retraining im laufenden Betrieb.</p>
+        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Performance-Dashboards, Data-Drift-Alerts, automatische Retraining-Trigger und SLA-Monitoring – rund um die Uhr.</p></div></div>
+        <button type="button" class="phase-link" aria-expanded="false">Mehr erfahren <span class="arr">›</span></button>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="produkte" class="products" data-screen-label="03 Produkte">
+  <div class="section-header" style="padding-left:0; padding-right:0;">
+    <p class="kicker">— Für Endkunden</p>
+    <h2 class="section-title">Unsere Consumer Produkte</h2>
+  </div>
+
+  <article class="product-card">
+    <div class="product-visual">
+      <span class="badge mono">B2C · Live</span>
+      <img class="app-icon" src="assets/glutenfreetoday-icon.png" alt="GlutenFreeToday App Icon" />
+    </div>
+    <div class="product-info">
+      <h3>GlutenFreeToday</h3>
+      <p>Die App, die zöliakiebetroffenen Menschen den Alltag erleichtert: KI-gestützte Produktanalyse, kuratierte Restaurant-Datenbank und persönliche Verträglichkeits-Insights.</p>
+      <div class="product-meta">
+        <span>iOS &amp; Android</span>
+        <span>Computer Vision</span>
+        <span>Live in DACH</span>
+      </div>
+      <a href="#" class="product-cta">App ansehen <span>→</span></a>
+    </div>
+  </article>
+</section>
+
+<!-- TEAM -->
+<section id="about" data-screen-label="04 About">
+  <div class="section-header">
+    <p class="kicker">— About us</p>
+    <h2 class="section-title">Die Köpfe hinter<br/>DKS-Analytics.</h2>
+    <p class="section-sub">Drei Gründer, eine Mission: KI-Systeme, die im echten Betrieb bestehen.</p>
+  </div>
+
+  <div class="team-grid">
+    <article class="team-card">
+      <div class="team-photo">
+        <image-slot id="founder-karl" placeholder="Portrait — Karl Domanowsky" shape="rounded" radius="16"></image-slot>
+      </div>
+      <div>
+        <div class="team-name">Karl Domanowsky</div>
+        <div class="team-role mono">Managing Director — Operations</div>
+        <p class="team-bio">Experte für operative Prozesse und effizientes Management. Stellt sicher, dass Modelle ihren Weg in den Produktivbetrieb finden.</p>
+        <div class="team-tag">01 / Founder</div>
+      </div>
+    </article>
+
+    <article class="team-card">
+      <div class="team-photo">
+        <image-slot id="founder-marvin" placeholder="Portrait — Marvin Kasper" shape="rounded" radius="16"></image-slot>
+      </div>
+      <div>
+        <div class="team-name">Marvin Kasper</div>
+        <div class="team-role mono">Managing Director — Finance / Controlling</div>
+        <p class="team-bio">Experte für Finance und Controlling. Verantwortet Wirtschaftlichkeit, Reporting und kaufmännische Steuerung jedes Projekts.</p>
+        <div class="team-tag">02 / Founder</div>
+      </div>
+    </article>
+
+    <article class="team-card">
+      <div class="team-photo">
+        <image-slot id="founder-fabian" placeholder="Portrait — Fabian Stöhr" shape="rounded" radius="16"></image-slot>
+      </div>
+      <div>
+        <div class="team-name">Fabian Stöhr</div>
+        <div class="team-role mono">Managing Director — IT</div>
+        <p class="team-bio">Spezialisiert auf Planung und Implementierung von KI-Strategien. Architektur, Modellauswahl und technische Roadmap.</p>
+        <div class="team-tag">03 / Founder</div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- END CTA -->
+<section id="kontakt" class="endcta" data-screen-label="05 Kontakt">
+  <h2>Bereit für den<br/>nächsten Schritt?</h2>
+  <p>Lassen Sie uns gemeinsam Ihr KI-System entwickeln. Ein erstes Gespräch ist unverbindlich und dauert 30 Minuten.</p>
+  <div class="endcta-row">
+    <button class="cta">Gespräch vereinbaren <span>→</span></button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-brand">
+      <svg class="logo-mark" viewBox="-50 -50 100 100" style="width:30px;height:30px;" aria-hidden="true">
+        <g class="edges">
+          <line class="edge" x1="0" y1="-36" x2="25.46" y2="-25.46"/><line class="edge" x1="25.46" y1="-25.46" x2="36" y2="0"/>
+          <line class="edge" x1="36" y1="0" x2="25.46" y2="25.46"/><line class="edge" x1="25.46" y1="25.46" x2="0" y2="36"/>
+          <line class="edge" x1="0" y1="36" x2="-25.46" y2="25.46"/><line class="edge" x1="-25.46" y1="25.46" x2="-36" y2="0"/>
+          <line class="edge" x1="-36" y1="0" x2="-25.46" y2="-25.46"/><line class="edge" x1="-25.46" y1="-25.46" x2="0" y2="-36"/>
+          <line class="edge" x1="0" y1="0" x2="0" y2="-36"/><line class="edge" x1="0" y1="0" x2="25.46" y2="-25.46"/>
+          <line class="edge" x1="0" y1="0" x2="36" y2="0"/><line class="edge" x1="0" y1="0" x2="25.46" y2="25.46"/>
+          <line class="edge" x1="0" y1="0" x2="0" y2="36"/><line class="edge" x1="0" y1="0" x2="-25.46" y2="25.46"/>
+          <line class="edge" x1="0" y1="0" x2="-36" y2="0"/><line class="edge" x1="0" y1="0" x2="-25.46" y2="-25.46"/>
+          <line class="edge" x1="0" y1="-36" x2="36" y2="0"/><line class="edge" x1="25.46" y1="-25.46" x2="25.46" y2="25.46"/>
+          <line class="edge" x1="36" y1="0" x2="0" y2="36"/><line class="edge" x1="25.46" y1="25.46" x2="-25.46" y2="25.46"/>
+          <line class="edge" x1="0" y1="36" x2="-36" y2="0"/><line class="edge" x1="-25.46" y1="25.46" x2="-25.46" y2="-25.46"/>
+          <line class="edge" x1="-36" y1="0" x2="0" y2="-36"/><line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="-25.46"/>
+          <line class="edge" x1="0" y1="-36" x2="0" y2="36"/><line class="edge" x1="-36" y1="0" x2="36" y2="0"/>
+          <line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="25.46"/><line class="edge" x1="25.46" y1="-25.46" x2="-25.46" y2="25.46"/>
+        </g>
+        <circle class="node" cx="0" cy="-36" r="6"/><circle class="node" cx="25.46" cy="-25.46" r="6"/>
+        <circle class="node" cx="36" cy="0" r="6"/><circle class="node" cx="25.46" cy="25.46" r="6"/>
+        <circle class="node" cx="0" cy="36" r="6"/><circle class="node" cx="-25.46" cy="25.46" r="6"/>
+        <circle class="node" cx="-36" cy="0" r="6"/><circle class="node" cx="-25.46" cy="-25.46" r="6"/>
+        <circle class="pulse" cx="0" cy="0" r="3"/>
+      </svg>
+      <span class="logo-text">
+        <span class="word">DKS Analytics GmbH</span>
+        <span class="sub">AN AI FIRST COMPANY</span>
       </span>
-      <span class="auto-scroll-label">Ideen verwirklichen</span>
-    </button>
-    <div class="mid-scroll-box hidden" id="midScrollBox">
-      <p class="mid-scroll-text">Wir bei DKS Analytics helfen Ihnen genau dabei, Ihre Ideen umzusetzen.</p>
-      <button class="auto-scroll-btn" id="continueScrollBtn" style="position:relative;bottom:auto;">
-        <span class="auto-scroll-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-        </span>
-        Idee implementieren
-      </button>
     </div>
-    <div class="scroll-hint">Scroll to explore</div>
+    <p class="footer-meta">KI‑Lebenszyklus aus einer Hand.<br/>Stuttgart, Deutschland.</p>
   </div>
-</section>
-
-<!-- 2. Hero Section (revealed after animation) -->
-<section class="hero">
-  <h1 class="headline-large">Wir entwickeln die Zukunft</h1>
-  <p class="body-text">
-    End-to-End KI-Systeme aus Deutschland
-  </p>
-</section>
-
-<!-- 3. MLOps Flow Section (B2B) -->
-<section class="mlops" id="leistungen">
-  <div class="mlops-label">Fuer Geschaeftskunden</div>
-  <h2 class="mlops-heading">Der komplette KI-Lebenszyklus. Aus einer Hand.</h2>
-  <p class="mlops-sub">
-    Von der ersten Datenanalyse bis zum produktiven Betrieb begleiten wir jedes Projekt durch alle Phasen der KI-Entwicklung.
-  </p>
-  <div class="mlops-grid">
-
-    <div class="mlops-card" >
-      <div class="mlops-card-number">01</div>
-      <div class="mlops-card-icon">
-        <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="19" cy="17" r="2"/></svg>
-      </div>
-      <div class="mlops-card-title">Datenaufbereitung</div>
-      <div class="mlops-card-desc">Rohdaten werden strukturiert, bereinigt und in eine trainingsfertige Pipeline verwandelt.</div>
-      <div class="mlops-card-toggle">Mehr erfahren <span class="mlops-card-toggle-arrow">&rsaquo;</span></div>
-      <div class="mlops-card-detail">
-        <div class="mlops-card-detail-inner">
-          Datenvalidierung, Feature Engineering, ETL-Pipelines und automatisierte Qualitaetschecks &ndash; alles reproduzierbar und versioniert.
-        </div>
-      </div>
-    </div>
-
-    <div class="mlops-card" >
-      <div class="mlops-card-number">02</div>
-      <div class="mlops-card-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/><circle cx="12" cy="12" r="5"/><path d="M12 9v6m-3-3h6"/></svg>
-      </div>
-      <div class="mlops-card-title">Modelltraining</div>
-      <div class="mlops-card-desc">Modelle werden trainiert, evaluiert und iterativ optimiert &ndash; mit vollstaendigem Experiment-Tracking.</div>
-      <div class="mlops-card-toggle">Mehr erfahren <span class="mlops-card-toggle-arrow">&rsaquo;</span></div>
-      <div class="mlops-card-detail">
-        <div class="mlops-card-detail-inner">
-          Hyperparameter-Optimierung, verteiltes Training, Modellvergleich und automatisierte Validierung gegen definierte Metriken.
-        </div>
-      </div>
-    </div>
-
-    <div class="mlops-card" >
-      <div class="mlops-card-number">03</div>
-      <div class="mlops-card-icon">
-        <svg viewBox="0 0 24 24"><path d="M4 17l6-6 4 4 6-6"/><path d="M14 7h6v6"/></svg>
-      </div>
-      <div class="mlops-card-title">Deployment</div>
-      <div class="mlops-card-desc">Vom Prototyp zur Produktion &ndash; skalierbar, sicher und nahtlos in bestehende Systeme integriert.</div>
-      <div class="mlops-card-toggle">Mehr erfahren <span class="mlops-card-toggle-arrow">&rsaquo;</span></div>
-      <div class="mlops-card-detail">
-        <div class="mlops-card-detail-inner">
-          CI/CD fuer ML-Modelle, Container-Orchestrierung, A/B-Testing, Canary Deployments und automatisiertes Rollback.
-        </div>
-      </div>
-    </div>
-
-    <div class="mlops-card" >
-      <div class="mlops-card-number">04</div>
-      <div class="mlops-card-icon">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      </div>
-      <div class="mlops-card-title">Monitoring & Betrieb</div>
-      <div class="mlops-card-desc">Kontinuierliche Ueberwachung, Drift-Erkennung und automatisiertes Retraining im laufenden Betrieb.</div>
-      <div class="mlops-card-toggle">Mehr erfahren <span class="mlops-card-toggle-arrow">&rsaquo;</span></div>
-      <div class="mlops-card-detail">
-        <div class="mlops-card-detail-inner">
-          Performance-Dashboards, Data-Drift-Alerts, automatische Retraining-Trigger und SLA-Monitoring &ndash; rund um die Uhr.
-        </div>
-      </div>
-    </div>
-
+  <div>
+    <h5>Leistungen</h5>
+    <ul>
+      <li><a href="#">Datenaufbereitung</a></li>
+      <li><a href="#">Modelltraining</a></li>
+      <li><a href="#">Deployment</a></li>
+      <li><a href="#">Monitoring</a></li>
+    </ul>
   </div>
-</section>
-
-<!-- 4. B2C Products Section -->
-<section class="b2c" id="b2c">
-  <div class="b2c-label">Fuer Endkunden</div>
-  <h2 class="b2c-heading">Unsere Consumer Produkte</h2>
-  <div class="b2c-grid">
-    <a href="https://www.glutenfreetoday.de" target="_blank" rel="noopener" class="b2c-icon-link">
-      <div class="b2c-icon-bubble">
-        <img src="icon/app-icon-large.png" alt="GlutenFreeToday" class="b2c-icon-img">
-      </div>
-      <span class="b2c-icon-label">GlutenFreeToday</span>
-    </a>
+  <div>
+    <h5>Unternehmen</h5>
+    <ul>
+      <li><a href="#about">Über uns</a></li>
+      <li><a href="#produkte">Produkte</a></li>
+      <li><a href="Karriere.html">Karriere</a></li>
+      <li><a href="#">Kontakt</a></li>
+    </ul>
   </div>
-</section>
-
-<!-- 5. About Us Section -->
-<section class="about" id="about">
-  <div class="about-label">About Us</div>
-  <h2 class="about-heading">Die Koepfe hinter DKS-Analytics</h2>
-  <p class="about-sub">
-    Drei Gruender, eine Mission: KI-Systeme, die im echten Betrieb bestehen.
-  </p>
-  <div class="about-grid">
-
-    <div class="about-person">
-      <div class="about-bubble" style="--float-duration: 5.5s; --float-delay: 0s;">
-        <img src="img/KUN_0059final-scaled-r9q6pivpckjtxyxqrsz5jjbxdkjsziyzvjdja31zy8-2.jpg" alt="Managing Director 1">
-      </div>
-      <div class="about-person-name">Marvin Kasper</div>
-      <div class="about-person-role">Managing Director (Finance / Controlling)</div>
-      <p class="about-person-bio">Experte für Finance und Controlling.</p>
-    </div>
-
-    <div class="about-person">
-      <div class="about-bubble" style="--float-duration: 6.5s; --float-delay: 0.8s;">
-        <img src="img/Fabian_2.jpg" alt="Managing Director 2">
-      </div>
-      <div class="about-person-name">Fabian Stöhr</div>
-      <div class="about-person-role">Managing Director (IT)</div>
-      <p class="about-person-bio">Spezialisiert auf Planung und Implementierung von KI-Strategien.</p>
-    </div>
-
-    <div class="about-person">
-      <div class="about-bubble" style="--float-duration: 7s; --float-delay: 1.5s;">
-        <img src="img/IMG_1707-scaled-e1754251236765-2048x1630-2.jpeg" alt="Managing Director 3">
-      </div>
-      <div class="about-person-name">Karl Domanowsky</div>
-      <div class="about-person-role">Managing Director (Operations)</div>
-      <p class="about-person-bio">Experte für operative Prozesse und effizientes Management.</p>
-    </div>
-
+  <div>
+    <h5>Rechtliches</h5>
+    <ul>
+      <li><a href="Impressum.html">Impressum</a></li>
+      <li><a href="Datenschutz.html">Datenschutz</a></li>
+      <li><a href="#">AGB</a></li>
+    </ul>
   </div>
-</section>
+  <div class="footer-bottom mono">
+    <span>© 2026 DKS Analytics GmbH</span>
+    <span>Made in Germany · v1.0</span>
+  </div>
+</footer>
 
-<!-- 5. Outro Section -->
-<section class="outro">
-  <h2 class="headline-medium">Bereit fuer den naechsten Schritt?</h2>
-  <p class="body-text" style="margin: 0 auto;">
-    Lassen Sie uns gemeinsam Ihr KI-System entwickeln.
-  </p>
-  <a href="#" class="cta-button">Kontakt aufnehmen</a>
-</section>
-
+<!-- DYNAMICS MODULE — scroll reveal, magnetic CTAs, hero accent morph, scroll-driven mood -->
 <script>
-(() => {
-  'use strict';
+(function () {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const TOTAL_FRAMES = 600;
-  const FRAME_PATH = 'frames/vid1/frame_';
+  // ===== 1. Scroll reveal =====
+  // Tag candidates that aren't already animated by the hero CSS.
+  const revealTargets = document.querySelectorAll(
+    '.section-header, .section-header > *, .phase, .product-card, .team-card, .endcta > *, footer > div'
+  );
+  revealTargets.forEach(el => el.classList.add('reveal'));
+  // Group siblings under their parent for stagger
+  document.querySelectorAll('.lifecycle, .team-grid, .section-header').forEach(g => g.classList.add('reveal-group'));
 
-  const sectionEl = document.getElementById('seq1');
-  const canvas = document.getElementById('canvas1');
-  const ctx = canvas.getContext('2d');
-
-  const frames = new Array(TOTAL_FRAMES).fill(null);
-  let loadedCount = 0;
-  let currentFrame = -1;
-  let ticking = false;
-
-  /* ── Canvas sizing ───────────────────────────────────── */
-  function sizeCanvas() {
-    const dpr = window.devicePixelRatio || 1;
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    if (currentFrame >= 0 && frames[currentFrame]) {
-      drawFrame(currentFrame);
-    }
-  }
-
-  /* ── Draw frame ──────────────────────────────────────── */
-  function drawFrame(index) {
-    const img = frames[index];
-    if (!img) return;
-
-    const cw = window.innerWidth;
-    const ch = window.innerHeight;
-    const imgRatio = img.naturalWidth / img.naturalHeight;
-    const canvasRatio = cw / ch;
-
-    let dw, dh, dx, dy;
-    if (imgRatio > canvasRatio) {
-      dh = ch; dw = ch * imgRatio;
-    } else {
-      dw = cw; dh = cw / imgRatio;
-    }
-    dx = (cw - dw) / 2;
-    dy = (ch - dh) / 2;
-
-    ctx.clearRect(0, 0, cw, ch);
-    ctx.drawImage(img, dx, dy, dw, dh);
-    currentFrame = index;
-  }
-
-  /* ── Preloading ──────────────────────────────────────── */
-  function padNumber(n) {
-    return String(n).padStart(4, '0');
-  }
-
-  function loadFrame(index) {
-    return new Promise((resolve, reject) => {
-      if (frames[index]) { resolve(); return; }
-      const img = new Image();
-      img.onload = () => { frames[index] = img; loadedCount++; resolve(); };
-      img.onerror = reject;
-      img.src = FRAME_PATH + padNumber(index + 1) + '.webp';
-    });
-  }
-
-  async function preloadAll(onProgress) {
-    const batchSize = 6;
-    await loadFrame(0);
-    if (onProgress) onProgress();
-    for (let i = 1; i < TOTAL_FRAMES; i += batchSize) {
-      const batch = [];
-      for (let j = i; j < Math.min(i + batchSize, TOTAL_FRAMES); j++) {
-        batch.push(loadFrame(j));
-      }
-      await Promise.all(batch);
-      if (onProgress) onProgress();
-    }
-  }
-
-  /* ── Scroll logic ────────────────────────────────────── */
-  function getProgress() {
-    const rect = sectionEl.getBoundingClientRect();
-    const scrollable = sectionEl.offsetHeight - window.innerHeight;
-    if (scrollable <= 0) return 0;
-    return Math.max(0, Math.min(1, -rect.top / scrollable));
-  }
-
-  function updateOverlays(progress) {
-    sectionEl.querySelectorAll('.overlay-text').forEach(el => {
-      const start = parseFloat(el.dataset.start);
-      const end = parseFloat(el.dataset.end);
-      el.classList.toggle('visible', progress >= start && progress <= end);
-    });
-  }
-
-  const seqFade = document.getElementById('seqFade');
-
-  function onScroll() {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => {
-      const progress = getProgress();
-      const frameIndex = Math.min(TOTAL_FRAMES - 1, Math.floor(progress * TOTAL_FRAMES));
-      if (frameIndex !== currentFrame && frames[frameIndex]) {
-        drawFrame(frameIndex);
-      }
-      updateOverlays(progress);
-
-      // Fade out in the last 20% of scroll
-      const fadeStart = 0.8;
-      if (progress > fadeStart) {
-        seqFade.style.opacity = (progress - fadeStart) / (1 - fadeStart);
-      } else {
-        seqFade.style.opacity = 0;
-      }
-
-      ticking = false;
-    });
-  }
-
-  /* ── Loading screen ──────────────────────────────────── */
-  const loadingOverlay = document.getElementById('loadingOverlay');
-  const loadingBar = document.getElementById('loadingBar');
-  const loadingLabel = document.getElementById('loadingLabel');
-
-  function updateLoading() {
-    const pct = Math.round((loadedCount / TOTAL_FRAMES) * 100);
-    loadingBar.style.width = pct + '%';
-    loadingLabel.textContent = 'Loading frames... ' + pct + '%';
-  }
-
-  function hideLoading() {
-    loadingOverlay.classList.add('hidden');
-    setTimeout(() => { loadingOverlay.style.display = 'none'; }, 700);
-  }
-
-  /* ── Init ────────────────────────────────────────────── */
-  async function init() {
-    sizeCanvas();
-    await preloadAll(updateLoading);
-    drawFrame(0);
-    hideLoading();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', sizeCanvas);
-    onScroll();
-  }
-
-  init();
-
-  /* ── Auto-scroll (23s like original video) ────────────── */
-  const autoScrollBtn = document.getElementById('autoScrollBtn');
-  let autoScrolling = false;
-  let autoScrollRaf = null;
-  let autoScrollRunId = 0;
-
-  const PAUSE_FRAME = 194;
-  const PAUSE_PROGRESS = PAUSE_FRAME / TOTAL_FRAMES;
-  const BOX_BACKGROUND_END_FRAME = 270; // zero-based index => frame_0291.webp
-  const BOX_BACKGROUND_END_PROGRESS = BOX_BACKGROUND_END_FRAME / TOTAL_FRAMES;
-  const TOTAL_DURATION = 23000; // 23 seconds — matches original video
-  const midScrollBox = document.getElementById('midScrollBox');
-  const continueScrollBtn = document.getElementById('continueScrollBtn');
-
-  function getSequenceScrollTarget(progress) {
-    const scrollable = sectionEl.offsetHeight - window.innerHeight;
-    return sectionEl.offsetTop + scrollable * progress;
-  }
-
-  function beginAutoScroll() {
-    if (autoScrollRaf !== null) {
-      cancelAnimationFrame(autoScrollRaf);
-      autoScrollRaf = null;
-    }
-    autoScrollRunId += 1;
-    autoScrolling = true;
-    return autoScrollRunId;
-  }
-
-  function stopAutoScroll() {
-    if (autoScrollRaf !== null) {
-      cancelAnimationFrame(autoScrollRaf);
-      autoScrollRaf = null;
-    }
-    autoScrollRunId += 1;
-    autoScrolling = false;
-  }
-
-  function smoothScroll(from, to, duration, runId) {
-    return new Promise(resolve => {
-      if (duration <= 0 || Math.abs(to - from) < 1) {
-        window.scrollTo(0, to);
-        resolve(runId === autoScrollRunId);
-        return;
-      }
-
-      const distance = to - from;
-      let startTime = null;
-      function step(timestamp) {
-        if (runId !== autoScrollRunId) {
-          resolve(false);
-          return;
+  if (!reduced && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          // also mark group ancestor so stagger CSS kicks in
+          const grp = e.target.closest('.reveal-group');
+          if (grp) grp.classList.add('in');
+          io.unobserve(e.target);
         }
-
-        if (!startTime) startTime = timestamp;
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        window.scrollTo(0, from + distance * progress);
-        if (progress < 1) {
-          autoScrollRaf = requestAnimationFrame(step);
-        } else {
-          autoScrollRaf = null;
-          resolve(true);
-        }
-      }
-      autoScrollRaf = requestAnimationFrame(step);
-    });
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+    revealTargets.forEach(el => io.observe(el));
+  } else {
+    revealTargets.forEach(el => el.classList.add('in'));
+    document.querySelectorAll('.reveal-group').forEach(g => g.classList.add('in'));
   }
 
-  // Phase 1: scroll to pause point
-  autoScrollBtn.addEventListener('click', async () => {
-    if (autoScrolling) return;
-    autoScrollBtn.classList.add('hidden');
-    const runId = beginAutoScroll();
-
-    const start = window.scrollY;
-    const pausePos = getSequenceScrollTarget(PAUSE_PROGRESS);
-    const phase1Duration = TOTAL_DURATION * PAUSE_PROGRESS;
-
-    const reachedPause = await smoothScroll(start, pausePos, phase1Duration, runId);
-    if (!reachedPause || runId !== autoScrollRunId) return;
-
-    midScrollBox.classList.remove('hidden');
-
-    const backgroundTarget = getSequenceScrollTarget(BOX_BACKGROUND_END_PROGRESS);
-    const backgroundDuration = TOTAL_DURATION * (BOX_BACKGROUND_END_PROGRESS - PAUSE_PROGRESS);
-    const reachedBackgroundTarget = await smoothScroll(window.scrollY, backgroundTarget, backgroundDuration, runId);
-
-    if (reachedBackgroundTarget && runId === autoScrollRunId) {
-      autoScrolling = false;
-    }
+  // ===== 1b. Phase 'Mehr erfahren' expand/collapse =====
+  document.addEventListener('click', function (ev) {
+    const btn = ev.target.closest('.phase-link');
+    if (!btn) return;
+    ev.preventDefault();
+    const phase = btn.closest('.phase');
+    if (!phase) return;
+    const open = phase.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(open));
+    btn.firstChild.textContent = open ? 'Weniger zeigen ' : 'Mehr erfahren ';
   });
 
-  // Phase 2: continue scrolling until "Wir entwickeln die Zukunft" is centered
-  continueScrollBtn.addEventListener('click', async () => {
-    if (autoScrolling) {
-      stopAutoScroll();
-    }
-    const runId = beginAutoScroll();
-    midScrollBox.classList.add('hidden');
-
-    const heroHeadline = document.querySelector('.hero h1');
-    const rect = heroHeadline.getBoundingClientRect();
-    const heroTarget = window.scrollY + rect.top + (rect.height / 2) - (window.innerHeight / 2);
-    const start = window.scrollY;
-    const fullEnd = sectionEl.offsetTop + sectionEl.offsetHeight - window.innerHeight;
-    const phase2Fraction = (heroTarget - start) / (fullEnd - start);
-    const phase2Duration = TOTAL_DURATION * (1 - PAUSE_PROGRESS) * phase2Fraction;
-
-    const reachedHero = await smoothScroll(start, heroTarget, phase2Duration, runId);
-    if (reachedHero && runId === autoScrollRunId) {
-      autoScrolling = false;
-    }
-  });
-
-  // Hide button once user scrolls manually
-  function checkAutoScrollBtn() {
-    const scrollY = window.scrollY || window.pageYOffset;
-    if (scrollY > 50 && !autoScrolling) {
-      autoScrollBtn.classList.add('hidden');
-    }
-  }
-  window.addEventListener('scroll', checkAutoScrollBtn, { passive: true });
-
-  /* ── Header fade on scroll ─────────────────────────────── */
-  const siteHeader = document.getElementById('siteHeader');
-  function updateHeader() {
-    const scrollY = window.scrollY || window.pageYOffset;
-    siteHeader.classList.toggle('hidden', scrollY > 50);
-  }
-  window.addEventListener('scroll', updateHeader, { passive: true });
-  updateHeader();
-
-  /* ── Card expand/collapse (only one at a time) ────────── */
-  document.querySelectorAll('.mlops-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const wasExpanded = card.classList.contains('expanded');
-      document.querySelectorAll('.mlops-card.expanded').forEach(c => c.classList.remove('expanded'));
-      if (!wasExpanded) card.classList.add('expanded');
-    });
-  });
-
-  /* ── Card mouse glow effect ──────────────────────────── */
-  document.querySelectorAll('.mlops-card').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
-      const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
-      card.style.setProperty('--mouse-x', x + '%');
-      card.style.setProperty('--mouse-y', y + '%');
-    });
-  });
-
-  /* ── Particle Network Background ────────────────────── */
-  (() => {
-    const pc = document.getElementById('particleCanvas');
-    const pCtx = pc.getContext('2d');
-    const PARTICLE_COUNT = 80;
-    const CONNECT_DIST = 120;
-    const MOUSE_DIST = 180;
-    const particles = [];
-    let mouseX = -9999, mouseY = -9999;
-    let pW, pH, pDpr;
-
-    function sizeParticleCanvas() {
-      pDpr = window.devicePixelRatio || 1;
-      pW = window.innerWidth;
-      pH = window.innerHeight;
-      pc.width = pW * pDpr;
-      pc.height = pH * pDpr;
-      pc.style.width = pW + 'px';
-      pc.style.height = pH + 'px';
-      pCtx.setTransform(pDpr, 0, 0, pDpr, 0, 0);
-    }
-
-    function createParticles() {
-      particles.length = 0;
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        particles.push({
-          x: Math.random() * pW,
-          y: Math.random() * pH,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          r: Math.random() * 1.5 + 0.5,
+  // ===== 2. Magnetic CTAs =====
+  if (!reduced) {
+    const mags = document.querySelectorAll('.cta:not(.cta-chat), .menu-btn, .product-cta, .endcta .ghost');
+    mags.forEach(btn => {
+      let raf = 0;
+      btn.addEventListener('pointermove', (ev) => {
+        const r = btn.getBoundingClientRect();
+        const x = ev.clientX - r.left;
+        const y = ev.clientY - r.top;
+        const dx = (x / r.width  - 0.5) * 8;   // ±4px
+        const dy = (y / r.height - 0.5) * 8;
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          btn.style.transform = `translate(${dx}px, ${dy}px)`;
+          btn.style.setProperty('--mx', (x / r.width  * 100) + '%');
+          btn.style.setProperty('--my', (y / r.height * 100) + '%');
         });
+      });
+      btn.addEventListener('pointerleave', () => {
+        cancelAnimationFrame(raf);
+        btn.style.transform = '';
+      });
+    });
+  }
+
+  // ===== 3. Hero accent morph =====
+  // Cycle the gradient position so the accent word breathes through all 4 mood hues.
+  const accent = document.querySelector('.hero-accent');
+  if (accent && !reduced) {
+    let pos = 0;
+    setInterval(() => {
+      pos = (pos + 33.333) % 200;
+      accent.style.setProperty('--accent-pos', pos + '%');
+    }, 2400);
+  }
+
+  // ===== 4. Scroll-driven mood arc =====
+  // As the user scrolls 0→100% of the document, blend the 4 mood hues across body.
+  // We rewrite --m1..m4 hue + chroma on the body, which both phase cards and the end-CTA pick up.
+  const moods = [
+    { h: 250, c: 0.00 },  // top — neutral bone, no tint
+    { h: 35,  c: 0.10 },  // produkte — warm sand
+    { h: 320, c: 0.14 },  // about — dusk magenta
+    { h: 250, c: 0.12 },  // kontakt — deep blue
+  ];
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  // shortest-path hue lerp around the wheel
+  function lerpHue(a, b, t) {
+    let d = ((b - a + 540) % 360) - 180;
+    return (a + d * t + 360) % 360;
+  }
+  let scrollRaf = 0;
+  function updateMood() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    // interpolate a "now" colour that gently shifts and apply it as a soft body wash.
+    const idx = p * (moods.length - 1);
+    const i0 = Math.floor(idx), i1 = Math.min(moods.length - 1, i0 + 1);
+    const tt = idx - i0;
+    const h = lerpHue(moods[i0].h, moods[i1].h, tt);
+    const c = lerp(moods[i0].c, moods[i1].c, tt);
+    // Wash the page background subtly toward the mood — keeps the bone palette but adds atmosphere.
+    document.body.style.backgroundColor = `oklch(0.96 ${(c * 0.14).toFixed(3)} ${h.toFixed(1)})`;
+  }
+  if (!reduced) {
+    window.addEventListener('scroll', () => {
+      cancelAnimationFrame(scrollRaf);
+      scrollRaf = requestAnimationFrame(updateMood);
+    }, { passive: true });
+    updateMood();
+  }
+
+  // ===== 4.5 Menu overlay =====
+  {
+    const menuBtn = document.querySelector('.menu-btn');
+    const menuOv = document.getElementById('menuOverlay');
+    if (menuBtn && menuOv) {
+      const setMenu = (open) => {
+        document.body.classList.toggle('menu-open', open);
+        menuBtn.setAttribute('aria-expanded', String(open));
+        menuOv.setAttribute('aria-hidden', String(!open));
+      };
+      menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+      menuOv.addEventListener('click', e => {
+        if (e.target.closest('.menu-list a')) { setMenu(false); return; }
+        if (!e.target.closest('.menu-overlay-panel')) setMenu(false);
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.body.classList.contains('menu-open')) setMenu(false);
+      });
+    }
+  }
+
+  // ===== 5. CTA → Chat morph =====
+  const cta = document.getElementById('ctaChat');
+  if (cta) {
+    // Measure the natural pill size ONCE on load. Animating width:auto doesn't work,
+    // so we freeze the closed dimensions as CSS vars. Don't re-measure on resize —
+    // a reflow during the close transition can capture a mid-animation width and
+    // poison the next open. The pill width is stable enough to ignore resizes.
+    requestAnimationFrame(() => {
+      const r = cta.getBoundingClientRect();
+      cta.style.setProperty('--closed-w', r.width + 'px');
+      cta.style.setProperty('--closed-h', r.height + 'px');
+    });
+    const log = cta.querySelector('#chatLog');
+    const form = cta.querySelector('#chatForm');
+    const field = cta.querySelector('#chatField');
+    const closeBtn = cta.querySelector('.chat-close');
+    const sendBtn = cta.querySelector('.chat-send');
+    let busy = false;
+    let history = [];
+
+    const SYSTEM = "Du bist der DKS Assistant von DKS Analytics GmbH (München) — ein KI-First-Beratungshaus für den kompletten KI-Lebenszyklus: Datenaufbereitung, Modelltraining, Deployment, Monitoring & Betrieb. Antworte auf Deutsch (außer der Nutzer schreibt Englisch), prägnant (max. 3 kurze Absätze), konkret und beratend. Wenn der Nutzer ein Vorhaben beschreibt: skizziere kurz einen ersten Lösungspfad in den vier Lebenszyklus-Phasen. Schließe optional mit einer Rückfrage. Kein Marketing-Sprech.";
+
+    // Smooth-scroll easing helper (used so the page slides down to make room
+    // for the expanded chat BEFORE the box morph starts).
+    function smoothScrollTo(targetY, duration) {
+      const startY = window.scrollY;
+      const dist = targetY - startY;
+      if (Math.abs(dist) < 2) return Promise.resolve();
+      const start = performance.now();
+      const ease = (t) => 1 - Math.pow(1 - t, 3); // easeOutCubic
+      return new Promise((resolve) => {
+        function step(now) {
+          const t = Math.min(1, (now - start) / duration);
+          window.scrollTo(0, startY + dist * ease(t));
+          if (t < 1) requestAnimationFrame(step);
+          else resolve();
+        }
+        requestAnimationFrame(step);
+      });
+    }
+
+    async function open() {
+      if (cta.classList.contains('is-open')) return;
+      cta.setAttribute('aria-expanded', 'true');
+
+      // Make sure the expanded box (440 wide × 460 tall, anchored at the pill's
+      // current top-left) will be fully visible. If not, scroll smoothly first.
+      const OPEN_H = 460;
+      const MARGIN = 24;
+      const r = cta.getBoundingClientRect();
+      const bottomNeeded = r.top + OPEN_H + MARGIN; // viewport-y the bottom edge will reach
+      const overflow = bottomNeeded - window.innerHeight;
+      if (overflow > 0) {
+        const target = Math.min(
+          window.scrollY + overflow,
+          document.documentElement.scrollHeight - window.innerHeight
+        );
+        await smoothScrollTo(target, 550);
+      }
+
+      cta.classList.add('is-open');
+      // kill any leftover magnetic transform
+      cta.style.transform = '';
+      setTimeout(() => field && field.focus(), 1100);
+      if (!booted) { booted = true; bootSequence(); }
+    }
+    function close() {
+      cta.classList.remove('is-open');
+      cta.setAttribute('aria-expanded', 'false');
+    }
+    cta.addEventListener('click', (ev) => {
+      if (cta.classList.contains('is-open')) return; // clicks inside are handled by their own handlers
+      ev.preventDefault();
+      open(); // async — fire and forget
+    });
+    cta.addEventListener('keydown', (ev) => {
+      if (cta.classList.contains('is-open')) return;
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); }
+    });
+    closeBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      close();
+    });
+    // stop propagation inside the chat pane so clicks don't re-trigger the button
+    cta.querySelector('.chat-pane').addEventListener('click', (ev) => ev.stopPropagation());
+    // ESC closes
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape' && cta.classList.contains('is-open')) close();
+    });
+
+    function appendMsg(role, text) {
+      const wrap = document.createElement('div');
+      wrap.className = 'chat-msg ' + (role === 'user' ? 'from-user' : 'from-bot');
+      const bub = document.createElement('div');
+      bub.className = 'chat-bubble';
+      bub.textContent = text;
+      wrap.appendChild(bub);
+      log.appendChild(wrap);
+      log.scrollTop = log.scrollHeight;
+      return bub;
+    }
+
+    // Char-by-char typewriter with brief lock-in flicker (matches the CTA glitch)
+    const TERM_NOISE = '!@#$%&*+=<>?/\\|░▒▓01';
+    const tnoise = () => TERM_NOISE[Math.floor(Math.random() * TERM_NOISE.length)];
+    const twait = ms => new Promise(r => setTimeout(r, ms));
+    async function typewriteInto(bub, text, speed = 14) {
+      bub.textContent = '';
+      for (let i = 1; i <= text.length; i++) {
+        const ch = text[i - 1];
+        if (ch !== ' ' && ch !== '\n' && Math.random() < 0.55) {
+          bub.textContent = text.slice(0, i - 1) + tnoise();
+          await twait(8);
+        }
+        bub.textContent = text.slice(0, i);
+        log.scrollTop = log.scrollHeight;
+        await twait(speed + Math.random() * 10);
       }
     }
 
-    function drawParticles() {
-      pCtx.clearRect(0, 0, pW, pH);
-
-      // Use page scroll offset to make particles relative to viewport
-      const scrollY = window.scrollY || window.pageYOffset;
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-
-        // Update position
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Wrap around
-        if (p.x < 0) p.x = pW;
-        if (p.x > pW) p.x = 0;
-        if (p.y < 0) p.y = pH;
-        if (p.y > pH) p.y = 0;
-
-        // Draw particle
-        pCtx.beginPath();
-        pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        pCtx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-        pCtx.fill();
-
-        // Edges to mouse
-        const dmx = p.x - mouseX;
-        const dmy = p.y - mouseY;
-        const distMouse = Math.sqrt(dmx * dmx + dmy * dmy);
-        if (distMouse < MOUSE_DIST) {
-          const alpha = (1 - distMouse / MOUSE_DIST) * 0.35;
-          pCtx.beginPath();
-          pCtx.moveTo(p.x, p.y);
-          pCtx.lineTo(mouseX, mouseY);
-          pCtx.strokeStyle = 'rgba(41, 151, 255, ' + alpha + ')';
-          pCtx.lineWidth = 0.8;
-          pCtx.stroke();
-        }
-
-        // Edges between nearby particles
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < CONNECT_DIST) {
-            const alpha = (1 - dist / CONNECT_DIST) * 0.08;
-            pCtx.beginPath();
-            pCtx.moveTo(p.x, p.y);
-            pCtx.lineTo(p2.x, p2.y);
-            pCtx.strokeStyle = 'rgba(255, 255, 255, ' + alpha + ')';
-            pCtx.lineWidth = 0.5;
-            pCtx.stroke();
-          }
-        }
+    let booted = false;
+    async function bootSequence() {
+      const lines = [
+        'DKS_KI · v1.0 ONLINE',
+        'KERNEL: THEME-MUTATOR · MEMORY: 1 PROMPT',
+        'AWAITING DIRECTIVE — wie soll DKS_KI diese Seite verändern?',
+        'BEISPIEL: "neon-modus" · "y2k retro" · "swiss grid" · "noir"'
+      ];
+      for (const line of lines) {
+        const bub = appendMsg('bot', '');
+        await typewriteInto(bub, line, 10);
+        await twait(160);
       }
-
-      requestAnimationFrame(drawParticles);
     }
 
-    // Track mouse (need pointer-events on body, not canvas)
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const text = field.value.trim();
+      if (!text || busy) return;
+      busy = true;
+      sendBtn.disabled = true;
+      field.value = '';
+      appendMsg('user', text);
+      history.push({ role: 'user', content: text });
 
-    document.addEventListener('mouseleave', () => {
-      mouseX = -9999;
-      mouseY = -9999;
-    });
+      const thinkingBubble = appendMsg('bot', '');
+      thinkingBubble.classList.add('thinking');
 
-    window.addEventListener('resize', () => {
-      sizeParticleCanvas();
+      try {
+        const reply = await window.claude.complete({
+          messages: [
+            { role: 'user', content: SYSTEM + "\n\n---\n\n" + history.map(m => (m.role === 'user' ? 'Nutzer: ' : 'Assistant: ') + m.content).join('\n\n') }
+          ]
+        });
+        thinkingBubble.classList.remove('thinking');
+        await typewriteInto(thinkingBubble, reply, 12);
+        history.push({ role: 'assistant', content: reply });
+      } catch (err) {
+        thinkingBubble.classList.remove('thinking');
+        thinkingBubble.textContent = 'Entschuldigung — gerade ist die Verbindung zum Modell unterbrochen. Bitte versuchen Sie es in einem Moment erneut, oder schreiben Sie uns direkt an hello@dks-analytics.de.';
+      } finally {
+        busy = false;
+        sendBtn.disabled = false;
+        log.scrollTop = log.scrollHeight;
+        field.focus();
+      }
     });
-
-    sizeParticleCanvas();
-    createParticles();
-    requestAnimationFrame(drawParticles);
-  })();
+  }
 })();
 </script>
+
+<!-- CTA TYPEWRITER GLITCH — random terminal prompts + ASCII scramble -->
+<script>
+(function () {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cta = document.getElementById('ctaChat');
+  if (!cta || reduced) return;
+  const label = cta.querySelector('.cta-label');
+  const promptEl = cta.querySelector('.cta-prompt');
+  const caretEl = cta.querySelector('.cta-caret');
+  if (!label || !promptEl) return;
+
+  // Caret as a Claude-Code-style ASCII spinner
+  // Cycles between three modes so it suggests a "live" agent without nagging:
+  //   READY   — slow blinking block ▍ (idle / waiting for input)
+  //   PROCESS — braille spinner cycling (AI is working)
+  //   PARSE   — rapid ASCII scramble (interpreting a directive)
+  if (caretEl) {
+    const SPIN_BRAILLE = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
+    const SCRAMBLE_ASCII = '░▒▓█▍▎▏#%@&*+<>/\\|01';
+    const sample = s => s[(Math.random() * s.length) | 0];
+    let frame = 0;
+    setInterval(() => {
+      // hidden when chat is open (CSS handles it) — skip work
+      if (cta.classList.contains('is-open')) return;
+      // hidden during the prompt-typing crossfade — skip
+      if (cta.classList.contains('cta-typing')) return;
+
+      frame++;
+      // 70-frame cycle ≈ 7s
+      const phase = frame % 70;
+      if (phase < 30) {
+        // READY: classic blink
+        caretEl.style.fontFamily = '';
+        caretEl.textContent = (phase % 14 < 8) ? '▍' : '\u00A0';
+      } else if (phase < 56) {
+        // PROCESS: braille spinner
+        caretEl.textContent = SPIN_BRAILLE[phase % SPIN_BRAILLE.length];
+      } else {
+        // PARSE: rapid ASCII scramble (3 frames per glyph for a punchier feel)
+        caretEl.textContent = sample(SCRAMBLE_ASCII);
+      }
+    }, 100);
+  }
+
+  const ORIG = 'KI Erleben';
+  const SOUP = '!@#$%&*+=<>?/\\|░▒▓▌▍▎▏§¶¬{}[]01';
+  const PROMPTS = [
+    'DKS_KI > _',
+    '> NEON_OS',
+    '> NOIR_05',
+    '> Y2K_RUSH',
+    '> BAUHAUS+',
+    '> SWISS_72',
+    '> BRUTAL!',
+    '> ASCII_FX',
+    '> RETRO_88',
+    '> DKS::ERL',
+    '> KI_LIVE',
+    '> JAPAN_MIN',
+    '01001011_49',
+    '> ALTER_UI'
+  ];
+  const rand = arr => arr[Math.floor(Math.random() * arr.length)];
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  const noise = () => SOUP[Math.floor(Math.random() * SOUP.length)];
+
+  function setLabel(text) {
+    label.textContent = text;
+    label.setAttribute('data-text', text);
+  }
+
+  // Morph label.textContent toward `target`, char-by-char through ASCII soup.
+  async function scrambleLabel(target) {
+    const len = Math.max(label.textContent.length, target.length);
+    const FRAMES = 9;
+    for (let f = 1; f <= FRAMES; f++) {
+      let out = '';
+      for (let i = 0; i < len; i++) {
+        const settled = (i + 1) <= Math.floor((len * f) / FRAMES);
+        out += settled && i < target.length ? target[i] : noise();
+      }
+      setLabel(out);
+      await wait(28);
+    }
+    setLabel(target);
+  }
+
+  async function typePrompt(text) {
+    // type with brief char "lock-in" flicker
+    for (let i = 1; i <= text.length; i++) {
+      for (let r = 0; r < 2; r++) {
+        promptEl.textContent = text.slice(0, i - 1) + noise() + '▍';
+        await wait(18);
+      }
+      promptEl.textContent = text.slice(0, i) + '▍';
+      await wait(55 + Math.random() * 35);
+    }
+    // hold + cursor blink
+    for (let b = 0; b < 5; b++) {
+      promptEl.textContent = text + (b % 2 ? ' ' : '▍');
+      await wait(220);
+    }
+    // erase
+    for (let i = text.length; i >= 0; i--) {
+      promptEl.textContent = text.slice(0, i) + '▍';
+      await wait(28);
+    }
+    promptEl.textContent = '';
+  }
+
+  let cancelled = false;
+  async function cycle() {
+    while (!cancelled) {
+      // ambient gap between glitches
+      await wait(5500 + Math.random() * 3500);
+      if (cta.classList.contains('is-open')) continue;
+
+      // 1. font-flip + scramble label into noise
+      cta.classList.add('cta-glitch');
+      await scrambleLabel('░▓▒░▓▒█▓▒░'.slice(0, ORIG.length));
+      cta.classList.remove('cta-glitch');
+
+      // 2. crossfade label → prompt
+      cta.classList.add('cta-typing');
+      setLabel(ORIG); // restore for the eventual return
+      await wait(60);
+
+      // 3. type a random terminal prompt
+      await typePrompt(rand(PROMPTS));
+
+      // 4. crossfade prompt → label, with another scramble in
+      cta.classList.remove('cta-typing');
+      cta.classList.add('cta-glitch');
+      setLabel('▓▒░▓▒░▓▒░░'.slice(0, ORIG.length));
+      await scrambleLabel(ORIG);
+      cta.classList.remove('cta-glitch');
+    }
+  }
+  cycle();
+})();
+</script>
+
 </body>
 </html>
