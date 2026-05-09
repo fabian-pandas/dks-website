@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#f4f3ef" />
 <title>DKS Analytics — Aus Technologie wird messbare Wirkung</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,6 +34,11 @@
     --type-display-weight: 500;
     --type-display-tracking: -0.045em;
     --type-display-scale: 1;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --nav-safe-cover: var(--safe-top);
+  }
+  @supports (padding-top: constant(safe-area-inset-top)) {
+    :root { --safe-top: constant(safe-area-inset-top); }
   }
   body[data-mood="aurora"] {
     --m1-h: 170; --m1-c: 0.14;
@@ -188,12 +194,31 @@
   .nav {
     position: sticky; top: 0; z-index: 50;
     display: grid; grid-template-columns: 1fr auto auto; align-items: start;
-    padding: calc(28px + env(safe-area-inset-top)) 56px 24px;
-    background: linear-gradient(to bottom, rgba(244,243,239,0.55) 0%, rgba(244,243,239,0.35) 60%, transparent 100%);
+    padding: calc(28px + var(--safe-top)) 56px 24px;
+    background: none;
     -webkit-backdrop-filter: blur(18px) saturate(140%);
             backdrop-filter: blur(18px) saturate(140%);
     border-bottom: 1px solid rgba(255,255,255,0.4);
     box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 8px 24px -16px rgba(20,20,26,0.18);
+    isolation: isolate;
+    overflow: visible;
+  }
+  .nav::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    top: calc(0px - var(--nav-safe-cover));
+    bottom: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      rgba(244,243,239,0.97) 0%,
+      rgba(244,243,239,0.94) calc(var(--nav-safe-cover) + 56px),
+      rgba(244,243,239,0.78) 100%
+    );
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+            backdrop-filter: blur(18px) saturate(140%);
   }
   /* ============ LOGO ============ */
   .logo {
@@ -290,12 +315,12 @@
     position: absolute; inset: 0;
     display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
     gap: 64px;
-    padding: calc(140px + env(safe-area-inset-top)) 56px 56px;
+    padding: calc(140px + var(--safe-top)) 56px 56px;
     color: var(--bg);
     overflow-y: auto;
   }
   @media (max-width: 880px) {
-    .menu-overlay-panel { grid-template-columns: 1fr; gap: 32px; padding: calc(150px + env(safe-area-inset-top)) 24px 40px; }
+    .menu-overlay-panel { grid-template-columns: 1fr; gap: 32px; padding: calc(150px + var(--safe-top)) 24px 40px; }
   }
 
   .menu-list { display: flex; flex-direction: column; }
@@ -1333,7 +1358,8 @@
     footer { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 720px) {
-    .nav { padding: calc(16px + env(safe-area-inset-top)) 20px 16px; grid-template-columns: 1fr auto; align-items: center; }
+    :root { --nav-safe-cover: max(var(--safe-top), 72px); }
+    .nav { padding: calc(16px + var(--safe-top)) 20px 16px; grid-template-columns: 1fr auto; align-items: center; }
     .nav-links { display: none; }
     .nav .logo { gap: 10px; }
     .nav .logo-mark { width: 38px !important; height: 38px !important; }
@@ -1526,8 +1552,8 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
       <div class="phase-num mono">01</div>
       <div class="phase-body">
         <h3>Datenauf&shy;bereitung</h3>
-        <p class="phase-desc">Rohdaten werden strukturiert, bereinigt und in eine trainingsfertige Pipeline verwandelt.</p>
-        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Datenvalidierung, Feature Engineering, ETL-Pipelines und automatisierte Qualitätschecks – alles reproduzierbar und versioniert.</p></div></div>
+        <p class="phase-desc">Rohdaten werden bereinigt, strukturiert und in stabile, trainingsfähige Datenpipelines überführt.</p>
+        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Schema-Validierung, Transformation, Feature Engineering und Qualitätschecks – automatisiert, reproduzierbar und versioniert.</p></div></div>
         <button type="button" class="phase-link" aria-expanded="false">Mehr erfahren <span class="arr">›</span></button>
       </div>
     </article>
@@ -1536,8 +1562,8 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
       <div class="phase-num mono">02</div>
       <div class="phase-body">
         <h3>Modell&shy;training</h3>
-        <p class="phase-desc">Modelle werden trainiert, evaluiert und iterativ optimiert – mit vollständigem Experiment-Tracking.</p>
-        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Hyperparameter-Optimierung, verteiltes Training, Modellvergleich und automatisierte Validierung gegen definierte Metriken.</p></div></div>
+        <p class="phase-desc">Modelle werden trainiert, evaluiert und iterativ optimiert – mit systematischem Experiment-Tracking.</p>
+        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Hyperparameter-Tuning, Modellvergleich, Fehleranalyse und Evaluation auf Validierungs-, Test- und Holdout-Daten.</p></div></div>
         <button type="button" class="phase-link" aria-expanded="false">Mehr erfahren <span class="arr">›</span></button>
       </div>
     </article>
@@ -1546,8 +1572,8 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
       <div class="phase-num mono">03</div>
       <div class="phase-body">
         <h3>Deployment</h3>
-        <p class="phase-desc">Vom Prototyp zur Produktion – skalierbar, sicher und nahtlos in bestehende Systeme integriert.</p>
-        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">CI/CD für ML-Modelle, Container-Orchestrierung, A/B-Testing, Canary Deployments und automatisiertes Rollback.</p></div></div>
+        <p class="phase-desc">Vom Prototyp zur Produktion – skalierbar, wartbar und nahtlos in bestehende Systeme integriert.</p>
+        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Bereitstellung über APIs, Container, AWS ECS/Lambda oder Kubernetes – mit CI/CD, Modellversionierung und kontrollierten Rollouts.</p></div></div>
         <button type="button" class="phase-link" aria-expanded="false">Mehr erfahren <span class="arr">›</span></button>
       </div>
     </article>
@@ -1556,8 +1582,8 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
       <div class="phase-num mono">04</div>
       <div class="phase-body">
         <h3>Monitoring &amp; Betrieb</h3>
-        <p class="phase-desc">Kontinuierliche Überwachung, Drift-Erkennung und automatisiertes Retraining im laufenden Betrieb.</p>
-        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Performance-Dashboards, Data-Drift-Alerts, automatische Retraining-Trigger und SLA-Monitoring – rund um die Uhr.</p></div></div>
+        <p class="phase-desc">Modelle werden im Betrieb kontinuierlich überwacht, bewertet und bei Bedarf gezielt weiterentwickelt.</p>
+        <div class="phase-detail-wrap"><div class="phase-detail-inner"><p class="phase-detail">Performance-Monitoring, Data-Drift-Erkennung, Alerting, Retraining und SLA-Betrieb – transparent und zuverlässig.</p></div></div>
         <button type="button" class="phase-link" aria-expanded="false">Mehr erfahren <span class="arr">›</span></button>
       </div>
     </article>
@@ -1578,7 +1604,7 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
     </div>
     <div class="product-info">
       <h3>GlutenFreeToday</h3>
-      <p>Die App, die zöliakiebetroffenen Menschen den Alltag erleichtert: KI-gestützte Produktanalyse, kuratierte Restaurant-Datenbank und persönliche Verträglichkeits-Insights.</p>
+      <p>Die App, die zöliakiebetroffenen Menschen den Alltag erleichtert: Produkt-Scanner, KI-Analyse, kuratiertes Wissen, TravelCard für unterwegs und eine engagierte Community.</p>
       <div class="health-lamp" id="gftHealth" data-state="ok" role="status" aria-live="polite" title="Live health check">
         <span class="lamp-dot" aria-hidden="true"></span>
         <span class="lamp-status" data-status>Operational</span>
@@ -1594,8 +1620,8 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
 <section id="about" data-screen-label="04 About">
   <div class="section-header">
     <p class="kicker">— About us</p>
-    <h2 class="section-title">Die Köpfe hinter<br/>DKS-Analytics.</h2>
-    <p class="section-sub">Drei Gründer, eine Mission: KI-Systeme, die im echten Betrieb bestehen.</p>
+    <h2 class="section-title">Die Geschäftsführung<br/>von DKS-Analytics.</h2>
+    <p class="section-sub">Drei Verantwortungsbereiche, ein gemeinsamer Anspruch: KI-Systeme strategisch zu planen, wirtschaftlich zu steuern und zuverlässig in den Betrieb zu bringen.</p>
   </div>
 
   <div class="team-grid">
@@ -1606,8 +1632,8 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
       <div>
         <div class="team-name">Karl Domanowsky</div>
         <div class="team-role mono">Managing Director — Operations</div>
-        <p class="team-bio">Experte für operative Prozesse und effizientes Management. Stellt sicher, dass Modelle ihren Weg in den Produktivbetrieb finden.</p>
-        <div class="team-tag">01 / Founder</div>
+        <p class="team-bio">Experte für operative Prozesse und effizientes Management. Verantwortet die Umsetzung, Prozessintegration und den Übergang von KI-Lösungen in den produktiven Betrieb.</p>
+        <div class="team-tag">01 / Management</div>
       </div>
     </article>
 
@@ -1618,8 +1644,8 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
       <div>
         <div class="team-name">Marvin Kasper</div>
         <div class="team-role mono">Managing Director — Finance / Controlling</div>
-        <p class="team-bio">Experte für Finance und Controlling. Verantwortet Wirtschaftlichkeit, Reporting und kaufmännische Steuerung jedes Projekts.</p>
-        <div class="team-tag">02 / Founder</div>
+        <p class="team-bio">Experte für Finance und Controlling. Verantwortet Wirtschaftlichkeit, Reporting und die kaufmännische Steuerung von Projekten und Unternehmensprozessen.</p>
+        <div class="team-tag">02 / Management</div>
       </div>
     </article>
 
@@ -1630,8 +1656,8 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
       <div>
         <div class="team-name">Fabian Stöhr</div>
         <div class="team-role mono">Managing Director — IT</div>
-        <p class="team-bio">Spezialisiert auf Planung und Implementierung von KI-Strategien. Architektur, Modellauswahl und technische Roadmap.</p>
-        <div class="team-tag">03 / Founder</div>
+        <p class="team-bio">Spezialisiert auf KI-Strategie, Systemarchitektur und technische Umsetzung. Verantwortet Architektur und die Implementierung produktionsfähiger KI-Systeme.</p>
+        <div class="team-tag">03 / Management</div>
       </div>
     </article>
   </div>
