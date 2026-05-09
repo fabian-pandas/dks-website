@@ -67,6 +67,36 @@ class WebsiteStack(Stack):
             auto_delete_objects=False,
         )
 
+        # CloudFront-Function: 301 von Apex → www, damit eine kanonische URL gewinnt.
+        redirect_to_www = cloudfront.Function(
+            self,
+            "RedirectApexToWww",
+            comment="301 redirect from apex (dks-analytics.de) to www subdomain",
+            code=cloudfront.FunctionCode.from_inline(
+                "function handler(event) {\n"
+                "  var request = event.request;\n"
+                "  var hostHeader = request.headers.host;\n"
+                "  if (!hostHeader) { return request; }\n"
+                f"  if (hostHeader.value === '{domain_name}') {{\n"
+                "    var qs = '';\n"
+                "    if (request.querystring && Object.keys(request.querystring).length > 0) {\n"
+                "      var parts = [];\n"
+                "      for (var k in request.querystring) {\n"
+                "        parts.push(k + '=' + request.querystring[k].value);\n"
+                "      }\n"
+                "      qs = '?' + parts.join('&');\n"
+                "    }\n"
+                "    return {\n"
+                "      statusCode: 301,\n"
+                "      statusDescription: 'Moved Permanently',\n"
+                f"      headers: {{ location: {{ value: 'https://www.{domain_name}' + request.uri + qs }} }}\n"
+                "    };\n"
+                "  }\n"
+                "  return request;\n"
+                "}\n"
+            ),
+        )
+
         # CloudFront-Distribution.
         # default_root_object="index.html" → / liefert index.html
         # Für /Impressum, /Datenschutz, /Karriere ohne .html: könnte später eine
@@ -81,6 +111,12 @@ class WebsiteStack(Stack):
                 allowed_methods=cloudfront.AllowedMethods.ALLOW_GET_HEAD,
                 cached_methods=cloudfront.CachedMethods.CACHE_GET_HEAD,
                 compress=True,
+                function_associations=[
+                    cloudfront.FunctionAssociation(
+                        function=redirect_to_www,
+                        event_type=cloudfront.FunctionEventType.VIEWER_REQUEST,
+                    ),
+                ],
             ),
             default_root_object="index.html",
             domain_names=[domain_name, f"www.{domain_name}"],
