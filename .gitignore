@@ -2,4 +2,15 @@
 vids/
 .playwright-mcp/
 screenshot-*.png
+desktop-*.png
+mobile-*.png
+*-full.png
 legacy/
+
+# Python / CDK
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+cdk.out/
+cdk.context.json

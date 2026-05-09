@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Impressum — DKS Analytics GmbH</title>
+<title>Karriere & Zusammenarbeit — DKS Analytics GmbH</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -19,6 +20,7 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--bg); color: var(--ink); font-family: 'Inter Tight', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  body { transition: background-color .6s ease; }
   body { overflow-x: hidden; }
   body::before {
     content: ""; position: fixed; inset: -20px; pointer-events: none; z-index: 100;
@@ -231,6 +233,30 @@
     .menu-list a, .menu-meta { transition: opacity .2s !important; transform: none !important; }
   }
 
+  /* ============ SCROLL REVEAL ============ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(6px);
+    transition: opacity .9s cubic-bezier(.22,.61,.36,1),
+                transform .9s cubic-bezier(.22,.61,.36,1),
+                filter .9s cubic-bezier(.22,.61,.36,1);
+    will-change: opacity, transform, filter;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+  .reveal-group > .reveal { transition-delay: 0s; }
+  .reveal-group.in > .reveal:nth-child(1) { transition-delay: 0.00s; }
+  .reveal-group.in > .reveal:nth-child(2) { transition-delay: 0.08s; }
+  .reveal-group.in > .reveal:nth-child(3) { transition-delay: 0.16s; }
+  .reveal-group.in > .reveal:nth-child(4) { transition-delay: 0.24s; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; filter: none; transition: none; }
+  }
+
   /* HERO */
   .hero {
     padding: 96px 56px 72px;
@@ -244,6 +270,250 @@
   }
   .hero .star {
     position: absolute; pointer-events: none;
+  }
+
+  /* ============ KARRIERE — role cards ============ */
+  .karriere-intro {
+    max-width: 880px; margin: 0 56px 56px;
+    font-size: 18px; line-height: 1.55; color: var(--ink-soft);
+    text-wrap: pretty;
+  }
+  .karriere-intro strong { color: var(--ink); font-weight: 500; }
+  .roles {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 18px; padding: 0 56px 56px;
+    align-items: stretch;
+  }
+  .role {
+    --c1: oklch(0.78 0.15 70);
+    --c2: oklch(0.66 0.16 50);
+    --c3: oklch(0.45 0.13 35);
+    position: relative;
+    border-radius: 28px;
+    padding: 28px 28px 32px;
+    color: #1a1208;
+    background:
+      linear-gradient(155deg, var(--c1) 0%, var(--c2) 55%, var(--c3) 100%);
+    overflow: hidden;
+    isolation: isolate;
+    display: flex; flex-direction: column;
+    min-height: 540px;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.45) inset,
+      0 30px 60px -28px rgba(20,20,26,0.4),
+      0 8px 18px -10px rgba(20,20,26,0.18);
+    transition: transform .5s cubic-bezier(.22,.61,.36,1);
+  }
+  .role:hover { transform: translateY(-3px); }
+  .role::before {
+    /* glass vertical stripes — same texture vocab as index.html cards */
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.16) 0,
+      rgba(255,255,255,0.16) 1px,
+      transparent 1px,
+      transparent 9px
+    );
+    mix-blend-mode: overlay; opacity: 0.65;
+  }
+  .role::after {
+    /* soft top sheen */
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,0.55) 0%, transparent 55%),
+      radial-gradient(80% 60% at 100% 100%, rgba(0,0,0,0.16) 0%, transparent 60%);
+    mix-blend-mode: soft-light;
+  }
+  .role > * { position: relative; z-index: 1; }
+
+  .role.coral {
+    --c1: oklch(0.78 0.16 25);
+    --c2: oklch(0.62 0.18 12);
+    --c3: oklch(0.42 0.13 350);
+    color: #1a0a14;
+  }
+  .role.violet {
+    --c1: oklch(0.72 0.16 305);
+    --c2: oklch(0.55 0.18 290);
+    --c3: oklch(0.32 0.13 270);
+    color: #f6f0ff;
+  }
+  .role.violet .role-eyebrow,
+  .role.violet .role-num,
+  .role.violet .role-tag,
+  .role.violet .role-toggle { color: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.55); }
+  .role.violet .role-toggle:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.85); }
+  .role.violet .role-detail-list li { color: rgba(255,255,255,0.86); }
+  .role.violet .role-detail-list li::before { background: rgba(255,255,255,0.55); }
+  .role.violet .role-meta { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.22); }
+  .role.violet .role-meta strong { color: #fff; }
+
+  .role-num {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    opacity: 0.75;
+  }
+  .role-eyebrow {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    margin-top: 4px; opacity: 0.7;
+  }
+  .role-title {
+    font-size: 32px; line-height: 1.05; letter-spacing: -0.025em; font-weight: 500;
+    margin-top: 14px; margin-bottom: 14px;
+    text-wrap: balance;
+  }
+  .role-tag {
+    font-size: 15px; line-height: 1.5; opacity: 0.85;
+    max-width: 30ch;
+  }
+  .role-spacer { flex: 1; }
+  .role-toggle {
+    align-self: flex-start;
+    margin-top: 22px;
+    background: transparent;
+    border: 1px solid currentColor;
+    color: inherit;
+    padding: 10px 18px 11px;
+    border-radius: 999px;
+    font: inherit; font-size: 13px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: background .25s, border-color .25s, color .25s;
+    -webkit-backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px);
+  }
+  .role-toggle:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.7); }
+  .role-toggle .arrow {
+    display: inline-block; transition: transform .35s cubic-bezier(.22,.61,.36,1);
+  }
+  .role.open .role-toggle .arrow { transform: rotate(90deg); }
+
+  .role-detail {
+    display: grid; grid-template-rows: 0fr;
+    transition: grid-template-rows .5s cubic-bezier(.22,.61,.36,1), margin-top .5s;
+    margin-top: 0;
+  }
+  .role.open .role-detail {
+    grid-template-rows: 1fr;
+    margin-top: 22px;
+  }
+  .role-detail-inner {
+    overflow: hidden;
+  }
+  .role-detail h4 {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    margin: 14px 0 8px; opacity: 0.7; font-weight: 500;
+  }
+  .role-detail h4:first-child { margin-top: 0; }
+  .role-detail-list {
+    list-style: none; padding: 0; display: grid; gap: 6px;
+  }
+  .role-detail-list li {
+    position: relative; padding-left: 18px;
+    font-size: 14px; line-height: 1.45;
+  }
+  .role-detail-list li::before {
+    content: ""; position: absolute; left: 0; top: 0.65em;
+    width: 9px; height: 1px; background: rgba(0,0,0,0.45);
+  }
+  .role-meta {
+    margin-top: 18px; padding-top: 14px;
+    border-top: 1px solid rgba(0,0,0,0.18);
+    display: flex; flex-wrap: wrap; gap: 6px 18px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px; letter-spacing: 0.05em;
+    color: rgba(0,0,0,0.65);
+  }
+  .role-meta strong { color: rgba(0,0,0,0.85); font-weight: 500; }
+
+  .role-apply {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 18px;
+    padding: 14px 18px 15px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.22);
+    border: 1px solid rgba(0,0,0,0.18);
+    color: inherit; text-decoration: none;
+    font-size: 14px; letter-spacing: -0.005em;
+    -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+    transition: background .25s, border-color .25s, transform .25s;
+  }
+  .role-apply:hover {
+    background: rgba(255,255,255,0.4);
+    border-color: rgba(0,0,0,0.28);
+    transform: translateY(-1px);
+  }
+  .role-apply-label { font-weight: 500; }
+  .role-apply-arrow {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(0,0,0,0.78); color: #fff;
+    font-size: 13px;
+    transition: transform .35s cubic-bezier(.22,.61,.36,1);
+  }
+  .role-apply:hover .role-apply-arrow { transform: translateX(3px); }
+  .role.violet .role-apply { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); }
+  .role.violet .role-apply:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.6); }
+  .role.violet .role-apply-arrow { background: rgba(255,255,255,0.95); color: #1a0a2a; }
+
+  /* ============ CONTACT BAND ============ */
+  .karriere-cta {
+    margin: 0 56px 96px;
+    padding: 40px 48px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.55);
+    border: 1px solid rgba(255,255,255,0.7);
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+            backdrop-filter: blur(20px) saturate(130%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      0 20px 40px -24px rgba(20,20,26,0.18);
+    display: grid;
+    grid-template-columns: 1.4fr auto;
+    gap: 24px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .karriere-cta::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: repeating-linear-gradient(
+      90deg,
+      transparent 0, transparent 5px,
+      rgba(20,20,26,0.04) 5px, rgba(20,20,26,0.04) 6px
+    );
+    mix-blend-mode: multiply; opacity: 0.6;
+  }
+  .karriere-cta > * { position: relative; }
+  .karriere-cta h3 {
+    font-size: 28px; font-weight: 500; letter-spacing: -0.02em;
+    margin-bottom: 6px; line-height: 1.1;
+  }
+  .karriere-cta p { font-size: 15px; color: var(--ink-soft); line-height: 1.5; max-width: 60ch; }
+  .karriere-cta .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+  .karriere-cta a.cta {
+    background: var(--ink); color: var(--bg);
+    padding: 14px 24px; border-radius: 999px;
+    font-size: 14px; text-decoration: none; white-space: nowrap;
+    transition: transform .25s;
+  }
+  .karriere-cta a.cta:hover { transform: translateY(-2px); }
+  .karriere-cta a.ghost {
+    border: 1px solid var(--line); color: var(--ink);
+    padding: 13px 22px; border-radius: 999px;
+    font-size: 14px; text-decoration: none; white-space: nowrap;
+    transition: background .2s;
+  }
+  .karriere-cta a.ghost:hover { background: rgba(20,20,26,0.04); }
+
+  @media (max-width: 980px) {
+    .roles { grid-template-columns: 1fr; padding: 0 24px 40px; }
+    .karriere-intro { margin: 0 24px 36px; font-size: 16px; }
+    .karriere-cta { margin: 0 24px 56px; padding: 28px; grid-template-columns: 1fr; }
   }
 
   /* CONTENT */
@@ -475,75 +745,214 @@
 <header class="hero">
   <svg class="star" style="left: 52%; top: 28%;" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9a9991" stroke-width="0.7"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z"/></svg>
   <svg class="star" style="right: 12%; top: 62%; opacity: 0.6;" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#9a9991" stroke-width="0.6"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z"/></svg>
-  <p class="hero-eyebrow mono" style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;">— Rechtliches</p>
-  <h1 class="hero-title">Impressum.</h1>
+  <p class="hero-eyebrow mono" style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;">— Karriere & Zusammenarbeit</p>
+  <h1 class="hero-title">Mit&nbsp;uns<br/>arbeiten.</h1>
 </header>
 
-<!-- LEGAL CONTENT -->
-<main class="legal">
-  <p class="mono" style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 12px;">Angaben gemäß § 5 DDG</p>
+<p class="karriere-intro">
+  Wir arbeiten <strong>projektbasiert</strong> und auf Augenhöhe — mit Menschen, die ML, Daten und Produkt wirklich verstehen. Wenn dich eine der drei Rollen anspricht, klicke auf <em>Mehr erfahren</em> für Details.
+</p>
 
-  <dl class="data-block">
-    <dt>Firma</dt>
-    <dd>
-      <span class="line"><strong>DKS Analytics GmbH</strong></span>
-      <span class="line">Löffelstraße 44</span>
-      <span class="line">70597 Stuttgart</span>
-      <span class="line">Deutschland</span>
-    </dd>
+<section class="roles">
 
-    <dt>Geschäftsführer</dt>
-    <dd>
-      <span class="line">Karl Domanowsky</span>
-      <span class="line">Fabian Stöhr</span>
-      <span class="line">Marvin Kasper</span>
-    </dd>
+  <article class="role amber" data-role="engineering">
+    <span class="role-num">01 · Engineering</span>
+    <h2 class="role-title">Projektbezogene Unterstützung</h2>
+    <p class="role-tag">Entwickler:innen, Data Scientists oder AI Engineers — für konkrete Modelle, Pipelines und Deployments.</p>
+    <span class="role-spacer"></span>
+    <button class="role-toggle" aria-expanded="false">Mehr erfahren <span class="arrow">›</span></button>
+    <div class="role-detail"><div class="role-detail-inner">
+      <h4>Was du machst</h4>
+      <ul class="role-detail-list">
+        <li>Datenpipelines bauen, von Roh‑Quelle bis Feature‑Store</li>
+        <li>Modelle trainieren, validieren und in Produktion bringen</li>
+        <li>APIs, Inferenz‑Services und Monitoring — produktionsreif, nicht Notebook‑reif</li>
+        <li>Mit Kund:innen direkt sprechen, Anforderungen schärfen</li>
+      </ul>
+      <h4>Was wir suchen</h4>
+      <ul class="role-detail-list">
+        <li>Solides Python, idealerweise Erfahrung mit PyTorch oder TF</li>
+        <li>Cloud (AWS / GCP / Azure) und Container‑Workflows</li>
+        <li>Pragmatismus über Perfektion — Tempo zählt</li>
+      </ul>
+      <div class="role-meta">
+        <span><strong>Modus</strong> Projektbezogen</span>
+        <span><strong>Dauer</strong> 3–12 Monate</span>
+        <span><strong>Remote</strong> Ja</span>
+      </div>
+      <a class="role-apply" href="mailto:info@dks-analytics.de?subject=Bewerbung%20—%20Engineering%20%2F%20Data%20Science">
+        <span class="role-apply-label">Jetzt bewerben</span>
+        <span class="role-apply-arrow">→</span>
+      </a>
+    </div></div>
+  </article>
 
-    <dt>Kontakt</dt>
-    <dd>
-      <span class="line">E‑Mail: <a href="mailto:info@dks-analytics.de">info@dks-analytics.de</a></span>
-      <span class="line">Telefon: [Telefonnummer ergänzen]</span>
-    </dd>
+  <article class="role coral" data-role="pm">
+    <span class="role-num">02 · Project Management</span>
+    <h2 class="role-title">Projektbezogenes Project Management</h2>
+    <p class="role-tag">Für Menschen, die zwischen Modell‑Realität und Stakeholder‑Erwartung souverän vermitteln.</p>
+    <span class="role-spacer"></span>
+    <button class="role-toggle" aria-expanded="false">Mehr erfahren <span class="arrow">›</span></button>
+    <div class="role-detail"><div class="role-detail-inner">
+      <h4>Was du machst</h4>
+      <ul class="role-detail-list">
+        <li>Projekte von Discovery bis Rollout führen</li>
+        <li>Roadmaps, Timelines, Budgets — ohne Ritual‑Overhead</li>
+        <li>Schnittstelle zwischen Engineering, Daten und Fachseite</li>
+        <li>Risiken früh sichtbar machen, Entscheidungen einfordern</li>
+      </ul>
+      <h4>Was wir suchen</h4>
+      <ul class="role-detail-list">
+        <li>Erfahrung in Daten‑, ML‑ oder Software‑Projekten</li>
+        <li>Technisches Verständnis — du musst kein Code‑Profi sein, aber Fragen stellen können</li>
+        <li>Klare Kommunikation, schriftlich wie mündlich, DE & EN</li>
+      </ul>
+      <div class="role-meta">
+        <span><strong>Modus</strong> Projektbezogen</span>
+        <span><strong>Auslastung</strong> 50–100&nbsp;%</span>
+        <span><strong>Hybrid</strong> Stuttgart / Remote</span>
+      </div>
+      <a class="role-apply" href="mailto:info@dks-analytics.de?subject=Bewerbung%20—%20Project%20Management">
+        <span class="role-apply-label">Jetzt bewerben</span>
+        <span class="role-apply-arrow">→</span>
+      </a>
+    </div></div>
+  </article>
 
-    <dt>Registereintrag</dt>
-    <dd>
-      <span class="line">Handelsregister des Amtsgerichts Stuttgart</span>
-      <span class="line">HRB 791022</span>
-    </dd>
+  <article class="role violet" data-role="working-student">
+    <span class="role-num">03 · Studium</span>
+    <h2 class="role-title">Werkstudent:innen & Praktika</h2>
+    <p class="role-tag">Du studierst Informatik, Mathematik, Physik oder Wirtschaft — und willst echte ML‑Projekte sehen, nicht nur Folien darüber.</p>
+    <span class="role-spacer"></span>
+    <button class="role-toggle" aria-expanded="false">Mehr erfahren <span class="arrow">›</span></button>
+    <div class="role-detail"><div class="role-detail-inner">
+      <h4>Was du machst</h4>
+      <ul class="role-detail-list">
+        <li>Mitarbeit an realen Kundenprojekten, kein Kaffeekochen</li>
+        <li>Daten‑Exploration, Feature‑Engineering, Modell‑Iteration</li>
+        <li>Code‑Reviews mit Senior Engineers — du lernst, wie produktive ML‑Teams arbeiten</li>
+        <li>Eigene kleine Themen, die du End‑to‑End betreust</li>
+      </ul>
+      <h4>Was wir suchen</h4>
+      <ul class="role-detail-list">
+        <li>Eingeschriebene:r Student:in, idealerweise ab 3. Semester</li>
+        <li>Spaß an Code, Daten und Mathe — in dieser Reihenfolge</li>
+        <li>Neugier statt fertiger Antworten</li>
+      </ul>
+      <div class="role-meta">
+        <span><strong>Format</strong> Werkstudium / Praktikum</span>
+        <span><strong>Stunden</strong> 10–20 / Woche</span>
+        <span><strong>Dauer</strong> ab 3 Monate</span>
+      </div>
+      <a class="role-apply" href="mailto:info@dks-analytics.de?subject=Bewerbung%20—%20Werkstudium%20%2F%20Praktikum">
+        <span class="role-apply-label">Jetzt bewerben</span>
+        <span class="role-apply-arrow">→</span>
+      </a>
+    </div></div>
+  </article>
 
-    <dt>USt‑ID § 27a UStG</dt>
-    <dd>
-      <span class="line">DE363443259</span>
-    </dd>
-  </dl>
+</section>
 
-  <h2>Haftung für Inhalte</h2>
-  <p>Die Inhalte dieser Website wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte übernehmen wir jedoch keine Gewähr.</p>
-  <p>Als Diensteanbieter sind wir für eigene Inhalte auf dieser Website nach den allgemeinen gesetzlichen Vorschriften verantwortlich. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen gesetzlichen Vorschriften bleiben hiervon unberührt.</p>
-  <p>Bei Bekanntwerden entsprechender Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.</p>
-
-  <h2>Haftung für Links</h2>
-  <p>Diese Website kann Links zu externen Websites Dritter enthalten. Auf deren Inhalte haben wir keinen Einfluss. Deshalb übernehmen wir für diese fremden Inhalte keine Gewähr.</p>
-  <p>Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der jeweiligen Seiten verantwortlich. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.</p>
-
-  <h2>Urheberrecht</h2>
-  <p>Die durch die Seitenbetreiber erstellten Inhalte und Werke auf dieser Website unterliegen dem deutschen Urheberrecht.</p>
-  <p>Die Vervielfältigung, Bearbeitung, Verbreitung oder sonstige Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen schriftlichen Zustimmung des jeweiligen Rechteinhabers.</p>
-  <p>Downloads und Kopien dieser Website sind nur für den privaten, nicht kommerziellen Gebrauch gestattet, sofern nicht ausdrücklich etwas anderes angegeben ist.</p>
-  <p>Soweit Inhalte auf dieser Website nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet und entsprechende Inhalte als solche gekennzeichnet. Sollten Sie dennoch auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.</p>
-
-  <h2>Widerspruch gegen Werbe‑E‑Mails</h2>
-  <p>Der Nutzung der im Rahmen der Impressumspflicht veröffentlichten Kontaktdaten zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit widersprochen.</p>
-  <p>Wir behalten uns rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, insbesondere durch Spam‑E‑Mails, vor.</p>
-
-  <div class="meta-row">
-    <span><span class="dot"></span> Stand · Mai 2026</span>
-    <span>HRB 791022 · Stuttgart</span>
-    <span>USt‑ID DE363443259</span>
+<section class="karriere-cta">
+  <div>
+    <h3>Keine passende Rolle dabei?</h3>
+    <p>Wir freuen uns trotzdem über eine kurze Nachricht — erzähl uns, was du machst und wie du arbeitest. Wir antworten in der Regel innerhalb weniger Tage.</p>
   </div>
+  <div class="actions">
+    <a class="cta" href="mailto:info@dks-analytics.de?subject=Initiativbewerbung">Initiativ bewerben</a>
+  </div>
+</section>
 
-  <a href="index.html" class="back-link">← Zurück zur Startseite</a>
-</main>
+<script>
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.role-toggle');
+    if (!btn) return;
+    const role = btn.closest('.role');
+    const open = role.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(open));
+    btn.firstChild.textContent = open ? 'Weniger zeigen ' : 'Mehr erfahren ';
+  });
+
+  // Scroll-driven mood arc — same palette as index.html
+  (function () {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced) return;
+    const moods = [
+      { h: 250, c: 0.00 },
+      { h: 35,  c: 0.10 },
+      { h: 12,  c: 0.14 },
+      { h: 320, c: 0.13 },
+      { h: 270, c: 0.12 }
+    ];
+    const lerp = (a, b, t) => a + (b - a) * t;
+    function lerpHue(a, b, t) {
+      let d = b - a;
+      if (d > 180) d -= 360;
+      if (d < -180) d += 360;
+      return (a + d * t + 360) % 360;
+    }
+    let raf = 0;
+    function update() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      const idx = p * (moods.length - 1);
+      const i0 = Math.floor(idx), i1 = Math.min(moods.length - 1, i0 + 1);
+      const tt = idx - i0;
+      const h = lerpHue(moods[i0].h, moods[i1].h, tt);
+      const c = lerp(moods[i0].c, moods[i1].c, tt);
+      document.body.style.backgroundColor = `oklch(0.96 ${(c * 0.14).toFixed(3)} ${h.toFixed(1)})`;
+    }
+    window.addEventListener('scroll', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    }, { passive: true });
+    update();
+  })();
+
+  // Menu overlay
+  (function () {
+    const menuBtn = document.querySelector('.menu-btn');
+    const menuOv = document.getElementById('menuOverlay');
+    if (!menuBtn || !menuOv) return;
+    const setMenu = (open) => {
+      document.body.classList.toggle('menu-open', open);
+      menuBtn.setAttribute('aria-expanded', String(open));
+      menuOv.setAttribute('aria-hidden', String(!open));
+    };
+    menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+    menuOv.addEventListener('click', e => {
+      if (e.target.closest('.menu-list a')) { setMenu(false); return; }
+      if (!e.target.closest('.menu-overlay-panel')) setMenu(false);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.body.classList.contains('menu-open')) setMenu(false);
+    });
+  })();
+
+  // Scroll reveal — same effect as index.html
+  (function () {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const targets = document.querySelectorAll('.karriere-intro, .role, .karriere-cta > *, footer > div');
+    targets.forEach(el => el.classList.add('reveal'));
+    document.querySelectorAll('.roles').forEach(g => g.classList.add('reveal-group'));
+    if (!reduced && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            const grp = e.target.closest('.reveal-group');
+            if (grp) grp.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+      targets.forEach(el => io.observe(el));
+    } else {
+      targets.forEach(el => el.classList.add('in'));
+      document.querySelectorAll('.reveal-group').forEach(g => g.classList.add('in'));
+    }
+  })();
+</script>
 
 <!-- FOOTER (matched to index.html) -->
 <footer>
@@ -559,11 +968,18 @@
           <line class="edge" x1="0" y1="0" x2="36" y2="0"/><line class="edge" x1="0" y1="0" x2="25.46" y2="25.46"/>
           <line class="edge" x1="0" y1="0" x2="0" y2="36"/><line class="edge" x1="0" y1="0" x2="-25.46" y2="25.46"/>
           <line class="edge" x1="0" y1="0" x2="-36" y2="0"/><line class="edge" x1="0" y1="0" x2="-25.46" y2="-25.46"/>
+          <line class="edge" x1="0" y1="-36" x2="36" y2="0"/><line class="edge" x1="25.46" y1="-25.46" x2="25.46" y2="25.46"/>
+          <line class="edge" x1="36" y1="0" x2="0" y2="36"/><line class="edge" x1="25.46" y1="25.46" x2="-25.46" y2="25.46"/>
+          <line class="edge" x1="0" y1="36" x2="-36" y2="0"/><line class="edge" x1="-25.46" y1="25.46" x2="-25.46" y2="-25.46"/>
+          <line class="edge" x1="-36" y1="0" x2="0" y2="-36"/><line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="-25.46"/>
+          <line class="edge" x1="0" y1="-36" x2="0" y2="36"/><line class="edge" x1="-36" y1="0" x2="36" y2="0"/>
+          <line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="25.46"/><line class="edge" x1="25.46" y1="-25.46" x2="-25.46" y2="25.46"/>
         </g>
         <circle class="node" cx="0" cy="-36" r="6"/><circle class="node" cx="25.46" cy="-25.46" r="6"/>
         <circle class="node" cx="36" cy="0" r="6"/><circle class="node" cx="25.46" cy="25.46" r="6"/>
         <circle class="node" cx="0" cy="36" r="6"/><circle class="node" cx="-25.46" cy="25.46" r="6"/>
         <circle class="node" cx="-36" cy="0" r="6"/><circle class="node" cx="-25.46" cy="-25.46" r="6"/>
+        <circle class="pulse" cx="0" cy="0" r="3"/>
       </svg>
       <span class="logo-text">
         <span class="word">DKS Analytics GmbH</span>
@@ -586,16 +1002,15 @@
     <ul>
       <li><a href="index.html#about">Über uns</a></li>
       <li><a href="index.html#produkte">Produkte</a></li>
-      <li><a href="#">Karriere</a></li>
-      <li><a href="#">Kontakt</a></li>
+      <li><a href="Karriere.html">Karriere</a></li>
+      <li><a href="index.html#kontakt">Kontakt</a></li>
     </ul>
   </div>
   <div>
     <h5>Rechtliches</h5>
     <ul>
       <li><a href="Impressum.html">Impressum</a></li>
-      <li><a href="#">Datenschutz</a></li>
-      <li><a href="#">AGB</a></li>
+      <li><a href="Datenschutz.html">Datenschutz</a></li>
     </ul>
   </div>
   <div class="footer-bottom mono">
@@ -603,27 +1018,6 @@
     <span>Made in Germany · v1.0</span>
   </div>
 </footer>
-
-<script>
-  (function () {
-    const menuBtn = document.querySelector('.menu-btn');
-    const menuOv = document.getElementById('menuOverlay');
-    if (!menuBtn || !menuOv) return;
-    const setMenu = (open) => {
-      document.body.classList.toggle('menu-open', open);
-      menuBtn.setAttribute('aria-expanded', String(open));
-      menuOv.setAttribute('aria-hidden', String(!open));
-    };
-    menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
-    menuOv.addEventListener('click', e => {
-      if (e.target.closest('.menu-list a')) { setMenu(false); return; }
-      if (!e.target.closest('.menu-overlay-panel')) setMenu(false);
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && document.body.classList.contains('menu-open')) setMenu(false);
-    });
-  })();
-</script>
 
 </body>
 </html>
