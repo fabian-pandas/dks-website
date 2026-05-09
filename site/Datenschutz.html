@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Karriere & Zusammenarbeit — DKS Analytics GmbH</title>
+<title>Datenschutzerklärung — DKS Analytics GmbH</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -19,7 +20,6 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { background: var(--bg); color: var(--ink); font-family: 'Inter Tight', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
-  body { transition: background-color .6s ease; }
   body { overflow-x: hidden; }
   body::before {
     content: ""; position: fixed; inset: -20px; pointer-events: none; z-index: 100;
@@ -232,30 +232,6 @@
     .menu-list a, .menu-meta { transition: opacity .2s !important; transform: none !important; }
   }
 
-  /* ============ SCROLL REVEAL ============ */
-  .reveal {
-    opacity: 0;
-    transform: translateY(28px);
-    filter: blur(6px);
-    transition: opacity .9s cubic-bezier(.22,.61,.36,1),
-                transform .9s cubic-bezier(.22,.61,.36,1),
-                filter .9s cubic-bezier(.22,.61,.36,1);
-    will-change: opacity, transform, filter;
-  }
-  .reveal.in {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-  .reveal-group > .reveal { transition-delay: 0s; }
-  .reveal-group.in > .reveal:nth-child(1) { transition-delay: 0.00s; }
-  .reveal-group.in > .reveal:nth-child(2) { transition-delay: 0.08s; }
-  .reveal-group.in > .reveal:nth-child(3) { transition-delay: 0.16s; }
-  .reveal-group.in > .reveal:nth-child(4) { transition-delay: 0.24s; }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1; transform: none; filter: none; transition: none; }
-  }
-
   /* HERO */
   .hero {
     padding: 96px 56px 72px;
@@ -269,250 +245,6 @@
   }
   .hero .star {
     position: absolute; pointer-events: none;
-  }
-
-  /* ============ KARRIERE — role cards ============ */
-  .karriere-intro {
-    max-width: 880px; margin: 0 56px 56px;
-    font-size: 18px; line-height: 1.55; color: var(--ink-soft);
-    text-wrap: pretty;
-  }
-  .karriere-intro strong { color: var(--ink); font-weight: 500; }
-  .roles {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 18px; padding: 0 56px 56px;
-    align-items: stretch;
-  }
-  .role {
-    --c1: oklch(0.78 0.15 70);
-    --c2: oklch(0.66 0.16 50);
-    --c3: oklch(0.45 0.13 35);
-    position: relative;
-    border-radius: 28px;
-    padding: 28px 28px 32px;
-    color: #1a1208;
-    background:
-      linear-gradient(155deg, var(--c1) 0%, var(--c2) 55%, var(--c3) 100%);
-    overflow: hidden;
-    isolation: isolate;
-    display: flex; flex-direction: column;
-    min-height: 540px;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.45) inset,
-      0 30px 60px -28px rgba(20,20,26,0.4),
-      0 8px 18px -10px rgba(20,20,26,0.18);
-    transition: transform .5s cubic-bezier(.22,.61,.36,1);
-  }
-  .role:hover { transform: translateY(-3px); }
-  .role::before {
-    /* glass vertical stripes — same texture vocab as index.html cards */
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background-image: repeating-linear-gradient(
-      90deg,
-      rgba(255,255,255,0.16) 0,
-      rgba(255,255,255,0.16) 1px,
-      transparent 1px,
-      transparent 9px
-    );
-    mix-blend-mode: overlay; opacity: 0.65;
-  }
-  .role::after {
-    /* soft top sheen */
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background:
-      radial-gradient(120% 80% at 0% 0%, rgba(255,255,255,0.55) 0%, transparent 55%),
-      radial-gradient(80% 60% at 100% 100%, rgba(0,0,0,0.16) 0%, transparent 60%);
-    mix-blend-mode: soft-light;
-  }
-  .role > * { position: relative; z-index: 1; }
-
-  .role.coral {
-    --c1: oklch(0.78 0.16 25);
-    --c2: oklch(0.62 0.18 12);
-    --c3: oklch(0.42 0.13 350);
-    color: #1a0a14;
-  }
-  .role.violet {
-    --c1: oklch(0.72 0.16 305);
-    --c2: oklch(0.55 0.18 290);
-    --c3: oklch(0.32 0.13 270);
-    color: #f6f0ff;
-  }
-  .role.violet .role-eyebrow,
-  .role.violet .role-num,
-  .role.violet .role-tag,
-  .role.violet .role-toggle { color: rgba(255,255,255,0.9); border-color: rgba(255,255,255,0.55); }
-  .role.violet .role-toggle:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.85); }
-  .role.violet .role-detail-list li { color: rgba(255,255,255,0.86); }
-  .role.violet .role-detail-list li::before { background: rgba(255,255,255,0.55); }
-  .role.violet .role-meta { color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.22); }
-  .role.violet .role-meta strong { color: #fff; }
-
-  .role-num {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-    opacity: 0.75;
-  }
-  .role-eyebrow {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-    margin-top: 4px; opacity: 0.7;
-  }
-  .role-title {
-    font-size: 32px; line-height: 1.05; letter-spacing: -0.025em; font-weight: 500;
-    margin-top: 14px; margin-bottom: 14px;
-    text-wrap: balance;
-  }
-  .role-tag {
-    font-size: 15px; line-height: 1.5; opacity: 0.85;
-    max-width: 30ch;
-  }
-  .role-spacer { flex: 1; }
-  .role-toggle {
-    align-self: flex-start;
-    margin-top: 22px;
-    background: transparent;
-    border: 1px solid currentColor;
-    color: inherit;
-    padding: 10px 18px 11px;
-    border-radius: 999px;
-    font: inherit; font-size: 13px;
-    cursor: pointer;
-    display: inline-flex; align-items: center; gap: 10px;
-    transition: background .25s, border-color .25s, color .25s;
-    -webkit-backdrop-filter: blur(6px);
-            backdrop-filter: blur(6px);
-  }
-  .role-toggle:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.7); }
-  .role-toggle .arrow {
-    display: inline-block; transition: transform .35s cubic-bezier(.22,.61,.36,1);
-  }
-  .role.open .role-toggle .arrow { transform: rotate(90deg); }
-
-  .role-detail {
-    display: grid; grid-template-rows: 0fr;
-    transition: grid-template-rows .5s cubic-bezier(.22,.61,.36,1), margin-top .5s;
-    margin-top: 0;
-  }
-  .role.open .role-detail {
-    grid-template-rows: 1fr;
-    margin-top: 22px;
-  }
-  .role-detail-inner {
-    overflow: hidden;
-  }
-  .role-detail h4 {
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-    margin: 14px 0 8px; opacity: 0.7; font-weight: 500;
-  }
-  .role-detail h4:first-child { margin-top: 0; }
-  .role-detail-list {
-    list-style: none; padding: 0; display: grid; gap: 6px;
-  }
-  .role-detail-list li {
-    position: relative; padding-left: 18px;
-    font-size: 14px; line-height: 1.45;
-  }
-  .role-detail-list li::before {
-    content: ""; position: absolute; left: 0; top: 0.65em;
-    width: 9px; height: 1px; background: rgba(0,0,0,0.45);
-  }
-  .role-meta {
-    margin-top: 18px; padding-top: 14px;
-    border-top: 1px solid rgba(0,0,0,0.18);
-    display: flex; flex-wrap: wrap; gap: 6px 18px;
-    font-family: 'JetBrains Mono', ui-monospace, monospace;
-    font-size: 11px; letter-spacing: 0.05em;
-    color: rgba(0,0,0,0.65);
-  }
-  .role-meta strong { color: rgba(0,0,0,0.85); font-weight: 500; }
-
-  .role-apply {
-    display: flex; align-items: center; justify-content: space-between;
-    margin-top: 18px;
-    padding: 14px 18px 15px;
-    border-radius: 999px;
-    background: rgba(255,255,255,0.22);
-    border: 1px solid rgba(0,0,0,0.18);
-    color: inherit; text-decoration: none;
-    font-size: 14px; letter-spacing: -0.005em;
-    -webkit-backdrop-filter: blur(8px);
-            backdrop-filter: blur(8px);
-    transition: background .25s, border-color .25s, transform .25s;
-  }
-  .role-apply:hover {
-    background: rgba(255,255,255,0.4);
-    border-color: rgba(0,0,0,0.28);
-    transform: translateY(-1px);
-  }
-  .role-apply-label { font-weight: 500; }
-  .role-apply-arrow {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 26px; height: 26px; border-radius: 50%;
-    background: rgba(0,0,0,0.78); color: #fff;
-    font-size: 13px;
-    transition: transform .35s cubic-bezier(.22,.61,.36,1);
-  }
-  .role-apply:hover .role-apply-arrow { transform: translateX(3px); }
-  .role.violet .role-apply { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.12); }
-  .role.violet .role-apply:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.6); }
-  .role.violet .role-apply-arrow { background: rgba(255,255,255,0.95); color: #1a0a2a; }
-
-  /* ============ CONTACT BAND ============ */
-  .karriere-cta {
-    margin: 0 56px 96px;
-    padding: 40px 48px;
-    border-radius: 24px;
-    background: rgba(255,255,255,0.55);
-    border: 1px solid rgba(255,255,255,0.7);
-    -webkit-backdrop-filter: blur(20px) saturate(130%);
-            backdrop-filter: blur(20px) saturate(130%);
-    box-shadow:
-      0 1px 0 rgba(255,255,255,0.8) inset,
-      0 20px 40px -24px rgba(20,20,26,0.18);
-    display: grid;
-    grid-template-columns: 1.4fr auto;
-    gap: 24px;
-    align-items: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .karriere-cta::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background-image: repeating-linear-gradient(
-      90deg,
-      transparent 0, transparent 5px,
-      rgba(20,20,26,0.04) 5px, rgba(20,20,26,0.04) 6px
-    );
-    mix-blend-mode: multiply; opacity: 0.6;
-  }
-  .karriere-cta > * { position: relative; }
-  .karriere-cta h3 {
-    font-size: 28px; font-weight: 500; letter-spacing: -0.02em;
-    margin-bottom: 6px; line-height: 1.1;
-  }
-  .karriere-cta p { font-size: 15px; color: var(--ink-soft); line-height: 1.5; max-width: 60ch; }
-  .karriere-cta .actions { display: flex; gap: 12px; flex-wrap: wrap; }
-  .karriere-cta a.cta {
-    background: var(--ink); color: var(--bg);
-    padding: 14px 24px; border-radius: 999px;
-    font-size: 14px; text-decoration: none; white-space: nowrap;
-    transition: transform .25s;
-  }
-  .karriere-cta a.cta:hover { transform: translateY(-2px); }
-  .karriere-cta a.ghost {
-    border: 1px solid var(--line); color: var(--ink);
-    padding: 13px 22px; border-radius: 999px;
-    font-size: 14px; text-decoration: none; white-space: nowrap;
-    transition: background .2s;
-  }
-  .karriere-cta a.ghost:hover { background: rgba(20,20,26,0.04); }
-
-  @media (max-width: 980px) {
-    .roles { grid-template-columns: 1fr; padding: 0 24px 40px; }
-    .karriere-intro { margin: 0 24px 36px; font-size: 16px; }
-    .karriere-cta { margin: 0 24px 56px; padding: 28px; grid-template-columns: 1fr; }
   }
 
   /* CONTENT */
@@ -558,6 +290,19 @@
     text-wrap: pretty;
   }
   .legal p strong { color: var(--ink); font-weight: 500; }
+  .legal ul {
+    list-style: none; padding: 0; margin: 4px 0 18px;
+    display: grid; gap: 8px;
+    max-width: 68ch;
+  }
+  .legal ul li {
+    position: relative; padding-left: 22px;
+    font-size: 15px; line-height: 1.55; color: var(--ink-soft);
+  }
+  .legal ul li::before {
+    content: ""; position: absolute; left: 0; top: 0.65em;
+    width: 10px; height: 1px; background: var(--ink-mute);
+  }
   .legal a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--ink-mute); text-underline-offset: 3px; transition: text-decoration-color .2s; }
   .legal a:hover { text-decoration-color: var(--ink); }
 
@@ -744,214 +489,193 @@
 <header class="hero">
   <svg class="star" style="left: 52%; top: 28%;" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#9a9991" stroke-width="0.7"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z"/></svg>
   <svg class="star" style="right: 12%; top: 62%; opacity: 0.6;" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#9a9991" stroke-width="0.6"><path d="M12 2 L13.2 10.8 L22 12 L13.2 13.2 L12 22 L10.8 13.2 L2 12 L10.8 10.8 Z"/></svg>
-  <p class="hero-eyebrow mono" style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;">— Karriere & Zusammenarbeit</p>
-  <h1 class="hero-title">Mit&nbsp;uns<br/>arbeiten.</h1>
+  <p class="hero-eyebrow mono" style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;">— Rechtliches</p>
+  <h1 class="hero-title">Datenschutz.</h1>
 </header>
 
-<p class="karriere-intro">
-  Wir arbeiten <strong>projektbasiert</strong> und auf Augenhöhe — mit Menschen, die ML, Daten und Produkt wirklich verstehen. Wenn dich eine der drei Rollen anspricht, klicke auf <em>Mehr erfahren</em> für Details.
-</p>
+<!-- LEGAL CONTENT -->
+<main class="legal">
+  <p class="mono" style="font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 12px;">Datenschutzerklärung gemäß DSGVO</p>
 
-<section class="roles">
+  <h2>1. Verantwortlicher</h2>
+  <p>Verantwortlich für die Verarbeitung personenbezogener Daten auf dieser Website ist:</p>
 
-  <article class="role amber" data-role="engineering">
-    <span class="role-num">01 · Engineering</span>
-    <h2 class="role-title">Projektbezogene Unterstützung</h2>
-    <p class="role-tag">Entwickler:innen, Data Scientists oder AI Engineers — für konkrete Modelle, Pipelines und Deployments.</p>
-    <span class="role-spacer"></span>
-    <button class="role-toggle" aria-expanded="false">Mehr erfahren <span class="arrow">›</span></button>
-    <div class="role-detail"><div class="role-detail-inner">
-      <h4>Was du machst</h4>
-      <ul class="role-detail-list">
-        <li>Datenpipelines bauen, von Roh‑Quelle bis Feature‑Store</li>
-        <li>Modelle trainieren, validieren und in Produktion bringen</li>
-        <li>APIs, Inferenz‑Services und Monitoring — produktionsreif, nicht Notebook‑reif</li>
-        <li>Mit Kund:innen direkt sprechen, Anforderungen schärfen</li>
-      </ul>
-      <h4>Was wir suchen</h4>
-      <ul class="role-detail-list">
-        <li>Solides Python, idealerweise Erfahrung mit PyTorch oder TF</li>
-        <li>Cloud (AWS / GCP / Azure) und Container‑Workflows</li>
-        <li>Pragmatismus über Perfektion — Tempo zählt</li>
-      </ul>
-      <div class="role-meta">
-        <span><strong>Modus</strong> Projektbezogen</span>
-        <span><strong>Dauer</strong> 3–12 Monate</span>
-        <span><strong>Remote</strong> Ja</span>
-      </div>
-      <a class="role-apply" href="mailto:info@dks-analytics.de?subject=Bewerbung%20—%20Engineering%20%2F%20Data%20Science">
-        <span class="role-apply-label">Jetzt bewerben</span>
-        <span class="role-apply-arrow">→</span>
-      </a>
-    </div></div>
-  </article>
+  <dl class="data-block">
+    <dt>Firma</dt>
+    <dd>
+      <span class="line"><strong>DKS Analytics GmbH</strong></span>
+      <span class="line">Löffelstraße 44</span>
+      <span class="line">70597 Stuttgart</span>
+      <span class="line">Deutschland</span>
+    </dd>
 
-  <article class="role coral" data-role="pm">
-    <span class="role-num">02 · Project Management</span>
-    <h2 class="role-title">Projektbezogenes Project Management</h2>
-    <p class="role-tag">Für Menschen, die zwischen Modell‑Realität und Stakeholder‑Erwartung souverän vermitteln.</p>
-    <span class="role-spacer"></span>
-    <button class="role-toggle" aria-expanded="false">Mehr erfahren <span class="arrow">›</span></button>
-    <div class="role-detail"><div class="role-detail-inner">
-      <h4>Was du machst</h4>
-      <ul class="role-detail-list">
-        <li>Projekte von Discovery bis Rollout führen</li>
-        <li>Roadmaps, Timelines, Budgets — ohne Ritual‑Overhead</li>
-        <li>Schnittstelle zwischen Engineering, Daten und Fachseite</li>
-        <li>Risiken früh sichtbar machen, Entscheidungen einfordern</li>
-      </ul>
-      <h4>Was wir suchen</h4>
-      <ul class="role-detail-list">
-        <li>Erfahrung in Daten‑, ML‑ oder Software‑Projekten</li>
-        <li>Technisches Verständnis — du musst kein Code‑Profi sein, aber Fragen stellen können</li>
-        <li>Klare Kommunikation, schriftlich wie mündlich, DE & EN</li>
-      </ul>
-      <div class="role-meta">
-        <span><strong>Modus</strong> Projektbezogen</span>
-        <span><strong>Auslastung</strong> 50–100&nbsp;%</span>
-        <span><strong>Hybrid</strong> Stuttgart / Remote</span>
-      </div>
-      <a class="role-apply" href="mailto:info@dks-analytics.de?subject=Bewerbung%20—%20Project%20Management">
-        <span class="role-apply-label">Jetzt bewerben</span>
-        <span class="role-apply-arrow">→</span>
-      </a>
-    </div></div>
-  </article>
+    <dt>Kontakt</dt>
+    <dd>
+      <span class="line">E‑Mail: <a href="mailto:info@dks-analytics.de">info@dks-analytics.de</a></span>
+    </dd>
 
-  <article class="role violet" data-role="working-student">
-    <span class="role-num">03 · Studium</span>
-    <h2 class="role-title">Werkstudent:innen & Praktika</h2>
-    <p class="role-tag">Du studierst Informatik, Mathematik, Physik oder Wirtschaft — und willst echte ML‑Projekte sehen, nicht nur Folien darüber.</p>
-    <span class="role-spacer"></span>
-    <button class="role-toggle" aria-expanded="false">Mehr erfahren <span class="arrow">›</span></button>
-    <div class="role-detail"><div class="role-detail-inner">
-      <h4>Was du machst</h4>
-      <ul class="role-detail-list">
-        <li>Mitarbeit an realen Kundenprojekten, kein Kaffeekochen</li>
-        <li>Daten‑Exploration, Feature‑Engineering, Modell‑Iteration</li>
-        <li>Code‑Reviews mit Senior Engineers — du lernst, wie produktive ML‑Teams arbeiten</li>
-        <li>Eigene kleine Themen, die du End‑to‑End betreust</li>
-      </ul>
-      <h4>Was wir suchen</h4>
-      <ul class="role-detail-list">
-        <li>Eingeschriebene:r Student:in, idealerweise ab 3. Semester</li>
-        <li>Spaß an Code, Daten und Mathe — in dieser Reihenfolge</li>
-        <li>Neugier statt fertiger Antworten</li>
-      </ul>
-      <div class="role-meta">
-        <span><strong>Format</strong> Werkstudium / Praktikum</span>
-        <span><strong>Stunden</strong> 10–20 / Woche</span>
-        <span><strong>Dauer</strong> ab 3 Monate</span>
-      </div>
-      <a class="role-apply" href="mailto:info@dks-analytics.de?subject=Bewerbung%20—%20Werkstudium%20%2F%20Praktikum">
-        <span class="role-apply-label">Jetzt bewerben</span>
-        <span class="role-apply-arrow">→</span>
-      </a>
-    </div></div>
-  </article>
+    <dt>Geschäftsführer</dt>
+    <dd>
+      <span class="line">Karl Domanowsky</span>
+      <span class="line">Fabian Stöhr</span>
+      <span class="line">Marvin Kasper</span>
+    </dd>
+  </dl>
 
-</section>
+  <h2>2. Allgemeine Hinweise zur Datenverarbeitung</h2>
+  <p>Wir nehmen den Schutz Ihrer personenbezogenen Daten sehr ernst. Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person beziehen, zum Beispiel Name, E‑Mail‑Adresse, IP‑Adresse oder Kommunikationsdaten.</p>
+  <p>Wir verarbeiten personenbezogene Daten nur, soweit dies zur Bereitstellung dieser Website, zur Bearbeitung von Anfragen, zur Kommunikation mit Ihnen oder zur Erfüllung gesetzlicher Pflichten erforderlich ist. Eine Verarbeitung erfolgt nur auf Grundlage der jeweils einschlägigen gesetzlichen Bestimmungen, insbesondere der Datenschutz‑Grundverordnung (DSGVO), des Bundesdatenschutzgesetzes (BDSG) und des Telekommunikation‑Digitale‑Dienste‑Datenschutz‑Gesetzes (TDDDG).</p>
 
-<section class="karriere-cta">
-  <div>
-    <h3>Keine passende Rolle dabei?</h3>
-    <p>Wir freuen uns trotzdem über eine kurze Nachricht — erzähl uns, was du machst und wie du arbeitest. Wir antworten in der Regel innerhalb weniger Tage.</p>
+  <h2>3. Besuch unserer Website und Server‑Logfiles</h2>
+  <p>Beim Aufruf unserer Website werden durch den Webserver automatisch Informationen verarbeitet, die Ihr Browser an den Server übermittelt. Dazu können insbesondere folgende Daten gehören:</p>
+  <ul>
+    <li>IP‑Adresse</li>
+    <li>Datum und Uhrzeit des Zugriffs</li>
+    <li>aufgerufene Seite oder Datei</li>
+    <li>übertragene Datenmenge</li>
+    <li>Referrer‑URL</li>
+    <li>verwendeter Browser</li>
+    <li>verwendetes Betriebssystem</li>
+    <li>Zugriffsstatus, zum Beispiel erfolgreiche Übertragung oder Fehlermeldung</li>
+  </ul>
+  <p>Die Verarbeitung dieser Daten erfolgt, um die Website technisch bereitzustellen, ihre Stabilität und Sicherheit zu gewährleisten und mögliche technische Fehler oder Angriffe erkennen zu können.</p>
+  <p>Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in der sicheren, stabilen und funktionsfähigen Bereitstellung unserer Website.</p>
+  <p>Server‑Logfiles werden nur so lange gespeichert, wie dies für die genannten Zwecke erforderlich ist, und anschließend gelöscht oder anonymisiert, sofern keine längere Speicherung aus Sicherheitsgründen oder aufgrund gesetzlicher Pflichten erforderlich ist.</p>
+
+  <h2>4. Hosting</h2>
+  <p>Unsere Website wird bei folgendem Anbieter gehostet:</p>
+  <p>[Hosting‑Anbieter eintragen]<br/>[Adresse des Hosting‑Anbieters eintragen, falls gewünscht]</p>
+  <p>Der Hosting‑Anbieter verarbeitet personenbezogene Daten, insbesondere technische Zugriffsdaten, in unserem Auftrag, soweit dies zur Bereitstellung und zum Betrieb der Website erforderlich ist.</p>
+  <p>Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in der sicheren und zuverlässigen Bereitstellung unserer Website. Soweit mit dem Hosting‑Anbieter ein Vertrag über Auftragsverarbeitung erforderlich ist, schließen wir einen entsprechenden Vertrag gemäß Art. 28 DSGVO.</p>
+
+  <h2>5. Kontaktaufnahme</h2>
+  <p>Wenn Sie uns per E‑Mail, Telefon oder über ein Kontaktformular kontaktieren, verarbeiten wir die von Ihnen übermittelten personenbezogenen Daten, um Ihre Anfrage zu bearbeiten und mit Ihnen zu kommunizieren.</p>
+  <p>Hierzu können insbesondere folgende Daten gehören:</p>
+  <ul>
+    <li>Name</li>
+    <li>E‑Mail‑Adresse</li>
+    <li>Telefonnummer</li>
+    <li>Unternehmen</li>
+    <li>Inhalt Ihrer Nachricht</li>
+    <li>Zeitpunkt der Kontaktaufnahme</li>
+  </ul>
+  <p>Die Verarbeitung erfolgt, je nach Inhalt Ihrer Anfrage, auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, soweit Ihre Anfrage mit vorvertraglichen Maßnahmen oder einem bestehenden Vertragsverhältnis zusammenhängt. In allen übrigen Fällen erfolgt die Verarbeitung auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in der Bearbeitung und Beantwortung Ihrer Anfrage.</p>
+  <p>Die im Rahmen der Kontaktaufnahme übermittelten Daten werden gelöscht, sobald Ihre Anfrage abschließend bearbeitet wurde und keine gesetzlichen Aufbewahrungspflichten oder berechtigten Interessen an einer weiteren Speicherung entgegenstehen.</p>
+
+  <h2>6. Cookies und vergleichbare Technologien</h2>
+  <p>Unsere Website kann Cookies oder vergleichbare Technologien verwenden. Cookies sind kleine Textdateien, die auf Ihrem Endgerät gespeichert werden. Vergleichbare Technologien können zum Beispiel Local Storage, Session Storage oder ähnliche Speicher‑ und Zugriffstechnologien sein.</p>
+  <p>Wir unterscheiden zwischen technisch notwendigen und technisch nicht notwendigen Technologien.</p>
+  <p>Technisch notwendige Cookies und vergleichbare Technologien werden eingesetzt, soweit sie erforderlich sind, um die Website bereitzustellen oder von Ihnen ausdrücklich gewünschte Funktionen zu ermöglichen. Die Rechtsgrundlage für den Zugriff auf Ihr Endgerät ist § 25 Abs. 2 TDDDG. Soweit dabei personenbezogene Daten verarbeitet werden, erfolgt dies auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in der funktionsfähigen und sicheren Bereitstellung unserer Website.</p>
+  <p>Technisch nicht notwendige Cookies und vergleichbare Technologien, insbesondere zu Analyse‑, Marketing‑ oder Trackingzwecken, setzen wir nur ein, wenn Sie zuvor eingewilligt haben. Die Rechtsgrundlage für den Zugriff auf Ihr Endgerät ist § 25 Abs. 1 TDDDG. Soweit personenbezogene Daten verarbeitet werden, erfolgt dies auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO.</p>
+  <p>Sie können eine erteilte Einwilligung jederzeit mit Wirkung für die Zukunft widerrufen. Außerdem können Sie Cookies über die Einstellungen Ihres Browsers löschen oder blockieren. Wenn Sie Cookies blockieren, kann die Funktionalität der Website eingeschränkt sein.</p>
+
+  <h2>7. Consent‑Management</h2>
+  <p>Falls wir auf unserer Website ein Consent‑Management‑Tool einsetzen, verwenden wir dieses, um Einwilligungen für bestimmte Dienste, Cookies oder vergleichbare Technologien einzuholen, zu dokumentieren und zu verwalten.</p>
+  <p>Dabei können insbesondere folgende Daten verarbeitet werden:</p>
+  <ul>
+    <li>Ihre Einwilligungsentscheidung</li>
+    <li>Datum und Uhrzeit der Einwilligung</li>
+    <li>technische Informationen zu Browser und Endgerät</li>
+    <li>gekürzte oder pseudonymisierte IP‑Adresse, soweit erforderlich</li>
+    <li>gewählte Datenschutz‑Einstellungen</li>
+  </ul>
+  <p>Die Verarbeitung erfolgt zur Erfüllung rechtlicher Nachweispflichten auf Grundlage von Art. 6 Abs. 1 lit. c DSGVO sowie auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in der rechtssicheren Dokumentation und Verwaltung von Einwilligungen.</p>
+  <p>[Name des Consent‑Management‑Tools eintragen, falls verwendet]</p>
+
+  <h2>8. Analyse‑Tools</h2>
+  <p>Derzeit verwenden wir auf dieser Website keine Analyse‑ oder Tracking‑Tools wie Google Analytics, Meta Pixel oder vergleichbare Dienste.</p>
+  <p>Sollten wir zukünftig Analyse‑ oder Tracking‑Tools einsetzen, werden wir diese Datenschutzerklärung entsprechend aktualisieren und, soweit erforderlich, vorab Ihre Einwilligung einholen.</p>
+
+  <h2>9. Externe Inhalte und Drittanbieter‑Dienste</h2>
+  <p>Unsere Website kann externe Inhalte oder Dienste Dritter einbinden, zum Beispiel Karten, Videos, Schriftarten, Kalenderfunktionen, Formulare oder andere technische Dienste.</p>
+  <p>Beim Aufruf solcher Inhalte kann es technisch erforderlich sein, dass Ihre IP‑Adresse und weitere technische Informationen an den jeweiligen Anbieter übertragen werden. Wir setzen solche Dienste nur ein, soweit sie für die Darstellung, Sicherheit oder Funktionalität der Website erforderlich sind oder Sie zuvor eingewilligt haben.</p>
+  <p>Falls externe Dienste eingesetzt werden, werden diese in dieser Datenschutzerklärung konkret benannt.</p>
+  <p><strong>Derzeit eingebundene externe Dienste:</strong><br/>[Keine / konkrete Dienste eintragen, z. B. Google Fonts lokal eingebunden, Google Maps, YouTube, Calendly, HubSpot, Cloudflare, etc.]</p>
+
+  <h2>10. Vertrags‑ und Geschäftskommunikation</h2>
+  <p>Wenn Sie mit uns in Kontakt treten, Angebote anfragen oder mit uns in einem Vertragsverhältnis stehen, verarbeiten wir personenbezogene Daten, die für die Anbahnung, Durchführung oder Abwicklung der Geschäftsbeziehung erforderlich sind.</p>
+  <p>Hierzu können insbesondere folgende Daten gehören:</p>
+  <ul>
+    <li>Name</li>
+    <li>Unternehmen</li>
+    <li>Position</li>
+    <li>Kontaktdaten</li>
+    <li>Kommunikationsinhalte</li>
+    <li>Angebots‑ und Vertragsdaten</li>
+    <li>Rechnungs‑ und Zahlungsinformationen</li>
+  </ul>
+  <p>Die Verarbeitung erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, soweit sie zur Anbahnung oder Durchführung eines Vertrags erforderlich ist. Soweit wir gesetzlich zur Aufbewahrung bestimmter Daten verpflichtet sind, erfolgt die Verarbeitung auf Grundlage von Art. 6 Abs. 1 lit. c DSGVO. Darüber hinaus kann eine Verarbeitung auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO erfolgen, soweit dies zur Verwaltung, Dokumentation und Verteidigung rechtlicher Ansprüche erforderlich ist.</p>
+
+  <h2>11. Empfänger personenbezogener Daten</h2>
+  <p>Innerhalb unseres Unternehmens erhalten nur diejenigen Personen Zugriff auf personenbezogene Daten, die diese zur Erfüllung der oben genannten Zwecke benötigen.</p>
+  <p>Eine Weitergabe an externe Empfänger erfolgt nur, wenn dies zur Vertragsdurchführung, zur Bereitstellung technischer Dienste, zur Erfüllung gesetzlicher Pflichten oder zur Wahrung berechtigter Interessen erforderlich ist.</p>
+  <p>Mögliche Empfänger können insbesondere sein:</p>
+  <ul>
+    <li>Hosting‑ und IT‑Dienstleister</li>
+    <li>E‑Mail‑ und Kommunikationsdienstleister</li>
+    <li>Steuerberater und Buchhaltung</li>
+    <li>Zahlungsdienstleister, soweit relevant</li>
+    <li>Behörden, Gerichte oder andere öffentliche Stellen, soweit gesetzlich erforderlich</li>
+  </ul>
+  <p>Soweit Dienstleister personenbezogene Daten in unserem Auftrag verarbeiten, schließen wir mit diesen einen Vertrag über Auftragsverarbeitung gemäß Art. 28 DSGVO.</p>
+
+  <h2>12. Übermittlung in Drittländer</h2>
+  <p>Eine Übermittlung personenbezogener Daten in Länder außerhalb der Europäischen Union oder des Europäischen Wirtschaftsraums findet nur statt, wenn hierfür eine geeignete Rechtsgrundlage besteht.</p>
+  <p>Dies kann insbesondere der Fall sein, wenn für das betreffende Land ein Angemessenheitsbeschluss der Europäischen Kommission besteht, geeignete Garantien wie EU‑Standardvertragsklauseln verwendet werden oder Sie ausdrücklich eingewilligt haben.</p>
+  <p>Falls wir Dienste einsetzen, bei denen eine Drittlandübermittlung stattfindet, informieren wir hierüber in dieser Datenschutzerklärung bei dem jeweiligen Dienst.</p>
+
+  <h2>13. Speicherdauer</h2>
+  <p>Wir speichern personenbezogene Daten nur so lange, wie dies für die jeweiligen Verarbeitungszwecke erforderlich ist.</p>
+  <p>Daten aus Kontaktanfragen speichern wir nur so lange, wie dies zur Bearbeitung Ihrer Anfrage erforderlich ist. Vertrags‑ und Geschäftsunterlagen speichern wir entsprechend den gesetzlichen Aufbewahrungsfristen, insbesondere handels‑ und steuerrechtlichen Vorschriften.</p>
+  <p>Soweit keine gesetzlichen Aufbewahrungspflichten bestehen und keine berechtigten Interessen an einer weiteren Speicherung vorliegen, werden personenbezogene Daten gelöscht oder anonymisiert.</p>
+
+  <h2>14. Ihre Rechte</h2>
+  <p>Sie haben nach Maßgabe der gesetzlichen Vorschriften folgende Rechte:</p>
+  <ul>
+    <li>Recht auf Auskunft gemäß Art. 15 DSGVO</li>
+    <li>Recht auf Berichtigung gemäß Art. 16 DSGVO</li>
+    <li>Recht auf Löschung gemäß Art. 17 DSGVO</li>
+    <li>Recht auf Einschränkung der Verarbeitung gemäß Art. 18 DSGVO</li>
+    <li>Recht auf Datenübertragbarkeit gemäß Art. 20 DSGVO</li>
+    <li>Recht auf Widerspruch gemäß Art. 21 DSGVO</li>
+    <li>Recht auf Widerruf einer erteilten Einwilligung gemäß Art. 7 Abs. 3 DSGVO</li>
+  </ul>
+  <p>Wenn Sie eine Einwilligung erteilt haben, können Sie diese jederzeit mit Wirkung für die Zukunft widerrufen. Die Rechtmäßigkeit der Verarbeitung bis zum Widerruf bleibt davon unberührt.</p>
+
+  <h2>15. Widerspruchsrecht</h2>
+  <p>Sie haben das Recht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, jederzeit gegen die Verarbeitung personenbezogener Daten Widerspruch einzulegen, wenn die Verarbeitung auf Grundlage von Art. 6 Abs. 1 lit. e oder Art. 6 Abs. 1 lit. f DSGVO erfolgt.</p>
+  <p>Wenn wir personenbezogene Daten zum Zweck der Direktwerbung verarbeiten, haben Sie das Recht, jederzeit Widerspruch gegen diese Verarbeitung einzulegen. In diesem Fall werden wir Ihre personenbezogenen Daten nicht mehr für Direktwerbung verwenden.</p>
+
+  <h2>16. Beschwerderecht bei einer Aufsichtsbehörde</h2>
+  <p>Wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen Datenschutzrecht verstößt, haben Sie das Recht, sich bei einer Datenschutzaufsichtsbehörde zu beschweren.</p>
+  <p>Zuständig kann insbesondere die Datenschutzaufsichtsbehörde des Bundeslandes sein, in dem wir unseren Sitz haben:</p>
+
+  <dl class="data-block">
+    <dt>Aufsichtsbehörde</dt>
+    <dd>
+      <span class="line"><strong>Der Landesbeauftragte für den Datenschutz und die Informationsfreiheit Baden‑Württemberg</strong></span>
+      <span class="line">Lautenschlagerstraße 20</span>
+      <span class="line">70173 Stuttgart</span>
+      <span class="line">Deutschland</span>
+      <span class="line"><a href="https://www.baden-wuerttemberg.datenschutz.de/" target="_blank" rel="noopener">baden-wuerttemberg.datenschutz.de</a></span>
+    </dd>
+  </dl>
+
+  <h2>17. Datensicherheit</h2>
+  <p>Wir treffen geeignete technische und organisatorische Maßnahmen, um personenbezogene Daten gegen Verlust, Zerstörung, Manipulation, unbefugten Zugriff und unbefugte Offenlegung zu schützen.</p>
+  <p>Unsere Sicherheitsmaßnahmen werden entsprechend der technologischen Entwicklung fortlaufend verbessert.</p>
+
+  <h2>18. Aktualität und Änderung dieser Datenschutzerklärung</h2>
+  <p>Wir behalten uns vor, diese Datenschutzerklärung anzupassen, wenn sich die Rechtslage, unsere Website oder die Art der Datenverarbeitung ändert.</p>
+
+  <div class="meta-row">
+    <span><span class="dot"></span> Stand · Mai 2026</span>
+    <span>DSGVO · BDSG · TDDDG</span>
+    <span>Sitz · Stuttgart</span>
   </div>
-  <div class="actions">
-    <a class="cta" href="mailto:info@dks-analytics.de?subject=Initiativbewerbung">Initiativ bewerben</a>
-  </div>
-</section>
 
-<script>
-  document.addEventListener('click', function (e) {
-    const btn = e.target.closest('.role-toggle');
-    if (!btn) return;
-    const role = btn.closest('.role');
-    const open = role.classList.toggle('open');
-    btn.setAttribute('aria-expanded', String(open));
-    btn.firstChild.textContent = open ? 'Weniger zeigen ' : 'Mehr erfahren ';
-  });
-
-  // Scroll-driven mood arc — same palette as index.html
-  (function () {
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) return;
-    const moods = [
-      { h: 250, c: 0.00 },
-      { h: 35,  c: 0.10 },
-      { h: 12,  c: 0.14 },
-      { h: 320, c: 0.13 },
-      { h: 270, c: 0.12 }
-    ];
-    const lerp = (a, b, t) => a + (b - a) * t;
-    function lerpHue(a, b, t) {
-      let d = b - a;
-      if (d > 180) d -= 360;
-      if (d < -180) d += 360;
-      return (a + d * t + 360) % 360;
-    }
-    let raf = 0;
-    function update() {
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      const idx = p * (moods.length - 1);
-      const i0 = Math.floor(idx), i1 = Math.min(moods.length - 1, i0 + 1);
-      const tt = idx - i0;
-      const h = lerpHue(moods[i0].h, moods[i1].h, tt);
-      const c = lerp(moods[i0].c, moods[i1].c, tt);
-      document.body.style.backgroundColor = `oklch(0.96 ${(c * 0.14).toFixed(3)} ${h.toFixed(1)})`;
-    }
-    window.addEventListener('scroll', () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(update);
-    }, { passive: true });
-    update();
-  })();
-
-  // Menu overlay
-  (function () {
-    const menuBtn = document.querySelector('.menu-btn');
-    const menuOv = document.getElementById('menuOverlay');
-    if (!menuBtn || !menuOv) return;
-    const setMenu = (open) => {
-      document.body.classList.toggle('menu-open', open);
-      menuBtn.setAttribute('aria-expanded', String(open));
-      menuOv.setAttribute('aria-hidden', String(!open));
-    };
-    menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
-    menuOv.addEventListener('click', e => {
-      if (e.target.closest('.menu-list a')) { setMenu(false); return; }
-      if (!e.target.closest('.menu-overlay-panel')) setMenu(false);
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && document.body.classList.contains('menu-open')) setMenu(false);
-    });
-  })();
-
-  // Scroll reveal — same effect as index.html
-  (function () {
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const targets = document.querySelectorAll('.karriere-intro, .role, .karriere-cta > *, footer > div');
-    targets.forEach(el => el.classList.add('reveal'));
-    document.querySelectorAll('.roles').forEach(g => g.classList.add('reveal-group'));
-    if (!reduced && 'IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add('in');
-            const grp = e.target.closest('.reveal-group');
-            if (grp) grp.classList.add('in');
-            io.unobserve(e.target);
-          }
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-      targets.forEach(el => io.observe(el));
-    } else {
-      targets.forEach(el => el.classList.add('in'));
-      document.querySelectorAll('.reveal-group').forEach(g => g.classList.add('in'));
-    }
-  })();
-</script>
+  <a href="index.html" class="back-link">← Zurück zur Startseite</a>
+</main>
 
 <!-- FOOTER (matched to index.html) -->
 <footer>
@@ -967,11 +691,18 @@
           <line class="edge" x1="0" y1="0" x2="36" y2="0"/><line class="edge" x1="0" y1="0" x2="25.46" y2="25.46"/>
           <line class="edge" x1="0" y1="0" x2="0" y2="36"/><line class="edge" x1="0" y1="0" x2="-25.46" y2="25.46"/>
           <line class="edge" x1="0" y1="0" x2="-36" y2="0"/><line class="edge" x1="0" y1="0" x2="-25.46" y2="-25.46"/>
+          <line class="edge" x1="0" y1="-36" x2="36" y2="0"/><line class="edge" x1="25.46" y1="-25.46" x2="25.46" y2="25.46"/>
+          <line class="edge" x1="36" y1="0" x2="0" y2="36"/><line class="edge" x1="25.46" y1="25.46" x2="-25.46" y2="25.46"/>
+          <line class="edge" x1="0" y1="36" x2="-36" y2="0"/><line class="edge" x1="-25.46" y1="25.46" x2="-25.46" y2="-25.46"/>
+          <line class="edge" x1="-36" y1="0" x2="0" y2="-36"/><line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="-25.46"/>
+          <line class="edge" x1="0" y1="-36" x2="0" y2="36"/><line class="edge" x1="-36" y1="0" x2="36" y2="0"/>
+          <line class="edge" x1="-25.46" y1="-25.46" x2="25.46" y2="25.46"/><line class="edge" x1="25.46" y1="-25.46" x2="-25.46" y2="25.46"/>
         </g>
         <circle class="node" cx="0" cy="-36" r="6"/><circle class="node" cx="25.46" cy="-25.46" r="6"/>
         <circle class="node" cx="36" cy="0" r="6"/><circle class="node" cx="25.46" cy="25.46" r="6"/>
         <circle class="node" cx="0" cy="36" r="6"/><circle class="node" cx="-25.46" cy="25.46" r="6"/>
         <circle class="node" cx="-36" cy="0" r="6"/><circle class="node" cx="-25.46" cy="-25.46" r="6"/>
+        <circle class="pulse" cx="0" cy="0" r="3"/>
       </svg>
       <span class="logo-text">
         <span class="word">DKS Analytics GmbH</span>
@@ -995,15 +726,14 @@
       <li><a href="index.html#about">Über uns</a></li>
       <li><a href="index.html#produkte">Produkte</a></li>
       <li><a href="Karriere.html">Karriere</a></li>
-      <li><a href="#">Kontakt</a></li>
+      <li><a href="index.html#kontakt">Kontakt</a></li>
     </ul>
   </div>
   <div>
     <h5>Rechtliches</h5>
     <ul>
       <li><a href="Impressum.html">Impressum</a></li>
-      <li><a href="#">Datenschutz</a></li>
-      <li><a href="#">AGB</a></li>
+      <li><a href="Datenschutz.html">Datenschutz</a></li>
     </ul>
   </div>
   <div class="footer-bottom mono">
@@ -1011,6 +741,27 @@
     <span>Made in Germany · v1.0</span>
   </div>
 </footer>
+
+<script>
+  (function () {
+    const menuBtn = document.querySelector('.menu-btn');
+    const menuOv = document.getElementById('menuOverlay');
+    if (!menuBtn || !menuOv) return;
+    const setMenu = (open) => {
+      document.body.classList.toggle('menu-open', open);
+      menuBtn.setAttribute('aria-expanded', String(open));
+      menuOv.setAttribute('aria-hidden', String(!open));
+    };
+    menuBtn.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+    menuOv.addEventListener('click', e => {
+      if (e.target.closest('.menu-list a')) { setMenu(false); return; }
+      if (!e.target.closest('.menu-overlay-panel')) setMenu(false);
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && document.body.classList.contains('menu-open')) setMenu(false);
+    });
+  })();
+</script>
 
 </body>
 </html>

@@ -2,8 +2,9 @@
 <html lang="de">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>DKS Analytics — Aus Technologie wird messbare Wirkung</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -187,7 +188,7 @@
   .nav {
     position: sticky; top: 0; z-index: 50;
     display: grid; grid-template-columns: 1fr auto auto; align-items: start;
-    padding: 28px 56px 24px;
+    padding: calc(28px + env(safe-area-inset-top)) 56px 24px;
     background: linear-gradient(to bottom, rgba(244,243,239,0.55) 0%, rgba(244,243,239,0.35) 60%, transparent 100%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
             backdrop-filter: blur(18px) saturate(140%);
@@ -289,12 +290,12 @@
     position: absolute; inset: 0;
     display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
     gap: 64px;
-    padding: 140px 56px 56px;
+    padding: calc(140px + env(safe-area-inset-top)) 56px 56px;
     color: var(--bg);
     overflow-y: auto;
   }
   @media (max-width: 880px) {
-    .menu-overlay-panel { grid-template-columns: 1fr; gap: 32px; padding: 110px 24px 40px; }
+    .menu-overlay-panel { grid-template-columns: 1fr; gap: 32px; padding: calc(150px + env(safe-area-inset-top)) 24px 40px; }
   }
 
   .menu-list { display: flex; flex-direction: column; }
@@ -988,7 +989,7 @@
     border-bottom: 1px solid var(--line);
   }
   .phase {
-    position: relative; aspect-ratio: 3/4; min-height: 520px;
+    position: relative; min-height: 520px;
     padding: 28px;
     display: flex; flex-direction: column;
     border-right: 1px solid var(--line);
@@ -1144,6 +1145,73 @@
   }
   .product-meta span { font-size: 12px; color: var(--ink-mute); display: inline-flex; gap: 8px; align-items: center; }
   .product-meta span::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: oklch(0.65 0.16 145); }
+  /* ===== Health-check status lamp (sits inline above the product CTA) ===== */
+  .health-lamp {
+    margin-top: 22px;
+    display: flex; width: fit-content; align-items: center; gap: 14px;
+    padding: 10px 16px 10px 14px;
+    background: rgba(20,20,26,0.025);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font: 500 11.5px/1 ui-monospace, "JetBrains Mono", "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+    color: var(--ink-soft);
+    letter-spacing: 0.04em;
+    transition: background .3s, border-color .3s;
+  }
+  .health-lamp .lamp-dot {
+    position: relative;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: oklch(0.65 0.16 145);
+    box-shadow: 0 0 0 0 oklch(0.65 0.16 145 / 0.55);
+    animation: lampPulse 2.4s ease-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes lampPulse {
+    0%   { box-shadow: 0 0 0 0   oklch(0.65 0.16 145 / 0.55); }
+    70%  { box-shadow: 0 0 0 7px oklch(0.65 0.16 145 / 0); }
+    100% { box-shadow: 0 0 0 0   oklch(0.65 0.16 145 / 0); }
+  }
+  .health-lamp .lamp-status {
+    color: var(--ink);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: 10.5px;
+  }
+  .health-lamp .lamp-sep {
+    width: 1px; height: 12px; background: var(--line); display: inline-block;
+  }
+  .health-lamp .lamp-detail {
+    color: var(--ink-mute);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+  }
+  .health-lamp .lamp-detail b {
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  /* states */
+  .health-lamp[data-state="warn"] .lamp-dot {
+    background: oklch(0.72 0.16 75);
+    animation-name: lampPulseWarn;
+  }
+  @keyframes lampPulseWarn {
+    0%   { box-shadow: 0 0 0 0   oklch(0.72 0.16 75 / 0.55); }
+    70%  { box-shadow: 0 0 0 7px oklch(0.72 0.16 75 / 0); }
+    100% { box-shadow: 0 0 0 0   oklch(0.72 0.16 75 / 0); }
+  }
+  .health-lamp[data-state="checking"] .lamp-dot {
+    background: oklch(0.62 0.10 240);
+    animation: lampCheckBlink 0.7s steps(2, end) infinite;
+    box-shadow: none;
+  }
+  @keyframes lampCheckBlink {
+    0%, 49%  { opacity: 1; }
+    50%,100% { opacity: 0.3; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .health-lamp .lamp-dot { animation: none; }
+  }
   .product-cta {
     margin-top: 28px;
     display: inline-flex; align-items: center; gap: 10px;
@@ -1264,13 +1332,25 @@
     footer { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 720px) {
-    .nav { padding: 20px; grid-template-columns: 1fr auto; }
+    .nav { padding: calc(16px + env(safe-area-inset-top)) 20px 16px; grid-template-columns: 1fr auto; align-items: center; }
     .nav-links { display: none; }
+    .nav .logo { gap: 10px; }
+    .nav .logo-mark { width: 38px !important; height: 38px !important; }
+    .nav .logo-text .word { font-size: 15px !important; white-space: nowrap; }
+    .nav .logo-text .sub { font-size: 8px !important; letter-spacing: 0.18em !important; white-space: nowrap; }
+    .menu-btn { margin-left: 12px; padding: 8px 14px 9px 16px; }
+    .hero-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
     .hero { padding: 24px 20px 48px; }
     .section-header, .products, .team-grid { padding-left: 20px; padding-right: 20px; }
     .endcta { margin: 0 20px 40px; padding: 60px 28px 40px; }
     .lifecycle { grid-template-columns: 1fr; }
     .phase { border-right: none; aspect-ratio: auto; min-height: 380px; }
+    .product-card { padding: 20px; gap: 20px; }
+    .product-visual { aspect-ratio: 16/9; }
+    .product-visual .app-icon { width: 30%; }
+    .product-visual .badge { top: 14px; left: 14px; font-size: 10px; padding: 5px 10px; }
+    .product-info h3 { font-size: 32px; margin-bottom: 10px; }
+    .product-info p { font-size: 15px; }
     footer { grid-template-columns: 1fr; padding: 32px 20px; }
   }
 </style>
@@ -1498,12 +1578,13 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
     <div class="product-info">
       <h3>GlutenFreeToday</h3>
       <p>Die App, die zöliakiebetroffenen Menschen den Alltag erleichtert: KI-gestützte Produktanalyse, kuratierte Restaurant-Datenbank und persönliche Verträglichkeits-Insights.</p>
-      <div class="product-meta">
-        <span>iOS &amp; Android</span>
-        <span>Computer Vision</span>
-        <span>Live in DACH</span>
+      <div class="health-lamp" id="gftHealth" data-state="ok" role="status" aria-live="polite" title="Live health check">
+        <span class="lamp-dot" aria-hidden="true"></span>
+        <span class="lamp-status" data-status>Operational</span>
+        <span class="lamp-sep" aria-hidden="true"></span>
+        <span class="lamp-detail">last ping <b data-ping>just now</b> · <b data-latency>142</b> ms</span>
       </div>
-      <a href="#" class="product-cta">App ansehen <span>→</span></a>
+      <a href="https://apps.apple.com/de/app/glutenfreetoday/id6758898229" class="product-cta" target="_blank" rel="noopener">App ansehen <span>→</span></a>
     </div>
   </article>
 </section>
@@ -1601,10 +1682,10 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
   <div>
     <h5>Leistungen</h5>
     <ul>
-      <li><a href="#">Datenaufbereitung</a></li>
-      <li><a href="#">Modelltraining</a></li>
-      <li><a href="#">Deployment</a></li>
-      <li><a href="#">Monitoring</a></li>
+      <li><a href="#leistung">Datenaufbereitung</a></li>
+      <li><a href="#leistung">Modelltraining</a></li>
+      <li><a href="#leistung">Deployment</a></li>
+      <li><a href="#leistung">Monitoring</a></li>
     </ul>
   </div>
   <div>
@@ -1613,7 +1694,7 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
       <li><a href="#about">Über uns</a></li>
       <li><a href="#produkte">Produkte</a></li>
       <li><a href="Karriere.html">Karriere</a></li>
-      <li><a href="#">Kontakt</a></li>
+      <li><a href="#kontakt">Kontakt</a></li>
     </ul>
   </div>
   <div>
@@ -1621,7 +1702,6 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
     <ul>
       <li><a href="Impressum.html">Impressum</a></li>
       <li><a href="Datenschutz.html">Datenschutz</a></li>
-      <li><a href="#">AGB</a></li>
     </ul>
   </div>
   <div class="footer-bottom mono">
@@ -1926,7 +2006,7 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
         history.push({ role: 'assistant', content: reply });
       } catch (err) {
         thinkingBubble.classList.remove('thinking');
-        thinkingBubble.textContent = 'Entschuldigung — gerade ist die Verbindung zum Modell unterbrochen. Bitte versuchen Sie es in einem Moment erneut, oder schreiben Sie uns direkt an hello@dks-analytics.de.';
+        await typewriteInto(thinkingBubble, 'Entschuldigung — gerade ist die Verbindung zum Modell unterbrochen. Bitte versuchen Sie es in einem Moment erneut, oder schreiben Sie uns direkt an info@dks-analytics.de.', 12);
       } finally {
         busy = false;
         sendBtn.disabled = false;
@@ -2077,6 +2157,99 @@ Vom Proof-of-Concept bis zum Produktivbetrieb — aus einer Hand.</p>
     }
   }
   cycle();
+})();
+</script>
+
+<!-- HEALTH-CHECK LAMP — real App Store availability check for GlutenFreeToday -->
+<script>
+(function () {
+  const lamp = document.getElementById('gftHealth');
+  if (!lamp) return;
+  const statusEl  = lamp.querySelector('[data-status]');
+  const pingEl    = lamp.querySelector('[data-ping]');
+  const latencyEl = lamp.querySelector('[data-latency]');
+  const reduced   = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const APP_ID = '6758898229';
+  const SLOW_MS = 500;
+  const POLL_MS = 60000;
+  const FLASH_MS = 320;
+  const JSONP_TIMEOUT = 8000;
+
+  let pingAge = 0;
+  let cbCounter = 0;
+
+  function fmtAge(s) {
+    if (s < 2)  return 'just now';
+    if (s < 60) return s + 's ago';
+    return Math.floor(s / 60) + 'm ago';
+  }
+  function paint() { pingEl.textContent = fmtAge(pingAge); }
+
+  // iTunes Lookup API supports JSONP via &callback=foo and works without CORS.
+  // Apple's CORS headers on the plain JSON endpoint are inconsistent across edges
+  // (sometimes present, sometimes not), so JSONP is the only reliable browser path.
+  function jsonpLookup() {
+    return new Promise((resolve, reject) => {
+      const cbName = '__gftLookup_' + (++cbCounter) + '_' + Date.now();
+      const script = document.createElement('script');
+      let settled = false;
+
+      const cleanup = () => {
+        if (settled) return;
+        settled = true;
+        delete window[cbName];
+        script.remove();
+      };
+      window[cbName] = (data) => { resolve(data); cleanup(); };
+      script.onerror = () => { reject(new Error('JSONP load failed')); cleanup(); };
+
+      setTimeout(() => {
+        if (!settled) { reject(new Error('JSONP timeout')); cleanup(); }
+      }, JSONP_TIMEOUT);
+
+      script.src = `https://itunes.apple.com/lookup?id=${APP_ID}&country=de&callback=${cbName}`;
+      document.head.appendChild(script);
+    });
+  }
+
+  async function realPing() {
+    const t0 = performance.now();
+    try {
+      const data = await jsonpLookup();
+      const latency = Math.max(1, Math.round(performance.now() - t0));
+      if (data && data.resultCount > 0) {
+        const slow = latency > SLOW_MS;
+        return { state: slow ? 'warn' : 'ok', label: slow ? 'Slow' : 'Operational', latency };
+      }
+      return { state: 'warn', label: 'Unavailable', latency };
+    } catch {
+      return { state: 'warn', label: 'Offline', latency: '–' };
+    }
+  }
+
+  async function doPing() {
+    const prevState  = lamp.dataset.state;
+    const prevStatus = statusEl.textContent;
+    if (!reduced) {
+      lamp.dataset.state = 'checking';
+      statusEl.textContent = 'Pinging…';
+    }
+    const r = await realPing();
+    // ensure the checking flash is visible briefly even if the request returns instantly
+    const elapsed = performance.now();
+    setTimeout(() => {
+      lamp.dataset.state  = r.state;
+      statusEl.textContent = r.label;
+      latencyEl.textContent = r.latency;
+      pingAge = 0;
+      paint();
+    }, reduced ? 0 : FLASH_MS);
+  }
+
+  setInterval(() => { pingAge++; paint(); }, 1000);
+  doPing();
+  setInterval(doPing, POLL_MS);
 })();
 </script>
 
