@@ -35,7 +35,6 @@
     --type-display-tracking: -0.045em;
     --type-display-scale: 1;
     --safe-top: env(safe-area-inset-top, 0px);
-    --nav-safe-cover: var(--safe-top);
   }
   @supports (padding-top: constant(safe-area-inset-top)) {
     :root { --safe-top: constant(safe-area-inset-top); }
@@ -195,30 +194,11 @@
     position: sticky; top: 0; z-index: 50;
     display: grid; grid-template-columns: 1fr auto auto; align-items: start;
     padding: calc(28px + var(--safe-top)) 56px 24px;
-    background: none;
+    background: linear-gradient(to bottom, rgba(244,243,239,0.55) 0%, rgba(244,243,239,0.35) 60%, transparent 100%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
             backdrop-filter: blur(18px) saturate(140%);
     border-bottom: 1px solid rgba(255,255,255,0.4);
     box-shadow: 0 1px 0 rgba(255,255,255,0.6) inset, 0 8px 24px -16px rgba(20,20,26,0.18);
-    isolation: isolate;
-    overflow: visible;
-  }
-  .nav::before {
-    content: "";
-    position: absolute;
-    left: 0; right: 0;
-    top: calc(0px - var(--nav-safe-cover));
-    bottom: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: linear-gradient(
-      to bottom,
-      rgba(244,243,239,0.97) 0%,
-      rgba(244,243,239,0.94) calc(var(--nav-safe-cover) + 56px),
-      rgba(244,243,239,0.78) 100%
-    );
-    -webkit-backdrop-filter: blur(18px) saturate(140%);
-            backdrop-filter: blur(18px) saturate(140%);
   }
   /* ============ LOGO ============ */
   .logo {
@@ -1358,7 +1338,6 @@
     footer { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 720px) {
-    :root { --nav-safe-cover: max(var(--safe-top), 72px); }
     .nav { padding: calc(16px + var(--safe-top)) 20px 16px; grid-template-columns: 1fr auto; align-items: center; }
     .nav-links { display: none; }
     .nav .logo { gap: 10px; }
@@ -1483,10 +1462,6 @@
         <h6>Rechtliches</h6>
         <a href="Impressum.html">Impressum</a>
         <a href="Datenschutz.html">Datenschutz</a>
-      </div>
-      <div class="meta-block meta-status">
-        <h6>Status</h6>
-        <p><span class="dot"></span> Verfügbar für neue Projekte</p>
       </div>
     </aside>
   </div>
