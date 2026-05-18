@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#f4f3ef" />
-<meta name="description" content="DKS Analytics ist ein KI-First-Beratungshaus aus Stuttgart. Wir begleiten Unternehmen über den kompletten KI-Lebenszyklus: Datenaufbereitung, Modelltraining, Deployment und Monitoring – aus einer Hand." />
+<meta name="description" content="KI-Beratung aus Stuttgart: Datenaufbereitung, Modelltraining, Deployment und Monitoring – der komplette KI-Lebenszyklus aus einer Hand." />
 <link rel="canonical" href="https://www.dks-analytics.de/" />
 <title>DKS Analytics — Aus Technologie wird messbare Wirkung</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -1408,12 +1408,23 @@
   .team-photo img {
     width: 100%; height: 100%; display: block; object-fit: cover;
   }
+  .team-social {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin: 12px 0 4px;
+    padding: 5px 11px 5px 8px;
+    border: 1px solid var(--line); border-radius: 999px;
+    color: var(--ink-mute); text-decoration: none;
+    font-size: 12px; letter-spacing: 0.02em;
+    transition: color .2s, border-color .2s, background .2s;
+  }
+  .team-social:hover { color: var(--ink); border-color: var(--ink); background: rgba(20,20,26,0.04); }
+  .team-social svg { width: 14px; height: 14px; flex-shrink: 0; }
   .team-name { font-size: 24px; letter-spacing: -0.02em; font-weight: 500; }
   .team-role { font-size: 13px; color: var(--ink-mute); margin-top: 4px; }
   .team-bio { font-size: 14px; color: var(--ink-soft); line-height: 1.5; margin-top: 12px; }
   .team-tag {
     margin-top: 14px;
-    display: inline-flex; align-items: center; gap: 8px;
+    display: flex; width: fit-content; align-items: center; gap: 8px;
     font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute);
   }
   .team-tag::before { content: ""; width: 22px; height: 1px; background: var(--ink-mute); }
@@ -1460,7 +1471,7 @@
     border-top: 1px solid var(--line);
     font-size: 13px; color: var(--ink-mute);
   }
-  footer h4 { color: var(--ink); font-size: 13px; font-weight: 500; margin-bottom: 14px; letter-spacing: 0.02em; }
+  footer h3 { color: var(--ink); font-size: 13px; font-weight: 500; margin-bottom: 14px; letter-spacing: 0.02em; }
   footer ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
   footer a { color: var(--ink-mute); text-decoration: none; }
   footer a:hover { color: var(--ink); }
@@ -1607,7 +1618,7 @@
     </nav>
     <aside class="menu-meta">
       <div class="meta-block">
-        <h6>Standort</h6>
+        <p class="meta-h">Standort</p>
         <p>Stuttgart<br/>Deutschland</p>
       </div>
       <div class="meta-block">
@@ -1764,6 +1775,10 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
         <div class="team-name">Karl Domanowsky</div>
         <div class="team-role mono">Managing Director — Operations</div>
         <p class="team-bio">Experte für operative Prozesse und effizientes Management. Verantwortet die Umsetzung, Prozessintegration und den Übergang von KI-Lösungen in den produktiven Betrieb.</p>
+        <a class="team-social" href="https://www.linkedin.com/in/karl-domanowsky-58558177/" target="_blank" rel="noopener noreferrer" aria-label="Karl Domanowsky auf LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          LinkedIn
+        </a>
         <div class="team-tag">01 / Management</div>
       </div>
     </article>
@@ -1776,6 +1791,10 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
         <div class="team-name">Marvin Kasper</div>
         <div class="team-role mono">Managing Director — Finance / Controlling</div>
         <p class="team-bio">Experte für Finance und Controlling. Verantwortet Wirtschaftlichkeit, Reporting und die kaufmännische Steuerung von Projekten und Unternehmensprozessen.</p>
+        <a class="team-social" href="https://www.linkedin.com/in/marvin-kasper-ba726a193/" target="_blank" rel="noopener noreferrer" aria-label="Marvin Kasper auf LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          LinkedIn
+        </a>
         <div class="team-tag">02 / Management</div>
       </div>
     </article>
@@ -1786,8 +1805,12 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
       </div>
       <div>
         <div class="team-name">Fabian Stöhr</div>
-        <div class="team-role mono">Managing Director — IT</div>
+        <div class="team-role mono">Managing Director — IT & Ai Development</div>
         <p class="team-bio">Experte für KI-Strategie und Systemarchitektur. Verantwortet die technische Umsetzung und Implementierung produktionsfähiger KI-Systeme.</p>
+        <a class="team-social" href="https://www.linkedin.com/in/fabian-stöhr-0ba891295/" target="_blank" rel="noopener noreferrer" aria-label="Fabian Stöhr auf LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          LinkedIn
+        </a>
         <div class="team-tag">03 / Management</div>
       </div>
     </article>
@@ -1838,7 +1861,7 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
     <p class="footer-meta">KI‑Lebenszyklus aus einer Hand.<br/>Stuttgart, Deutschland.</p>
   </div>
   <div>
-    <h4>Leistungen</h4>
+    <h3>Leistungen</h3>
     <ul>
       <li><a href="#leistung">Datenaufbereitung</a></li>
       <li><a href="#leistung">Modelltraining</a></li>
@@ -1847,7 +1870,7 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
     </ul>
   </div>
   <div>
-    <h4>Unternehmen</h4>
+    <h3>Unternehmen</h3>
     <ul>
       <li><a href="#about">Über uns</a></li>
       <li><a href="#produkte">Produkte</a></li>
@@ -1856,7 +1879,7 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
     </ul>
   </div>
   <div>
-    <h4>Rechtliches</h4>
+    <h3>Rechtliches</h3>
     <ul>
       <li><a href="Impressum.html">Impressum</a></li>
       <li><a href="Datenschutz.html">Datenschutz</a></li>
