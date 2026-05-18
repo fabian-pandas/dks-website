@@ -877,6 +877,158 @@
     margin-left: 2px;
     animation: termCursorBlink 1s steps(2, end) infinite;
   }
+  /* ===== Pretext-driven reveal animation ===== */
+  .reveal-char {
+    display: inline-block;
+    white-space: pre;
+    will-change: transform, opacity, filter;
+    transform: translateZ(0);  /* GPU layer */
+  }
+  /* ===== Causal-AI graph mode (/graph command) ===== */
+  .idea-arena {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    flex-shrink: 0;
+    margin: 12px 0;
+    overflow: hidden;
+    border: 1px dashed rgba(77, 255, 177, 0.18);
+    border-radius: 0;
+  }
+  .chat-msg, .idea-kept-zone { flex-shrink: 0; }
+  .idea-token {
+    position: absolute;
+    top: 0; left: 0;
+    padding: 8px 14px 9px;
+    background: rgba(77, 255, 177, 0.08);
+    border: 1px solid rgba(77, 255, 177, 0.45);
+    color: #4dffb1;
+    font: inherit;
+    border-radius: 999px;
+    cursor: pointer;
+    user-select: none;
+    text-shadow: 0 0 8px rgba(77, 255, 177, 0.32);
+    transition: filter .18s, background .18s, border-color .18s;
+    will-change: transform, opacity;
+    transform-origin: center center;
+  }
+  .idea-token:hover {
+    filter: brightness(1.3);
+    background: rgba(77, 255, 177, 0.18);
+    border-color: rgba(77, 255, 177, 0.7);
+    transform: scale(1.04);
+  }
+  .idea-token .x {
+    margin-left: 10px;
+    opacity: 0.45;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .idea-token .x:hover { opacity: 1; color: #ff5c5c; }
+  .idea-token.tossed { pointer-events: none; }
+  .idea-kept-zone {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 4px;
+    margin: 4px 0 12px;
+    border-top: 1px dashed rgba(77, 255, 177, 0.2);
+    min-height: 36px;
+    align-items: flex-start;
+  }
+  .idea-kept-zone:empty::before {
+    content: "(noch nichts gefangen — tappe was du behalten willst)";
+    color: rgba(244,243,239,0.32);
+    font-size: 12px;
+    font-style: italic;
+  }
+  .idea-chip {
+    padding: 5px 12px;
+    background: rgba(77, 255, 177, 0.22);
+    color: #4dffb1;
+    border: 1px solid rgba(77, 255, 177, 0.55);
+    border-radius: 999px;
+    font-size: 13px;
+    text-shadow: 0 0 4px rgba(77, 255, 177, 0.4);
+    animation: chipPop .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes chipPop {
+    0%   { transform: scale(0.4); opacity: 0; }
+    70%  { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1);   opacity: 1; }
+  }
+  @keyframes ideaDrift {
+    0%, 100% { transform: translate(0, 0); }
+    25%      { transform: translate(4px, -3px); }
+    50%      { transform: translate(0, -6px); }
+    75%      { transform: translate(-4px, -3px); }
+  }
+  .graph-overlay {
+    position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  }
+  .graph-overlay line {
+    stroke: rgba(77,255,177,0.65);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+  }
+  .graph-overlay line.bad {
+    stroke: rgba(255,80,90,0.55);
+    stroke-dasharray: 4 4;
+  }
+  .idea-token.graph-selected {
+    background: rgba(77,255,177,0.32) !important;
+    border-color: rgba(77,255,177,1) !important;
+    box-shadow: 0 0 0 2px rgba(77,255,177,0.5), 0 0 18px rgba(77,255,177,0.55);
+  }
+  .idea-token.graph-correct-flash { animation: graphFlashGood 0.45s ease-out; }
+  .idea-token.graph-wrong-flash { animation: graphFlashBad 0.45s ease-out; }
+  @keyframes graphFlashGood {
+    0%   { box-shadow: 0 0 0 0 rgba(77,255,177,0.7); }
+    50%  { box-shadow: 0 0 0 14px rgba(77,255,177,0); }
+    100% { box-shadow: 0 0 0 0 rgba(77,255,177,0); }
+  }
+  @keyframes graphFlashBad {
+    0%   { box-shadow: 0 0 0 0 rgba(255,80,90,0.7); }
+    50%  { box-shadow: 0 0 0 14px rgba(255,80,90,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,80,90,0); }
+  }
+  .graph-hud {
+    position: absolute; top: 8px; left: 10px; right: 10px;
+    display: flex; justify-content: space-between; align-items: center;
+    font: 11px/1 'JetBrains Mono', monospace; color: #4dffb1;
+    text-shadow: 0 0 6px rgba(77,255,177,0.35);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .graph-hud .graph-score b {
+    font-size: 16px; font-weight: 600; letter-spacing: 0;
+    margin-left: 6px; color: #fff;
+  }
+  .graph-finish-btn {
+    pointer-events: auto;
+    background: rgba(77,255,177,0.16);
+    border: 1px solid rgba(77,255,177,0.55);
+    color: #4dffb1;
+    font: 11px/1 'JetBrains Mono', monospace;
+    letter-spacing: 0.14em;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 999px;
+    transition: background .2s;
+    text-transform: uppercase;
+  }
+  .graph-finish-btn:hover { background: rgba(77,255,177,0.28); }
+  .graph-finish-btn.graph-finish-bottom {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    z-index: 5;
+    background: rgba(77,255,177,0.22);
+    border-color: rgba(77,255,177,0.7);
+    box-shadow: 0 0 0 1px rgba(77,255,177,0.18), 0 4px 14px -4px rgba(0,0,0,0.55);
+  }
+  .graph-finish-btn.graph-finish-bottom:hover { background: rgba(77,255,177,0.34); }
   @keyframes termCursorBlink {
     0%,49%   { opacity: 1; }
     50%,100% { opacity: 0; }
@@ -1252,8 +1404,9 @@
     background: var(--bg-deep);
     overflow: hidden;
   }
-  .team-photo image-slot {
-    width: 100%; height: 100%; display: block;
+  .team-photo image-slot,
+  .team-photo img {
+    width: 100%; height: 100%; display: block; object-fit: cover;
   }
   .team-name { font-size: 24px; letter-spacing: -0.02em; font-weight: 500; }
   .team-role { font-size: 13px; color: var(--ink-mute); margin-top: 4px; }
@@ -1497,17 +1650,17 @@
           <div class="chat-head-title">
             <span class="chat-status-dot"></span>
             <span class="term-name">DKS_KI</span>
-            <span class="chat-head-sub">v1.0 · MUTATOR</span>
+            <span class="chat-head-sub">v1.0 · CAUSAL-AI</span>
           </div>
           <button type="button" class="chat-close" aria-label="Schließen">ESC</button>
         </div>
         <div class="chat-statusbar">
-          <span class="term-mission">▍ THEME-MUTATOR ONLINE</span>
+          <span class="term-mission">▍ CAUSAL-AI ONLINE</span>
           <span class="term-cycles">1 PROMPT</span>
         </div>
         <div class="chat-log" id="chatLog"></div>
         <form class="chat-input" id="chatForm" autocomplete="off">
-          <input type="text" id="chatField" placeholder="beschreibe einen neuen stil…" />
+          <input type="text" id="chatField" placeholder="beschreibe ein Problem oder Vorgehen…" />
           <button type="submit" class="chat-send" aria-label="Ausführen">RUN</button>
         </form>
       </div>
@@ -1605,7 +1758,7 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
   <div class="team-grid">
     <article class="team-card">
       <div class="team-photo">
-        <image-slot id="founder-karl" placeholder="Portrait — Karl Domanowsky" shape="rounded" radius="16"></image-slot>
+        <img src="assets/img_k.jpeg" alt="Portrait Karl Domanowsky" loading="lazy" />
       </div>
       <div>
         <div class="team-name">Karl Domanowsky</div>
@@ -1617,7 +1770,7 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
 
     <article class="team-card">
       <div class="team-photo">
-        <image-slot id="founder-marvin" placeholder="Portrait — Marvin Kasper" shape="rounded" radius="16"></image-slot>
+        <img src="assets/img_m.jpg" alt="Portrait Marvin Kasper" loading="lazy" />
       </div>
       <div>
         <div class="team-name">Marvin Kasper</div>
@@ -1629,7 +1782,7 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
 
     <article class="team-card">
       <div class="team-photo">
-        <image-slot id="founder-fabian" placeholder="Portrait — Fabian Stöhr" shape="rounded" radius="16"></image-slot>
+        <img src="assets/img_f.png" alt="Portrait Fabian Stöhr" loading="lazy" />
       </div>
       <div>
         <div class="team-name">Fabian Stöhr</div>
@@ -1714,6 +1867,9 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
     <span>Made in Germany · v1.0</span>
   </div>
 </footer>
+
+<!-- TERMINAL — Causal-AI chat, reveal animation, /graph builder. Pretext is loaded inside. -->
+<script src="dks-terminal.js" defer></script>
 
 <!-- DYNAMICS MODULE — scroll reveal, magnetic CTAs, hero accent morph, scroll-driven mood -->
 <script>
@@ -1852,174 +2008,6 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
     }
   }
 
-  // ===== 5. CTA → Chat morph =====
-  const cta = document.getElementById('ctaChat');
-  if (cta) {
-    // Measure the natural pill size ONCE on load. Animating width:auto doesn't work,
-    // so we freeze the closed dimensions as CSS vars. Don't re-measure on resize —
-    // a reflow during the close transition can capture a mid-animation width and
-    // poison the next open. The pill width is stable enough to ignore resizes.
-    requestAnimationFrame(() => {
-      const r = cta.getBoundingClientRect();
-      cta.style.setProperty('--closed-w', r.width + 'px');
-      cta.style.setProperty('--closed-h', r.height + 'px');
-    });
-    const log = cta.querySelector('#chatLog');
-    const form = cta.querySelector('#chatForm');
-    const field = cta.querySelector('#chatField');
-    const closeBtn = cta.querySelector('.chat-close');
-    const sendBtn = cta.querySelector('.chat-send');
-    let busy = false;
-    let history = [];
-
-    const SYSTEM = "Du bist der DKS Assistant von DKS Analytics GmbH (München) — ein KI-First-Beratungshaus für den kompletten KI-Lebenszyklus: Datenaufbereitung, Modelltraining, Deployment, Monitoring & Betrieb. Antworte auf Deutsch (außer der Nutzer schreibt Englisch), prägnant (max. 3 kurze Absätze), konkret und beratend. Wenn der Nutzer ein Vorhaben beschreibt: skizziere kurz einen ersten Lösungspfad in den vier Lebenszyklus-Phasen. Schließe optional mit einer Rückfrage. Kein Marketing-Sprech.";
-
-    // Smooth-scroll easing helper (used so the page slides down to make room
-    // for the expanded chat BEFORE the box morph starts).
-    function smoothScrollTo(targetY, duration) {
-      const startY = window.scrollY;
-      const dist = targetY - startY;
-      if (Math.abs(dist) < 2) return Promise.resolve();
-      const start = performance.now();
-      const ease = (t) => 1 - Math.pow(1 - t, 3); // easeOutCubic
-      return new Promise((resolve) => {
-        function step(now) {
-          const t = Math.min(1, (now - start) / duration);
-          window.scrollTo(0, startY + dist * ease(t));
-          if (t < 1) requestAnimationFrame(step);
-          else resolve();
-        }
-        requestAnimationFrame(step);
-      });
-    }
-
-    async function open() {
-      if (cta.classList.contains('is-open')) return;
-      cta.setAttribute('aria-expanded', 'true');
-
-      // Make sure the expanded box (440 wide × 460 tall, anchored at the pill's
-      // current top-left) will be fully visible. If not, scroll smoothly first.
-      const OPEN_H = 460;
-      const MARGIN = 24;
-      const r = cta.getBoundingClientRect();
-      const bottomNeeded = r.top + OPEN_H + MARGIN; // viewport-y the bottom edge will reach
-      const overflow = bottomNeeded - window.innerHeight;
-      if (overflow > 0) {
-        const target = Math.min(
-          window.scrollY + overflow,
-          document.documentElement.scrollHeight - window.innerHeight
-        );
-        await smoothScrollTo(target, 550);
-      }
-
-      cta.classList.add('is-open');
-      // kill any leftover magnetic transform
-      cta.style.transform = '';
-      setTimeout(() => field && field.focus(), 1100);
-      if (!booted) { booted = true; bootSequence(); }
-    }
-    function close() {
-      cta.classList.remove('is-open');
-      cta.setAttribute('aria-expanded', 'false');
-    }
-    cta.addEventListener('click', (ev) => {
-      if (cta.classList.contains('is-open')) return; // clicks inside are handled by their own handlers
-      ev.preventDefault();
-      open(); // async — fire and forget
-    });
-    cta.addEventListener('keydown', (ev) => {
-      if (cta.classList.contains('is-open')) return;
-      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); }
-    });
-    closeBtn.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      close();
-    });
-    // stop propagation inside the chat pane so clicks don't re-trigger the button
-    cta.querySelector('.chat-pane').addEventListener('click', (ev) => ev.stopPropagation());
-    // ESC closes
-    document.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Escape' && cta.classList.contains('is-open')) close();
-    });
-
-    function appendMsg(role, text) {
-      const wrap = document.createElement('div');
-      wrap.className = 'chat-msg ' + (role === 'user' ? 'from-user' : 'from-bot');
-      const bub = document.createElement('div');
-      bub.className = 'chat-bubble';
-      bub.textContent = text;
-      wrap.appendChild(bub);
-      log.appendChild(wrap);
-      log.scrollTop = log.scrollHeight;
-      return bub;
-    }
-
-    // Char-by-char typewriter with brief lock-in flicker (matches the CTA glitch)
-    const TERM_NOISE = '!@#$%&*+=<>?/\\|░▒▓01';
-    const tnoise = () => TERM_NOISE[Math.floor(Math.random() * TERM_NOISE.length)];
-    const twait = ms => new Promise(r => setTimeout(r, ms));
-    async function typewriteInto(bub, text, speed = 14) {
-      bub.textContent = '';
-      for (let i = 1; i <= text.length; i++) {
-        const ch = text[i - 1];
-        if (ch !== ' ' && ch !== '\n' && Math.random() < 0.55) {
-          bub.textContent = text.slice(0, i - 1) + tnoise();
-          await twait(8);
-        }
-        bub.textContent = text.slice(0, i);
-        log.scrollTop = log.scrollHeight;
-        await twait(speed + Math.random() * 10);
-      }
-    }
-
-    let booted = false;
-    async function bootSequence() {
-      const lines = [
-        'DKS_KI · v1.0 ONLINE',
-        'KERNEL: THEME-MUTATOR · MEMORY: 1 PROMPT',
-        'AWAITING DIRECTIVE — wie soll DKS_KI diese Seite verändern?',
-        'BEISPIEL: "neon-modus" · "y2k retro" · "swiss grid" · "noir"'
-      ];
-      for (const line of lines) {
-        const bub = appendMsg('bot', '');
-        await typewriteInto(bub, line, 10);
-        await twait(160);
-      }
-    }
-
-    form.addEventListener('submit', async (ev) => {
-      ev.preventDefault();
-      const text = field.value.trim();
-      if (!text || busy) return;
-      busy = true;
-      sendBtn.disabled = true;
-      field.value = '';
-      appendMsg('user', text);
-      history.push({ role: 'user', content: text });
-
-      const thinkingBubble = appendMsg('bot', '');
-      thinkingBubble.classList.add('thinking');
-
-      try {
-        const reply = await window.claude.complete({
-          messages: [
-            { role: 'user', content: SYSTEM + "\n\n---\n\n" + history.map(m => (m.role === 'user' ? 'Nutzer: ' : 'Assistant: ') + m.content).join('\n\n') }
-          ]
-        });
-        thinkingBubble.classList.remove('thinking');
-        await typewriteInto(thinkingBubble, reply, 12);
-        history.push({ role: 'assistant', content: reply });
-      } catch (err) {
-        thinkingBubble.classList.remove('thinking');
-        await typewriteInto(thinkingBubble, 'Entschuldigung — gerade ist die Verbindung zum Modell unterbrochen. Bitte versuchen Sie es in einem Moment erneut, oder schreiben Sie uns direkt an info@dks-analytics.de.', 12);
-      } finally {
-        busy = false;
-        sendBtn.disabled = false;
-        log.scrollTop = log.scrollHeight;
-        field.focus();
-      }
-    });
-  }
 })();
 </script>
 

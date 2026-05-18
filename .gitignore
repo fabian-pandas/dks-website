@@ -14,3 +14,10 @@ __pycache__/
 .pytest_cache/
 cdk.out/
 cdk.context.json
+.gitnexus
+
+# Tooling state (Claude Code / Codex / image-slot editor)
+.claude/
+AGENTS.md
+CLAUDE.md
+site/.image-slots.state.json
