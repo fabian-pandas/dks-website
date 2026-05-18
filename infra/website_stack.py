@@ -67,6 +67,26 @@ class WebsiteStack(Stack):
             auto_delete_objects=False,
         )
 
+        # CloudFront-Function (viewer-response): hängt `charset=utf-8` an
+        # text/html Content-Types an. S3 setzt nur `text/html` ohne charset,
+        # was Seobility und manche User-Agents als SEO-Warning werten.
+        html_charset = cloudfront.Function(
+            self,
+            "AppendHtmlCharset",
+            comment="Append charset=utf-8 to text/html Content-Type",
+            code=cloudfront.FunctionCode.from_inline(
+                "function handler(event) {\n"
+                "  var response = event.response;\n"
+                "  var headers = response.headers;\n"
+                "  var ct = headers['content-type'];\n"
+                "  if (ct && ct.value && ct.value.indexOf('text/html') !== -1 && ct.value.indexOf('charset') === -1) {\n"
+                "    headers['content-type'] = { value: 'text/html; charset=utf-8' };\n"
+                "  }\n"
+                "  return response;\n"
+                "}\n"
+            ),
+        )
+
         # CloudFront-Function: 301 von Apex → www, damit eine kanonische URL gewinnt.
         redirect_to_www = cloudfront.Function(
             self,
@@ -115,6 +135,10 @@ class WebsiteStack(Stack):
                     cloudfront.FunctionAssociation(
                         function=redirect_to_www,
                         event_type=cloudfront.FunctionEventType.VIEWER_REQUEST,
+                    ),
+                    cloudfront.FunctionAssociation(
+                        function=html_charset,
+                        event_type=cloudfront.FunctionEventType.VIEWER_RESPONSE,
                     ),
                 ],
             ),
