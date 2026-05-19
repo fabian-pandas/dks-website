@@ -2283,8 +2283,10 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
     if (el && value != null) el.textContent = value;
   };
 
+  const getNav = () => performance.getEntriesByType('navigation')[0];
+
   const readNav = () => {
-    const nav = performance.getEntriesByType('navigation')[0];
+    const nav = getNav();
     if (!nav) return;
     const ttfb = Math.max(0, Math.round(nav.responseStart - nav.requestStart));
     set('ttfb', ttfb + 'ms');
@@ -2296,10 +2298,15 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
 
   const readConn = () => {
     const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (!c) { set('conn', 'HTTPS'); return; }
-    const type = (c.effectiveType || '').toUpperCase();
-    const down = c.downlink ? Math.round(c.downlink) + 'Mbit' : null;
-    set('conn', [type, down].filter(Boolean).join(' · ') || 'HTTPS');
+    if (c && c.effectiveType) {
+      const type = c.effectiveType.toUpperCase();
+      const down = c.downlink ? Math.round(c.downlink) + 'Mbit' : null;
+      set('conn', [type, down].filter(Boolean).join(' · '));
+      return;
+    }
+    const nav = getNav();
+    const proto = nav && nav.nextHopProtocol;
+    set('conn', proto ? proto.toUpperCase() : 'HTTPS');
   };
 
   const readEdge = async () => {
@@ -2311,8 +2318,9 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
     set('edge', 'CloudFront');
   };
 
-  if (document.readyState === 'complete') readNav();
-  else window.addEventListener('load', readNav, { once: true });
+  const kickNav = () => setTimeout(readNav, 0);
+  if (document.readyState === 'complete') kickNav();
+  else window.addEventListener('load', kickNav, { once: true });
   readConn();
   readEdge();
 })();
