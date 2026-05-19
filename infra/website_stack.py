@@ -9,6 +9,9 @@ Site-Files in ./site/ werden per BucketDeployment hochgeladen, Cache wird
 nach Deploy invalidiert.
 """
 
+import json
+from datetime import datetime, timezone
+
 from aws_cdk import (
     Stack,
     RemovalPolicy,
@@ -174,11 +177,21 @@ class WebsiteStack(Stack):
             route53.ARecord(self, f"AliasA{id_suffix}", **kwargs_record)
             route53.AaaaRecord(self, f"AliasAAAA{id_suffix}", **kwargs_record)
 
+        # build.json wird beim synth mit aktuellem UTC-Timestamp generiert und
+        # neben den Site-Files deployed. Frontend liest /build.json und zeigt
+        # "Stable Xd" — ehrliches Signal "läuft ohne Redeploy seit X Tagen".
+        build_info = json.dumps(
+            {"deployedAt": datetime.now(timezone.utc).isoformat(timespec="seconds")}
+        )
+
         # Site-Files nach S3 deployen + CloudFront-Cache invalidieren.
         s3deploy.BucketDeployment(
             self,
             "DeploySite",
-            sources=[s3deploy.Source.asset("./site")],
+            sources=[
+                s3deploy.Source.asset("./site"),
+                s3deploy.Source.data("build.json", build_info),
+            ],
             destination_bucket=bucket,
             distribution=distribution,
             distribution_paths=["/*"],
