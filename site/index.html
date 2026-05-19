@@ -1645,7 +1645,7 @@
     <span>TTFB <b data-m="ttfb">—</b></span>
     <span>Load <b data-m="load">—</b></span>
     <span>Edge <b data-m="edge">—</b></span>
-    <span>Conn <b data-m="conn">—</b></span>
+    <span>Stable <b data-m="stable">—</b></span>
   </div>
   <h1 class="hero-title">Für Ihr<br/><span class="hero-accent">Unternehmen.</span><br/>Im echten<br/>Betrieb.</h1>
   <div class="hero-bottom">
@@ -2296,17 +2296,22 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
     }
   };
 
-  const readConn = () => {
-    const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (c && c.effectiveType) {
-      const type = c.effectiveType.toUpperCase();
-      const down = c.downlink ? Math.round(c.downlink) + 'Mbit' : null;
-      set('conn', [type, down].filter(Boolean).join(' · '));
-      return;
+  const readStable = async () => {
+    try {
+      const res = await fetch('/build.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('no build.json');
+      const { deployedAt } = await res.json();
+      const diffMs = Date.now() - new Date(deployedAt).getTime();
+      if (diffMs < 0 || !isFinite(diffMs)) return;
+      const days = Math.floor(diffMs / 86400000);
+      if (days >= 1) { set('stable', days + 'd'); return; }
+      const hours = Math.floor(diffMs / 3600000);
+      if (hours >= 1) { set('stable', hours + 'h'); return; }
+      const minutes = Math.max(1, Math.floor(diffMs / 60000));
+      set('stable', minutes + 'm');
+    } catch (_) {
+      set('stable', 'live');
     }
-    const nav = getNav();
-    const proto = nav && nav.nextHopProtocol;
-    set('conn', proto ? proto.toUpperCase() : 'HTTPS');
   };
 
   const readEdge = async () => {
@@ -2321,7 +2326,7 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
   const kickNav = () => setTimeout(readNav, 0);
   if (document.readyState === 'complete') kickNav();
   else window.addEventListener('load', kickNav, { once: true });
-  readConn();
+  readStable();
   readEdge();
 })();
 </script>
