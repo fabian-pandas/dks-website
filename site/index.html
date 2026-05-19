@@ -1641,11 +1641,11 @@
   <svg class="star" style="right: 24%; top: 30%; opacity: 0.18;" width="180" height="600" viewBox="0 0 180 600" fill="none" stroke="#9a9991" stroke-width="0.5"><path d="M170 0 Q 40 200 90 400 T 30 600"/></svg>
 
   <p class="hero-eyebrow">Aus Technologie wird messbare Wirkung.</p>
-  <div class="hero-metrics mono">
-    <span>Models in Prod <b>24</b></span>
-    <span>Uptime <b>99.97%</b></span>
-    <span>P95 Latency <b>142ms</b></span>
-    <span>Pipelines <b>61</b></span>
+  <div class="hero-metrics mono" id="heroMetrics">
+    <span>TTFB <b data-m="ttfb">—</b></span>
+    <span>Load <b data-m="load">—</b></span>
+    <span>Edge <b data-m="edge">—</b></span>
+    <span>Conn <b data-m="conn">—</b></span>
   </div>
   <h1 class="hero-title">Für Ihr<br/><span class="hero-accent">Unternehmen.</span><br/>Im echten<br/>Betrieb.</h1>
   <div class="hero-bottom">
@@ -2266,6 +2266,55 @@ Vom Proof-of-Concept bis zum produktiven Betrieb — aus einer Hand.</p>
   setInterval(() => { pingAge++; paint(); }, 1000);
   doPing();
   setInterval(doPing, POLL_MS);
+})();
+</script>
+
+<script>
+/* ============ HERO LIVE METRICS ============
+   Per-visitor browser-native signals — kein Mock, kein Fake.
+   TTFB + Load:  Navigation Timing API
+   Edge:         CloudFront x-amz-cf-pop response header (HEAD request)
+   Conn:         Network Information API (Chromium/Android)              */
+(() => {
+  const root = document.getElementById('heroMetrics');
+  if (!root) return;
+  const set = (key, value) => {
+    const el = root.querySelector(`[data-m="${key}"]`);
+    if (el && value != null) el.textContent = value;
+  };
+
+  const readNav = () => {
+    const nav = performance.getEntriesByType('navigation')[0];
+    if (!nav) return;
+    const ttfb = Math.max(0, Math.round(nav.responseStart - nav.requestStart));
+    set('ttfb', ttfb + 'ms');
+    if (nav.loadEventEnd > 0) {
+      const load = Math.max(0, Math.round(nav.loadEventEnd - nav.fetchStart));
+      set('load', load + 'ms');
+    }
+  };
+
+  const readConn = () => {
+    const c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (!c) { set('conn', 'HTTPS'); return; }
+    const type = (c.effectiveType || '').toUpperCase();
+    const down = c.downlink ? Math.round(c.downlink) + 'Mbit' : null;
+    set('conn', [type, down].filter(Boolean).join(' · ') || 'HTTPS');
+  };
+
+  const readEdge = async () => {
+    try {
+      const res = await fetch(location.href, { method: 'HEAD', cache: 'no-store' });
+      const pop = res.headers.get('x-amz-cf-pop');
+      if (pop) { set('edge', pop.slice(0, 6)); return; }
+    } catch (_) { /* fall through */ }
+    set('edge', 'CloudFront');
+  };
+
+  if (document.readyState === 'complete') readNav();
+  else window.addEventListener('load', readNav, { once: true });
+  readConn();
+  readEdge();
 })();
 </script>
 
